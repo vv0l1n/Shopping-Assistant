@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">WarehouseApp</string>
+    <string name="loginButton">Zaloguj</string>
+    <string name="emailField">E-mail</string>
+    <string name="passwordField">Hasło</string>
+    <string name="loginLabel">Zaloguj się</string>
 </resources>

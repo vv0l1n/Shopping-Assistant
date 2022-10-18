@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "544005273044",
+    "project_id": "warehouse-c2537",
+    "storage_bucket": "warehouse-c2537.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544005273044:android:71a993b877199d82f2d241",
+        "android_client_info": {
+          "package_name": "com.wolin.warehouseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544005273044-a3kgneh8sv3i3l1hbgpkk6fqalrl3rmn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZhBRUZ-16H_Dc9b3mvTBCOLOcH2n7_iY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544005273044-a3kgneh8sv3i3l1hbgpkk6fqalrl3rmn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
