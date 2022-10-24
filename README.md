@@ -61,7 +61,7 @@ Szacowana liczba godzin spędzona przy realizacji każdego z kluczowych etapów 
 | Etap | Wiktor Woliński 1| Dawid Stańczak 2 |Damian Dutkowski 3|
 |------|------------------|------------------|------------------|
 | 1    |                10|                2 |                2 |
-|      |               130|               20 |                20|
-
+| 2    |               130|               20 |                20|
+| 3    |               10 |               10 |                10|
 
 
