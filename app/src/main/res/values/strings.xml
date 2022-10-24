@@ -4,4 +4,9 @@
     <string name="emailField">E-mail</string>
     <string name="passwordField">Hasło</string>
     <string name="loginLabel">Zaloguj się</string>
+    <string name="filter">Filtruj</string>
+    <string name="sort">Sortuj</string>
+    <string name="search">Szukaj...</string>
+    <string name="add">Dodaj</string>
+    <string name="place">Miejsce</string>
 </resources>
