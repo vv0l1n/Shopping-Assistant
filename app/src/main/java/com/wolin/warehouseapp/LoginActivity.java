@@ -21,6 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private Button login;
     private FirebaseAuth auth;
+    private Button register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,9 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         login = findViewById(R.id.login);
         auth = FirebaseAuth.getInstance();
+        register = findViewById(R.id.register);
+
+        login.setWidth(register.getWidth());
 
         login.setOnClickListener(view -> {
             String emailStr = email.getText().toString();
@@ -42,6 +46,12 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser(emailStr, passwordStr);
             }
         });
+
+        register.setOnClickListener(view -> {
+            Intent RegisterActivityIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(RegisterActivityIntent);
+        });
+
     }
 
     private void loginUser(String emailStr, String passwordStr) {

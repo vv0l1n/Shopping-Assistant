@@ -9,4 +9,11 @@
     <string name="search">Szukaj...</string>
     <string name="add">Dodaj</string>
     <string name="place">Miejsce</string>
+    <string name="register">Zarejestruj</string>
+    <string name="registerLabel">Zarejestruj się</string>
+    <string name="password">Hasło</string>
+    <string name="repeatPassword">Powtórz hasło</string>
+    <string name="name">Imię</string>
+    <string name="lastName">Nazwisko</string>
+    <string name="cancel">Anuluj</string>
 </resources>
