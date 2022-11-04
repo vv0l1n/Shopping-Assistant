@@ -19,17 +19,23 @@ Firebase
 
 ## Zadania realizowane przez członków
 Przy każdej osobie wymienić szacowany procentowo łączny udział w realizacji projektu.
-### Nazwisko Imię 1 (30%)
-- z1
-- z2
+### Wiktor Woliński 1 (70%)
+- Opracowanie logiki aplikacji
+- Pisanie kodu
+- Baza danych
+- Wygląd aplikacji
+- Przygotowanie danych początkowych
+- Tworzenie szablonów XML
 
-### Nazwisko Imię 2 (25%)
-- z1
-- z2
+### Dawid Stańczak 2 (15%)
+- Opracowanie wyglądu aplikacji
+- Przygotowanie danych początkowych
+- Tworzenie szablonów XML
 
-### Nazwisko Imię 3 (25%)
-- z1
-- z2
+### Damian Dutkowski 3 (15%)
+- Opracowanie wyglądu aplikacji
+- Przygotowanie danych początkowych
+- Tworzenie szablonów XML
 
 ## Planowany harmonogram
 Szacowany łączny czas trwania wraz z liczbą godzin poświęconą w tym czasie na prace nad projektem. Np. projekt może trwać 2 miesiące, ale w tym czasie poświęcimy 10 godzin na pracę nad nim. Może też trwać 2 dni, ale czas to 20 godzin.
@@ -52,9 +58,10 @@ Testy
 
 Szacowana liczba godzin spędzona przy realizacji każdego z kluczowych etapów przez każdego członka projektu
 
-| Etap |  Nazwisko Imię 1 |  Nazwisko Imię 2 |  Nazwisko Imię 3 |
+| Etap | Wiktor Woliński 1| Dawid Stańczak 2 |Damian Dutkowski 3|
 |------|------------------|------------------|------------------|
-| 1    |                10|                10|                10|
-
+| 1    |                10|                2 |                2 |
+| 2    |               130|               20 |                20|
+| 3    |               10 |               10 |                10|
 
 
