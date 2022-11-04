@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp;
+package com.wolin.warehouseapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.wolin.warehouseapp.R;
+import com.wolin.warehouseapp.model.UserDetails;
 
 import java.util.regex.Pattern;
 

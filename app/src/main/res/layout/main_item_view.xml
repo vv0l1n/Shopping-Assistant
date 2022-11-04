@@ -9,21 +9,6 @@
     >
 
 
-    <TextView
-        android:id="@+id/productName"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="200dp"
-        android:text="productName"
-        app:layout_constraintBottom_toTopOf="@+id/count"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.075"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.421" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="125dp"
@@ -33,79 +18,47 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/place"
-        android:layout_width="wrap_content"
+        android:id="@+id/productName"
+        android:layout_width="175dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/place"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.539"
-        app:layout_constraintStart_toEndOf="@+id/productName"
+        android:layout_marginTop="15dp"
+        android:text="name"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/zone"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="4dp"
-        android:text="zone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.414"
-        app:layout_constraintStart_toEndOf="@+id/productName"
-        app:layout_constraintTop_toBottomOf="@+id/place" />
-
-    <TextView
-        android:id="@+id/rack"
-        android:layout_width="45dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="4dp"
-        android:text="rack"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toEndOf="@+id/productName"
-        app:layout_constraintTop_toBottomOf="@+id/zone" />
-
-    <TextView
-        android:id="@+id/shelf"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="shelf"
+    <ImageView
+        android:id="@+id/shopLogo"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="231dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.626"
-        app:layout_constraintStart_toEndOf="@+id/productName"
-        app:layout_constraintTop_toBottomOf="@+id/rack"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/count"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="200dp"
+        android:layout_marginTop="25dp"
         android:text="count"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.241"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/productName" />
 
-    <TextView
-        android:id="@+id/category"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="250dp"
-        android:layout_marginBottom="15dp"
-        android:text="category"
+    <Button
+        android:id="@+id/boughtButton"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/bought"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.088"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/count"
-        app:layout_constraintVertical_bias="0.684" />
+        app:layout_constraintEnd_toStartOf="@+id/shopLogo"
+        app:layout_constraintStart_toEndOf="@+id/imageView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

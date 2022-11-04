@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp;
+package com.wolin.warehouseapp.model;
 
 import java.util.HashMap;
 
