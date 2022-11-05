@@ -16,4 +16,10 @@
     <string name="name">Imię</string>
     <string name="lastName">Nazwisko</string>
     <string name="cancel">Anuluj</string>
+    <string name="onlyActive">Wyświetlaj tylko potrzebne produkty</string>
+    <string name="bought">Kupione!</string>
+    <string name="productName">Nazwa produktu</string>
+    <string name="count">Ilość</string>
+    <string name="description">Uwagi (np. ewentualny zamiennik)</string>
+    <string name="maxPrice">Maksymalna cena</string>
 </resources>

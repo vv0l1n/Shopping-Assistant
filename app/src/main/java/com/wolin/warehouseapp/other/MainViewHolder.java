@@ -1,32 +1,31 @@
-package com.wolin.warehouseapp;
+package com.wolin.warehouseapp.other;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wolin.warehouseapp.R;
+
 
 public class MainViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView imageView;
     private TextView productName;
-    private TextView zone;
-    private TextView rack;
-    private TextView shelf;
     private TextView count;
-    private TextView category;
+    private Button boughtButton;
+    private ImageView shopLogo;
 
     public MainViewHolder(@NonNull View itemView) {
         super(itemView);
         imageView = itemView.findViewById(R.id.imageView);
         productName = itemView.findViewById(R.id.productName);
-        zone = itemView.findViewById(R.id.zone);
-        rack = itemView.findViewById(R.id.rack);
-        shelf = itemView.findViewById(R.id.shelf);
         count = itemView.findViewById(R.id.count);
-        category = itemView.findViewById(R.id.category);
+        boughtButton = itemView.findViewById(R.id.boughtButton);
+        shopLogo = itemView.findViewById(R.id.shopLogo);
     }
 
     public ImageView getImageView() {
@@ -45,30 +44,6 @@ public class MainViewHolder extends RecyclerView.ViewHolder {
         this.productName = productName;
     }
 
-    public TextView getZone() {
-        return zone;
-    }
-
-    public void setZone(TextView zone) {
-        this.zone = zone;
-    }
-
-    public TextView getRack() {
-        return rack;
-    }
-
-    public void setRack(TextView rack) {
-        this.rack = rack;
-    }
-
-    public TextView getShelf() {
-        return shelf;
-    }
-
-    public void setShelf(TextView shelf) {
-        this.shelf = shelf;
-    }
-
     public TextView getCount() {
         return count;
     }
@@ -77,11 +52,19 @@ public class MainViewHolder extends RecyclerView.ViewHolder {
         this.count = count;
     }
 
-    public TextView getCategory() {
-        return category;
+    public Button getBoughtButton() {
+        return boughtButton;
     }
 
-    public void setCategory(TextView category) {
-        this.category = category;
+    public void setBoughtButton(Button boughtButton) {
+        this.boughtButton = boughtButton;
+    }
+
+    public ImageView getShopLogo() {
+        return shopLogo;
+    }
+
+    public void setShopLogo(ImageView shopLogo) {
+        this.shopLogo = shopLogo;
     }
 }

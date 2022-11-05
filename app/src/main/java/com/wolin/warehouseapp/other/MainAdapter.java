@@ -1,20 +1,23 @@
-package com.wolin.warehouseapp;
+package com.wolin.warehouseapp.other;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.wolin.warehouseapp.R;
 
 import java.util.List;
 
 public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
 
     Context context;
-    List<MainMenuItem> items;
+    List<Product> items;
 
-    public MainAdapter(Context context, List<MainMenuItem> items) {
+    public MainAdapter(Context context, List<Product> items) {
         this.context = context;
         this.items = items;
     }
@@ -27,13 +30,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        holder.getImageView().setImageResource(items.get(position).getImage());
+        holder.getImageView().setImageResource(items.get(position).getImageOfProduct());
         holder.getProductName().setText(items.get(position).getName());
-        holder.getZone().setText(items.get(position).getZone());
-        holder.getRack().setText(items.get(position).getRack());
-        holder.getShelf().setText(items.get(position).getShelf());
-        holder.getZone().setText(items.get(position).getZone());
         holder.getCount().setText(Integer.toString(items.get(position).getCount()));
+        holder.getBoughtButton().setOnClickListener(view -> {
+            items.get(position).setActive(false);
+        });
 
     }
 
