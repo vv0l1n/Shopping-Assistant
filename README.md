@@ -5,12 +5,13 @@
 - Damian Dutkowski
 
 ## Opis projektu
-Aplikacja pozwoli na szybkie odnajdowanie interesujących przedmiotów, dodawanie nowych towarów,
-sprawdzanie i zmienianie ich ilości, przenoszenia przenoszenia ich, a także sprawdzenia kto miał z nim wcześniej styczność.
-W ramach programu dostępne będą dwa typy kont: zarządca oraz pracownicy. Pracownicy mają dostępne wszystkie powyższe możliwości, natomiast nie mogą się sami rejestrować. Konta pracowników musi tworzyć zarządca. Może on je też usuwać.
+Aplikacja pozwoli w wygodny sposób sporządzać domową listę zakupów. Dostęp do niej będą mieć wszyscy domownicy dodani do grupy,
+każdy będzie mógł dodać swój produkt oraz oznaczyć inne produkty jako kupione. W aplikacji będzie można dodać zdjęcie produktu,
+wybrać preferowany sklep, ustalić maksymalną cenę produktu oraz dodać uwagi do niego.
 
 ## Cel projektu
-Projekt ma na celu wytworzenie aplikacji wspomagającej zarządzanie towarem na hali magazynowej.
+Projekt ma na celu ułatwić wykonywanie zakupów.
+
 
 ## Wykorzystane technologie
 Java,
