@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.other;
+package com.wolin.warehouseapp.model;
 
 import com.wolin.warehouseapp.model.UserDetails;
 

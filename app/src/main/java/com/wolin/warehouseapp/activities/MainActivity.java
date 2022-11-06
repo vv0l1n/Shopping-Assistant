@@ -3,13 +3,13 @@ package com.wolin.warehouseapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.other.MainAdapter;
-import com.wolin.warehouseapp.other.Product;
+import com.wolin.warehouseapp.model.Product;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +21,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
 
         List<Product> testItems = new ArrayList<Product>();
-        //testItems.add(new Product("Kasza gryczana", 10,true, new SimpleDateFormat("19-12-2001"), "12"));
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new MainAdapter(getApplicationContext(), testItems));
 
+    }
+
+    private void onMainActivityAddButtonClick() {
+        Intent addIntent = new Intent(MainActivity.this, AddActivity.class);
+        startActivity(addIntent);
     }
 }
