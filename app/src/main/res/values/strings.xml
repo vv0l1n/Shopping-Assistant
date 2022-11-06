@@ -22,4 +22,5 @@
     <string name="count">Ilość</string>
     <string name="description">Uwagi (np. ewentualny zamiennik)</string>
     <string name="maxPrice">Maksymalna cena</string>
+    <string name="pickImage">Wybierz zdjęcie</string>
 </resources>
