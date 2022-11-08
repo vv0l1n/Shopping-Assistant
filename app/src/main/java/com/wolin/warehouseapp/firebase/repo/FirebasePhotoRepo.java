@@ -57,7 +57,7 @@ public class FirebasePhotoRepo {
                                 Photo photo = new Photo();
                                 photo.setImageURL(uri.toString());
                                 String uid = currentFirebaseUser.getUid();
-                                Product product = new Product();
+                                product.setUrl(uri.toString());
                                 firebaseFirestore.collection("Users/" + currentFirebaseUser.getUid() + "/products/" + lastProductID.toString())
                                         .add(product)
                                         .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -65,6 +65,13 @@ public class FirebasePhotoRepo {
                                             public void onComplete(@NonNull Task<DocumentReference> task) {
                                                 if (task.isSuccessful()){
                                                     photoRoomViewModel.insertPhoto(photo);
+                                                    DocumentReference changeLastId = firebaseFirestore.collection("Users/" + uid).document("details");
+                                                    changeLastId.update("lastProductID", (lastProductID+1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            System.out.println("dodano");
+                                                        }
+                                                    });
                                                 }
                                                 onDataUploaded.onDataUpload(task);
                                             }

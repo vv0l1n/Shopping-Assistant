@@ -1,20 +1,27 @@
 package com.wolin.warehouseapp.utils.model;
 
 
+import android.net.Uri;
+
+import java.net.URL;
+
 public class Product {
+
+
     private Long id;
     private String name;
     private int count;
     private double maxPrice;
     private String note;
     private com.wolin.warehouseapp.utils.model.Shop shop;
-    private Photo photo;
+    private Uri photo;
     private boolean active;
     private String date;
     private String owner;
     private String buyer;
+    private String url;
 
-    public Product(String name, int count, double maxPrice, String note,Shop shop, Photo photo, boolean active, String date, String owner) {
+    public Product(String name, int count, double maxPrice, String note, Shop shop, Uri photo, boolean active, String date, String owner) {
         this.name = name;
         this.count = count;
         this.maxPrice = maxPrice;
@@ -66,11 +73,11 @@ public class Product {
         this.shop = SHOP;
     }
 
-    public Photo getPhoto() {
+    public Uri getUri() {
         return photo;
     }
 
-    public void setPhoto(Photo imageOfProduct) {
+    public void setUri(Uri imageOfProduct) {
         this.photo = imageOfProduct;
     }
 
@@ -106,4 +113,19 @@ public class Product {
         this.buyer = buyer;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

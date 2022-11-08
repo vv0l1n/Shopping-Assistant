@@ -1,5 +1,7 @@
 package com.wolin.warehouseapp.firebase.repo;
 
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -12,6 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.wolin.warehouseapp.room.viewmodel.UserRoomViewModel;
+import com.wolin.warehouseapp.ui.LoginActivity;
+import com.wolin.warehouseapp.ui.RegisterActivity;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 public class FirebaseUserRepo {

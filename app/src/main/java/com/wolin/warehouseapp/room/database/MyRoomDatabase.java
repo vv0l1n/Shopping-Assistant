@@ -9,9 +9,10 @@ import androidx.room.RoomDatabase;
 import com.wolin.warehouseapp.room.dao.PhotoDao;
 import com.wolin.warehouseapp.room.dao.UserDao;
 import com.wolin.warehouseapp.utils.model.Photo;
+import com.wolin.warehouseapp.utils.model.UserDetails;
 
 
-@Database(entities = {Photo.class} , version = 1)
+@Database(entities = {Photo.class, UserDetails.class} , version = 1)
 public abstract class MyRoomDatabase extends RoomDatabase {
 
     private static MyRoomDatabase mInstance;

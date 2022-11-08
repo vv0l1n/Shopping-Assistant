@@ -2,6 +2,7 @@ package com.wolin.warehouseapp.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.wolin.warehouseapp.R;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
+import com.wolin.warehouseapp.room.viewmodel.UserRoomViewModel;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.regex.Pattern;
@@ -36,6 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference ref;
 
+    private FirebaseUserViewModel firebaseUserViewModel;
+    private UserRoomViewModel userRoomViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +58,9 @@ public class RegisterActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         ref = database.getReference("Users");
+
+        userRoomViewModel = new ViewModelProvider(this).get(UserRoomViewModel.class);
+        firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
         register.setOnClickListener(view -> {
             String emailStr = email.getText().toString();
@@ -89,11 +98,9 @@ public class RegisterActivity extends AppCompatActivity {
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     UserDetails user = new UserDetails(emailStr, nameStr, lastNameStr);
                     FirebaseUser firebaseUser = auth.getCurrentUser();
-
-                    .addOnSuccessListener(unused -> {
-                        Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(loginActivityIntent);
-                    });
+                    firebaseUserViewModel.registerUserToFirebase(user, userRoomViewModel);
+                    Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(loginActivityIntent);
                 } else {
                     Toast.makeText(RegisterActivity.this, "Rejestracja nieudana.", Toast.LENGTH_SHORT).show();
                 }

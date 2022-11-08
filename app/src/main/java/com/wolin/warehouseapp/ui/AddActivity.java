@@ -133,8 +133,6 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
                         productImageAdd.setMaxHeight(130);
                         productImageAdd.setMinimumHeight(130);
                         mImageURI = result.getData().getData();
-                        Long lastProductID = userRoomViewModel.getUser(currentFirebaseUser.getUid()).getValue().getLastProductID();
-                        uploadFromGallery(noteAdd.getRootView(), lastProductID, product);
                     } else {
                         System.out.println("błąd galerii");
                     }
@@ -225,6 +223,7 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
         //adding product
         public void onAddActivityAddButtonClick (View view){
+            Long lastProductID = userRoomViewModel.getUser(currentFirebaseUser.getUid()).getValue().getLastProductID();
 
             String productName = productNameAdd.getText().toString().trim();
             int count = Integer.parseInt(countAdd.getText().toString().trim());
@@ -232,9 +231,12 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
             String note = noteAdd.getText().toString().trim();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String date = simpleDateFormat.format(new Date());
+            if(mImageURI == null) {
+                mImageURI = Uri.parse("android.resource://your.package.here/drawable/noneshop");
+            }
 
-
-            //Product product = new Product(productName, count, maxPrice, note, choosenShop, imageOfProduct, true, date, currentFirebaseUser.getUid());
+            Product product = new Product(productName, count, maxPrice, note, choosenShop, mImageURI, true, date, currentFirebaseUser.getUid());
+            uploadFromGallery(noteAdd.getRootView(), lastProductID, product);
         }
 
 
