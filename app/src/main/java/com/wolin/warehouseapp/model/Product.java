@@ -11,19 +11,19 @@ public class Product {
     private int count;
     private int maxPrice;
     private String note;
-    private Shop SHOP;
+    private Shop shop;
     private int imageOfProduct;
     private boolean active;
     private SimpleDateFormat date;
     private String owner;
     private String buyer;
 
-    public Product(String name, int count, int maxPrice, String note, Shop SHOP, int imageOfProduct, boolean active, SimpleDateFormat date, String owner) {
+    public Product(String name, int count, int maxPrice, String note, Shop shop, int imageOfProduct, boolean active, SimpleDateFormat date, String owner) {
         this.name = name;
         this.count = count;
         this.maxPrice = maxPrice;
         this.note = note;
-        this.SHOP = SHOP;
+        this.shop = shop;
         this.imageOfProduct = imageOfProduct;
         this.active = active;
         this.date = date;
@@ -63,11 +63,11 @@ public class Product {
     }
 
     public Shop getSHOP() {
-        return SHOP;
+        return shop;
     }
 
     public void setSHOP(Shop SHOP) {
-        this.SHOP = SHOP;
+        this.shop = SHOP;
     }
 
     public int getImageOfProduct() {
@@ -110,7 +110,4 @@ public class Product {
         this.buyer = buyer;
     }
 
-    private enum Shop {
-        LEWIATAN, BIEDRONKA, LIDL, CARREFOUR, KAUFLAND, ZABKA, DINO, DELIKATESY_CENTRUM, TOP_MARKET, NONE;
-    }
 }

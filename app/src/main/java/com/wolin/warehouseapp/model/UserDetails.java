@@ -1,11 +1,13 @@
 package com.wolin.warehouseapp.model;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class UserDetails {
     String email;
     String name;
     String lastName;
+    List<Product> products;
 
     public UserDetails(String email, String name, String lastName) {
         this.email = email;
@@ -37,4 +39,15 @@ public class UserDetails {
         this.lastName = lastName;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public void addProduct(Product product) {
+        this.products.add(product);
+    }
 }

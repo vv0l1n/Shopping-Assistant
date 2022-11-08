@@ -6,50 +6,56 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import com.wolin.warehouseapp.BuildConfig;
 import com.wolin.warehouseapp.R;
+import com.wolin.warehouseapp.model.Shop;
+import com.wolin.warehouseapp.other.AddActivityShopAdapter;
+import com.wolin.warehouseapp.other.ShopSelectListener;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AddActivity extends AppCompatActivity {
+public class AddActivity extends AppCompatActivity implements ShopSelectListener {
 
-    private static final int PICK_IMAGE_ID = 234;
     ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
 
-    ImageView productImageAdd;
-    EditText productNameAdd;
-    EditText countAdd;
-    EditText maxPriceAdd;
-    EditText noteAdd;
-    ImageView shopLogoAdd;
-    Button addActivityAddButton;
-    Button addActivityCancelButton;
+    private ImageView productImageAdd;
+    private EditText productNameAdd;
+    private EditText countAdd;
+    private EditText maxPriceAdd;
+    private EditText noteAdd;
+    private ImageView shopLogoAdd;
+    private Button addActivityAddButton;
+    private Button addActivityCancelButton;
+    private Dialog dialog;
+    private RecyclerView addActivityShopRecyclerView;
+    private List<Shop> shops;
 
+    private Shop choosenShop;
 
 
     @Override
@@ -68,29 +74,31 @@ public class AddActivity extends AppCompatActivity {
         productImageAdd.setImageResource(R.drawable.press_to_add_product_image);
         shopLogoAdd.setImageResource(R.drawable.noneshop);
 
-        if(ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddActivity.this, new String[] {
+        //permission for camera
+        if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AddActivity.this, new String[]{
                     Manifest.permission.CAMERA
             }, 100);
         }
 
+        //product image from camera
         cameraActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                            if (result.getResultCode() == RESULT_OK) {
-                                if(result.getData() != null) {
-                                    productImageAdd.setImageBitmap((Bitmap) result.getData().getExtras().get("data"));
-                                    System.out.println(result.getData() + "niger");
-                                }else {
-                                    System.out.println("bład kamery");
-                                }
+                        if (result.getResultCode() == RESULT_OK) {
+                            if (result.getData() != null) {
+                                productImageAdd.setImageBitmap((Bitmap) result.getData().getExtras().get("data"));
+                                System.out.println(result.getData() + "niger");
+                            } else {
+                                System.out.println("bład kamery");
                             }
+                        }
                     }
                 });
 
-
+        //product image from gallery
         galleryActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -104,49 +112,135 @@ public class AddActivity extends AppCompatActivity {
                         System.out.println("błąd galerii");
                     }
                 });
+        //loading dialog for
+        loadDialog(productNameAdd.getRootView());
     }
 
+    //picking product image
     public void onProductImageClick(View view) {
         selectImage();
     }
 
     private void selectImage() {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        final CharSequence[] options = {"Zrób zdjęcie", "Wybierz z galerii", "Anuluj"};
         AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
-        builder.setTitle("Add Photo!");
+        builder.setTitle("Wybierz zdjęcie!");
         builder.setItems(options, (dialog, item) -> {
-            if (options[item].equals("Take Photo"))
-            {
+            if (options[item].equals("Zrób zdjęcie")) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if(intent.resolveActivity(getPackageManager()) != null) {
+                if (intent.resolveActivity(getPackageManager()) != null) {
                     cameraActivityResultLauncher.launch(intent);
                 } else {
                     System.out.println("!!!!!!!!!!!!!!!!");
                 }
-            }
-            else if (options[item].equals("Choose from Gallery"))
-            {
+            } else if (options[item].equals("Wybierz z galerii")) {
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 galleryActivityResultLauncher.launch(intent);
-            }
-            else if (options[item].equals("Cancel")) {
+            } else if (options[item].equals("Anuluj")) {
                 dialog.dismiss();
             }
         });
         builder.show();
     }
 
+
+
+    //picking shop
     public void onShopLogoClick(View view) {
-
+        dialog.show();
     }
 
-    public void onAddActivityAddButtonClick(View view) {
+    //shop dialog
+    public void loadDialog(View v) {
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.add_activity_shop_dialog);
 
+        //add shops
+        addData();
+
+        AddActivityShopAdapter adapter = new AddActivityShopAdapter(this ,shops, this);
+
+        addActivityShopRecyclerView = dialog.findViewById(R.id.addActivityShopRecyclerView);
+        addActivityShopRecyclerView.setAdapter(adapter);
+        addActivityShopRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
     }
 
-    public void onAddActivityCancelButtonClick(View view) {
-        Intent addActivityCancelIntent = new Intent(AddActivity.this, MainActivity.class);
-        startActivity(addActivityCancelIntent);
+    public void addData() {
+        shops = new ArrayList<>();
+        shops.add(new Shop("Dowolny", R.drawable.noneshop));
+        shops.add(new Shop("Auchan", R.drawable.auchan));
+        shops.add(new Shop("Biedronka", R.drawable.biedronka));
+        shops.add(new Shop("Carrefour", R.drawable.carrefour));
+        shops.add(new Shop("Delikatesy-Centrum", R.drawable.delikatesy));
+        shops.add(new Shop("Dino", R.drawable.dino));
+        shops.add(new Shop("Kaufland", R.drawable.kaufland));
+        shops.add(new Shop("Lewiatan", R.drawable.lewiatan));
+        shops.add(new Shop("Lidl", R.drawable.lidl));
+        shops.add(new Shop("Top Market", R.drawable.topmarket));
+        shops.add(new Shop("Żabka", R.drawable.zabka));
     }
 
+        public void onAddActivityAddButtonClick (View view){
+
+        }
+
+        public void onAddActivityCancelButtonClick (View view){
+            Intent addActivityCancelIntent = new Intent(AddActivity.this, MainActivity.class);
+            startActivity(addActivityCancelIntent);
+        }
+
+    @Override
+    public void onShopClick(Shop shop) {
+        choosenShop = shop;
+        switch(shop.getName()) {
+            case "Auchan": {
+                shopLogoAdd.setImageResource(R.drawable.auchan);
+                break;
+            }
+            case "Biedronka": {
+                shopLogoAdd.setImageResource(R.drawable.biedronka);
+                break;
+            }
+            case "Carrefour": {
+                shopLogoAdd.setImageResource(R.drawable.carrefour);
+                break;
+            }
+            case "Delikatesy-Centrum": {
+                shopLogoAdd.setImageResource(R.drawable.delikatesy);
+                break;
+            }
+            case "Dino": {
+                shopLogoAdd.setImageResource(R.drawable.dino);
+                break;
+            }
+            case "Kaufland": {
+                shopLogoAdd.setImageResource(R.drawable.kaufland);
+                break;
+            }
+            case "Lewiatan": {
+                shopLogoAdd.setImageResource(R.drawable.lewiatan);
+                break;
+            }
+            case "Lidl": {
+                shopLogoAdd.setImageResource(R.drawable.lidl);
+                break;
+            }
+            case "Top Market": {
+                shopLogoAdd.setImageResource(R.drawable.topmarket);
+                break;
+            }
+            case "Żabka": {
+                shopLogoAdd.setImageResource(R.drawable.zabka);
+                break;
+            }
+            default: {
+                shopLogoAdd.setImageResource(R.drawable.noneshop);
+                break;
+            }
+        }
+
+        dialog.dismiss();
+    }
 }
