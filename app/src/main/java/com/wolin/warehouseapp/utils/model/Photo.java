@@ -8,7 +8,6 @@ import com.google.firebase.firestore.Exclude;
 @Entity(tableName = "photo_table")
 public class Photo {
 
-    @Exclude
     @PrimaryKey(autoGenerate = true)
     private int id;
 

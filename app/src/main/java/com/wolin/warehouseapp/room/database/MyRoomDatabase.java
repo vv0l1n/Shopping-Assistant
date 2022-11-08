@@ -7,20 +7,22 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.wolin.warehouseapp.room.dao.PhotoDao;
+import com.wolin.warehouseapp.room.dao.UserDao;
 import com.wolin.warehouseapp.utils.model.Photo;
 
 
 @Database(entities = {Photo.class} , version = 1)
-public abstract class PhotoDatabase extends RoomDatabase {
+public abstract class MyRoomDatabase extends RoomDatabase {
 
-    private static PhotoDatabase mInstance;
+    private static MyRoomDatabase mInstance;
     public abstract PhotoDao photoDao();
+    public abstract UserDao userDao();
 
-    public static synchronized  PhotoDatabase getmInstance(Context context){
+    public static synchronized MyRoomDatabase getmInstance(Context context){
 
         if (mInstance == null){
             mInstance = Room.databaseBuilder(context.getApplicationContext() ,
-                            PhotoDatabase.class
+                            MyRoomDatabase.class
                             ,"PhotoDataBase")
                     .fallbackToDestructiveMigration()
                     .build();

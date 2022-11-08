@@ -1,12 +1,14 @@
 package com.wolin.warehouseapp.utils.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.utils.model.Product;
 
@@ -30,7 +32,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        holder.getImageView().setImageResource(items.get(position).getImageOfProduct());
+        Glide.with(holder.getImageView().getContext()).load(items.get(position).getPhoto().getImageURL())
+                .into(holder.getImageView());
         holder.getProductName().setText(items.get(position).getName());
         holder.getCount().setText(Integer.toString(items.get(position).getCount()));
         holder.getBoughtButton().setOnClickListener(view -> {

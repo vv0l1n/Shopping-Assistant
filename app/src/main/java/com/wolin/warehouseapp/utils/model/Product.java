@@ -8,19 +8,19 @@ public class Product {
     private double maxPrice;
     private String note;
     private com.wolin.warehouseapp.utils.model.Shop shop;
-    private int imageOfProduct;
+    private Photo photo;
     private boolean active;
     private String date;
     private String owner;
     private String buyer;
 
-    public Product(String name, int count, double maxPrice, String note,Shop shop, int imageOfProduct, boolean active, String date, String owner) {
+    public Product(String name, int count, double maxPrice, String note,Shop shop, Photo photo, boolean active, String date, String owner) {
         this.name = name;
         this.count = count;
         this.maxPrice = maxPrice;
         this.note = note;
         this.shop = shop;
-        this.imageOfProduct = imageOfProduct;
+        this.photo = photo;
         this.active = active;
         this.date = date;
         this.owner = owner;
@@ -66,12 +66,12 @@ public class Product {
         this.shop = SHOP;
     }
 
-    public int getImageOfProduct() {
-        return imageOfProduct;
+    public Photo getPhoto() {
+        return photo;
     }
 
-    public void setImageOfProduct(int imageOfProduct) {
-        this.imageOfProduct = imageOfProduct;
+    public void setPhoto(Photo imageOfProduct) {
+        this.photo = imageOfProduct;
     }
 
     public boolean isActive() {

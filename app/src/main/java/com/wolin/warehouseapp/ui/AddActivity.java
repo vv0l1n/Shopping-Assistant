@@ -28,15 +28,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.wolin.warehouseapp.R;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseViewModel;
 import com.wolin.warehouseapp.room.viewmodel.PhotoRoomViewModel;
+import com.wolin.warehouseapp.room.viewmodel.UserRoomViewModel;
 import com.wolin.warehouseapp.utils.adapter.AddActivityShopAdapter;
 import com.wolin.warehouseapp.utils.adapter.ShopSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
@@ -46,7 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import androidx.lifecycle.Observer;
 
 public class AddActivity extends AppCompatActivity implements ShopSelectListener {
 
@@ -66,13 +65,16 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
     private List<Shop> shops;
 
     private Shop choosenShop;
-    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
 
     private Uri mImageURI = null;
     private FirebaseViewModel firebaseViewModel;
     private PhotoRoomViewModel photoRoomViewModel;
+
+    private FirebaseUserViewModel firebaseUserViewModel;
+    private UserRoomViewModel userRoomViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,9 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
         photoRoomViewModel = new ViewModelProvider(this).get(PhotoRoomViewModel.class);
         firebaseViewModel = new ViewModelProvider(this).get(FirebaseViewModel.class);
+
+        userRoomViewModel = new ViewModelProvider(this).get(UserRoomViewModel.class);
+        firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
         //permission for camera
         if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA)
@@ -128,7 +133,8 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
                         productImageAdd.setMaxHeight(130);
                         productImageAdd.setMinimumHeight(130);
                         mImageURI = result.getData().getData();
-                        uploadFromGallery(noteAdd.getRootView());
+                        Long lastProductID = userRoomViewModel.getUser(currentFirebaseUser.getUid()).getValue().getLastProductID();
+                        uploadFromGallery(noteAdd.getRootView(), lastProductID, product);
                     } else {
                         System.out.println("błąd galerii");
                     }
@@ -164,8 +170,8 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
         builder.show();
     }
 
-    public void uploadFromGallery(View view) {
-        firebaseViewModel.uploadImagesToFirebase(mImageURI , photoRoomViewModel);
+    public void uploadFromGallery(View view, Long lastProductID, Product product) {
+        firebaseViewModel.uploadImagesToFirebase(mImageURI , photoRoomViewModel, lastProductID, product);
         firebaseViewModel.getTaskMutableLiveData().observe(AddActivity.this, documentReferenceTask -> {
             if (documentReferenceTask.isSuccessful()) {
                 Toast.makeText(AddActivity.this, "Image Uploaded Successfully !!", Toast.LENGTH_SHORT).show();
@@ -224,7 +230,6 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
             int count = Integer.parseInt(countAdd.getText().toString().trim());
             double maxPrice = Integer.parseInt(maxPriceAdd.getText().toString().trim());
             String note = noteAdd.getText().toString().trim();
-            int imageOfProduct;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String date = simpleDateFormat.format(new Date());
 

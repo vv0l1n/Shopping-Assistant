@@ -4,36 +4,37 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
-import com.wolin.warehouseapp.room.dao.PhotoDao;
+import com.wolin.warehouseapp.room.dao.UserDao;
 import com.wolin.warehouseapp.room.database.MyRoomDatabase;
 import com.wolin.warehouseapp.utils.model.Photo;
+import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class PhotoRoomRepo {
+public class UserRoomRepo {
 
-    private PhotoDao photoDao;
-    private LiveData<List<Photo>> photoListLiveData;
+    private UserDao userDao;
+    private LiveData<List<UserDetails>> userListLiveData;
     private Executor executor = Executors.newSingleThreadExecutor();
 
 
-    public LiveData<List<Photo>> getPhotoListLiveData() {
-        return photoListLiveData;
+    public LiveData<List<UserDetails>> getUserListLiveData() {
+        return userListLiveData;
     }
 
-    public PhotoRoomRepo(Application application){
+    public UserRoomRepo(Application application){
         MyRoomDatabase myRoomDatabase = MyRoomDatabase.getmInstance(application);
-        photoDao = myRoomDatabase.photoDao();
-        photoListLiveData = photoDao.getAllPhotos();
+        userDao = myRoomDatabase.userDao();
+        userListLiveData = userDao.getAllUsers();
     }
 
-    public void insertPhoto(Photo photo){
+    public void insertUser(UserDetails user){
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                photoDao.insertPhoto(photo);
+                userDao.insertUser(user);
             }
         });
     }

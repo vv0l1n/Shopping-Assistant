@@ -90,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
                     UserDetails user = new UserDetails(emailStr, nameStr, lastNameStr);
                     FirebaseUser firebaseUser = auth.getCurrentUser();
 
-                    db.collection("Users").add(user).addOnSuccessListener(unused -> {
+                    .addOnSuccessListener(unused -> {
                         Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
                         startActivity(loginActivityIntent);
                     });
