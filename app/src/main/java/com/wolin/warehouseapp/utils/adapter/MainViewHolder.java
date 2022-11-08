@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.other;
+package com.wolin.warehouseapp.utils.adapter;
 
 import android.view.View;
 import android.widget.Button;

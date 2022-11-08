@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.other;
+package com.wolin.warehouseapp.utils.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.model.Product;
+import com.wolin.warehouseapp.utils.model.Product;
 
 import java.util.List;
 

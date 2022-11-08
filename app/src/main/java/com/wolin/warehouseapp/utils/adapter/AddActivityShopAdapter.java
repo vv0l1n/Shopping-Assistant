@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.other;
+package com.wolin.warehouseapp.utils.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,8 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.model.Product;
-import com.wolin.warehouseapp.model.Shop;
+import com.wolin.warehouseapp.utils.model.Shop;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class AddActivityShopAdapter  extends RecyclerView.Adapter<AddActivitySho
 
     private Context context;
     private List<Shop> shops;
-    private ShopSelectListener shopSelectListener;
+    private com.wolin.warehouseapp.utils.adapter.ShopSelectListener shopSelectListener;
 
     public AddActivityShopAdapter(Context context, List<Shop> shops, ShopSelectListener shopSelectListener) {
         this.context = context;

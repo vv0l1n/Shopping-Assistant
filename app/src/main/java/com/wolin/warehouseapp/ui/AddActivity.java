@@ -1,4 +1,5 @@
-package com.wolin.warehouseapp.activities;
+package com.wolin.warehouseapp.ui;
+
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -6,10 +7,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,25 +18,35 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.model.Shop;
-import com.wolin.warehouseapp.other.AddActivityShopAdapter;
-import com.wolin.warehouseapp.other.ShopSelectListener;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseViewModel;
+import com.wolin.warehouseapp.room.viewmodel.PhotoRoomViewModel;
+import com.wolin.warehouseapp.utils.adapter.AddActivityShopAdapter;
+import com.wolin.warehouseapp.utils.adapter.ShopSelectListener;
+import com.wolin.warehouseapp.utils.model.Product;
+import com.wolin.warehouseapp.utils.model.Shop;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import androidx.lifecycle.Observer;
 
 public class AddActivity extends AppCompatActivity implements ShopSelectListener {
 
@@ -56,7 +66,13 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
     private List<Shop> shops;
 
     private Shop choosenShop;
+    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
 
+    private Uri mImageURI = null;
+    private FirebaseViewModel firebaseViewModel;
+    private PhotoRoomViewModel photoRoomViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +89,9 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
         productImageAdd.setImageResource(R.drawable.press_to_add_product_image);
         shopLogoAdd.setImageResource(R.drawable.noneshop);
+
+        photoRoomViewModel = new ViewModelProvider(this).get(PhotoRoomViewModel.class);
+        firebaseViewModel = new ViewModelProvider(this).get(FirebaseViewModel.class);
 
         //permission for camera
         if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA)
@@ -108,6 +127,8 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
                         productImageAdd.setMinimumWidth(130);
                         productImageAdd.setMaxHeight(130);
                         productImageAdd.setMinimumHeight(130);
+                        mImageURI = result.getData().getData();
+                        uploadFromGallery(noteAdd.getRootView());
                     } else {
                         System.out.println("błąd galerii");
                     }
@@ -143,6 +164,18 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
         builder.show();
     }
 
+    public void uploadFromGallery(View view) {
+        firebaseViewModel.uploadImagesToFirebase(mImageURI , photoRoomViewModel);
+        firebaseViewModel.getTaskMutableLiveData().observe(AddActivity.this, documentReferenceTask -> {
+            if (documentReferenceTask.isSuccessful()) {
+                Toast.makeText(AddActivity.this, "Image Uploaded Successfully !!", Toast.LENGTH_SHORT).show();
+                productImageAdd.setImageURI(mImageURI);
+            } else {
+                Toast.makeText(AddActivity.this, documentReferenceTask.getException().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 
     //picking shop
@@ -169,7 +202,9 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
     public void addData() {
         shops = new ArrayList<>();
-        shops.add(new Shop("Dowolny", R.drawable.noneshop));
+        Shop dowolny = new Shop("Dowolny", R.drawable.noneshop);
+        choosenShop = dowolny;
+        shops.add(dowolny);
         shops.add(new Shop("Auchan", R.drawable.auchan));
         shops.add(new Shop("Biedronka", R.drawable.biedronka));
         shops.add(new Shop("Carrefour", R.drawable.carrefour));
@@ -182,10 +217,24 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
         shops.add(new Shop("Żabka", R.drawable.zabka));
     }
 
+        //adding product
         public void onAddActivityAddButtonClick (View view){
 
+            String productName = productNameAdd.getText().toString().trim();
+            int count = Integer.parseInt(countAdd.getText().toString().trim());
+            double maxPrice = Integer.parseInt(maxPriceAdd.getText().toString().trim());
+            String note = noteAdd.getText().toString().trim();
+            int imageOfProduct;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            String date = simpleDateFormat.format(new Date());
+
+
+            //Product product = new Product(productName, count, maxPrice, note, choosenShop, imageOfProduct, true, date, currentFirebaseUser.getUid());
         }
 
+
+
+        //cancel button
         public void onAddActivityCancelButtonClick (View view){
             Intent addActivityCancelIntent = new Intent(AddActivity.this, MainActivity.class);
             startActivity(addActivityCancelIntent);

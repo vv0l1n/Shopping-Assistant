@@ -1,6 +1,6 @@
-package com.wolin.warehouseapp.model;
+package com.wolin.warehouseapp.utils.model;
 
-import java.util.HashMap;
+
 import java.util.List;
 
 public class UserDetails {
@@ -43,7 +43,7 @@ public class UserDetails {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<com.wolin.warehouseapp.utils.model.Product> products) {
         this.products = products;
     }
 

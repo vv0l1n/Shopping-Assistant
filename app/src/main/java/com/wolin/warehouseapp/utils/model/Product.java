@@ -1,24 +1,20 @@
-package com.wolin.warehouseapp.model;
+package com.wolin.warehouseapp.utils.model;
 
-import com.wolin.warehouseapp.model.UserDetails;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
 
 public class Product {
+    private Long id;
     private String name;
     private int count;
-    private int maxPrice;
+    private double maxPrice;
     private String note;
-    private Shop shop;
+    private com.wolin.warehouseapp.utils.model.Shop shop;
     private int imageOfProduct;
     private boolean active;
-    private SimpleDateFormat date;
+    private String date;
     private String owner;
     private String buyer;
 
-    public Product(String name, int count, int maxPrice, String note, Shop shop, int imageOfProduct, boolean active, SimpleDateFormat date, String owner) {
+    public Product(String name, int count, double maxPrice, String note,Shop shop, int imageOfProduct, boolean active, String date, String owner) {
         this.name = name;
         this.count = count;
         this.maxPrice = maxPrice;
@@ -46,11 +42,11 @@ public class Product {
         this.count = count;
     }
 
-    public int getMaxPrice() {
+    public double getMaxPrice() {
         return maxPrice;
     }
 
-    public void setMaxPrice(int maxPrice) {
+    public void setMaxPrice(double maxPrice) {
         this.maxPrice = maxPrice;
     }
 
@@ -62,11 +58,11 @@ public class Product {
         this.note = note;
     }
 
-    public Shop getSHOP() {
+    public Shop getShop() {
         return shop;
     }
 
-    public void setSHOP(Shop SHOP) {
+    public void setShop(Shop SHOP) {
         this.shop = SHOP;
     }
 
@@ -86,11 +82,11 @@ public class Product {
         this.active = active;
     }
 
-    public SimpleDateFormat getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(SimpleDateFormat date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

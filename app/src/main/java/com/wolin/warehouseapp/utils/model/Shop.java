@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.model;
+package com.wolin.warehouseapp.utils.model;
 
 public class Shop {
     private String name;

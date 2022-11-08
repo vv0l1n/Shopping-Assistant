@@ -1,6 +1,4 @@
-package com.wolin.warehouseapp.model;
-
-import com.wolin.warehouseapp.model.UserDetails;
+package com.wolin.warehouseapp.utils.model;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.activities;
+package com.wolin.warehouseapp.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
