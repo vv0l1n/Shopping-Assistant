@@ -12,7 +12,7 @@ import com.wolin.warehouseapp.utils.model.Photo;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 
-@Database(entities = {Photo.class, UserDetails.class} , version = 1)
+@Database(entities = {Photo.class, UserDetails.class} , version = 2)
 public abstract class MyRoomDatabase extends RoomDatabase {
 
     private static MyRoomDatabase mInstance;

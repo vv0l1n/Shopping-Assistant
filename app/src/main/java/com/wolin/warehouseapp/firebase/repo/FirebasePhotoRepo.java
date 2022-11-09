@@ -58,7 +58,7 @@ public class FirebasePhotoRepo {
                                 photo.setImageURL(uri.toString());
                                 String uid = currentFirebaseUser.getUid();
                                 product.setUrl(uri.toString());
-                                firebaseFirestore.collection("Users/" + currentFirebaseUser.getUid() + "/products/" + lastProductID.toString())
+                                firebaseFirestore.collection("Users" + currentFirebaseUser.getUid() + "/products/" + lastProductID.toString())
                                         .add(product)
                                         .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override

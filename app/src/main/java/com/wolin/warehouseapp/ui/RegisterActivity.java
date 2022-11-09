@@ -38,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseDatabase database;
     private DatabaseReference ref;
+    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private FirebaseUserViewModel firebaseUserViewModel;
     private UserRoomViewModel userRoomViewModel;
@@ -96,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    UserDetails user = new UserDetails(emailStr, nameStr, lastNameStr);
+                    UserDetails user = new UserDetails(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr);
                     FirebaseUser firebaseUser = auth.getCurrentUser();
                     firebaseUserViewModel.registerUserToFirebase(user, userRoomViewModel);
                     Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);

@@ -16,19 +16,29 @@ public class UserDetails {
 
     @NonNull
     @PrimaryKey(autoGenerate = false)
+    String Uid;
     String email;
     String name;
     String lastName;
-    ArrayList<Product> products;
     Long lastProductID;
 
-    public UserDetails(String email, String name, String lastName) {
+    public UserDetails(String Uid, String email, String name, String lastName) {
+        this.Uid = Uid;
         this.email = email;
         this.name = name;
         this.lastName = lastName;
         this.lastProductID = 0l;
     }
 
+
+    @NonNull
+    public String getUid() {
+        return Uid;
+    }
+
+    public void setUid(@NonNull String uid) {
+        Uid = uid;
+    }
 
     public String getEmail() {
         return email;
@@ -52,18 +62,6 @@ public class UserDetails {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public ArrayList<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
-    }
-
-    public void addProduct(Product product) {
-        this.products.add(product);
     }
 
     public Long getLastProductID() {

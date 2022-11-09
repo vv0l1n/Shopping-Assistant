@@ -19,6 +19,6 @@ public interface UserDao {
     @Query("SELECT * FROM  user_table")
     LiveData<List<UserDetails>> getAllUsers();
 
-    @Query("SELECT :userUID FROM  user_table")
-    LiveData<UserDetails> getCurrentUser(String userUID);
+    @Query("SELECT * FROM  user_table WHERE uid = :uid")
+    LiveData<UserDetails> getCurrentUser(String uid);
 }

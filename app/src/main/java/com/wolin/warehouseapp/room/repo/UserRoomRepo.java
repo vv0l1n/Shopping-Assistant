@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 
 import com.wolin.warehouseapp.room.dao.UserDao;
 import com.wolin.warehouseapp.room.database.MyRoomDatabase;
-import com.wolin.warehouseapp.utils.model.Photo;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.List;
@@ -37,6 +36,16 @@ public class UserRoomRepo {
                 userDao.insertUser(user);
             }
         });
+    }
+
+    public LiveData<UserDetails> getCurrentUserLiveData(String uid){
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                userDao.getCurrentUser(uid);
+            }
+        });
+        return null;
     }
 
 }

@@ -23,11 +23,15 @@ public class UserRoomViewModel extends AndroidViewModel {
 
     public void insertUser(UserDetails userDetails) {userRoomRepo.insertUser(userDetails);}
 
-    public LiveData<UserDetails> getUser(String uid) {
+        public LiveData<UserDetails> getCurrentUser(String uid) {
         return userRoomRepo.getCurrentUserLiveData(uid);
     }
 
-    public LiveData<List<UserDetails>> getAllPhotosLiveData(){
+    public LiveData<List<UserDetails>> getAllUsers(){
         return userRoomRepo.getUserListLiveData();
+    }
+
+    public LiveData<UserDetails> getUser(String uid) {
+        return userRoomRepo.getCurrentUserLiveData(uid);
     }
 }

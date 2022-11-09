@@ -32,7 +32,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        Glide.with(holder.getImageView().getContext()).load(items.get(position).getPhoto().getImageURL())
+        Glide.with(holder.getImageView().getContext()).load(items.get(position).getUri())
                 .into(holder.getImageView());
         holder.getProductName().setText(items.get(position).getName());
         holder.getCount().setText(Integer.toString(items.get(position).getCount()));

@@ -28,8 +28,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.wolin.warehouseapp.R;
@@ -63,6 +65,7 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
     private Dialog dialog;
     private RecyclerView addActivityShopRecyclerView;
     private List<Shop> shops;
+    Long lastProductID;
 
     private Shop choosenShop;
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -223,8 +226,14 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
         //adding product
         public void onAddActivityAddButtonClick (View view){
-            Long lastProductID = userRoomViewModel.getUser(currentFirebaseUser.getUid()).getValue().getLastProductID();
-
+            firebaseUserViewModel.getTaskMutableLiveData().observe(AddActivity.this, (Task<DocumentReference> documentReferenceTask) -> {
+                        if (documentReferenceTask.isSuccessful()) {
+                            lastProductID = userRoomViewModel.getUser(currentFirebaseUser.getUid()).getValue().getLastProductID();
+                        } else {
+                            System.out.println("problem!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        }
+                    });
+            lastProductID = 0l;
             String productName = productNameAdd.getText().toString().trim();
             int count = Integer.parseInt(countAdd.getText().toString().trim());
             double maxPrice = Integer.parseInt(maxPriceAdd.getText().toString().trim());
@@ -238,7 +247,6 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
             Product product = new Product(productName, count, maxPrice, note, choosenShop, mImageURI, true, date, currentFirebaseUser.getUid());
             uploadFromGallery(noteAdd.getRootView(), lastProductID, product);
         }
-
 
 
         //cancel button
