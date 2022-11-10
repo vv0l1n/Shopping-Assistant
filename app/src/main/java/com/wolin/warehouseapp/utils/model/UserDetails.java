@@ -16,28 +16,26 @@ public class UserDetails {
 
     @NonNull
     @PrimaryKey(autoGenerate = false)
-    String Uid;
-    String email;
-    String name;
-    String lastName;
-    Long lastProductID;
+    private String uid;
+    private String email;
+    private String name;
+    private String lastName;
 
-    public UserDetails(String Uid, String email, String name, String lastName) {
-        this.Uid = Uid;
+
+    public UserDetails(String uid, String email, String name, String lastName) {
+        this.uid = uid;
         this.email = email;
         this.name = name;
         this.lastName = lastName;
-        this.lastProductID = 0l;
     }
-
 
     @NonNull
     public String getUid() {
-        return Uid;
+        return uid;
     }
 
     public void setUid(@NonNull String uid) {
-        Uid = uid;
+        this.uid = uid;
     }
 
     public String getEmail() {
@@ -64,11 +62,4 @@ public class UserDetails {
         this.lastName = lastName;
     }
 
-    public Long getLastProductID() {
-        return lastProductID;
-    }
-
-    public void setLastProductID(Long lastProductID) {
-        this.lastProductID = lastProductID;
-    }
 }

@@ -15,18 +15,18 @@ import java.util.concurrent.Executors;
 public class UserRoomRepo {
 
     private UserDao userDao;
-    private LiveData<List<UserDetails>> userListLiveData;
+    private LiveData<UserDetails> userLiveData;
     private Executor executor = Executors.newSingleThreadExecutor();
 
 
     public LiveData<List<UserDetails>> getUserListLiveData() {
-        return userListLiveData;
+        return userLiveData;
     }
 
     public UserRoomRepo(Application application){
         MyRoomDatabase myRoomDatabase = MyRoomDatabase.getmInstance(application);
         userDao = myRoomDatabase.userDao();
-        userListLiveData = userDao.getAllUsers();
+        userLiveData = userDao.getUser(String uid);
     }
 
     public void insertUser(UserDetails user){

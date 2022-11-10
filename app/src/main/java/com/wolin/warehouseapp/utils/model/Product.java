@@ -3,12 +3,18 @@ package com.wolin.warehouseapp.utils.model;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.net.URL;
 
+@Entity(tableName = "product_table")
 public class Product {
 
-
-    private Long id;
+    @NonNull
+    @PrimaryKey(autoGenerate = true)
+    private Long productId;
     private String name;
     private int count;
     private double maxPrice;
@@ -117,12 +123,12 @@ public class Product {
         this.buyer = buyer;
     }
 
-    public Long getId() {
-        return id;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setProductId(Long id) {
+        this.productId = id;
     }
 
     public String getUrl() {
