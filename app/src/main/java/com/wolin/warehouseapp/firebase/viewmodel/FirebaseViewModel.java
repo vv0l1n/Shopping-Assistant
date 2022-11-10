@@ -28,8 +28,8 @@ public class FirebaseViewModel extends ViewModel implements OnDataUploaded {
         taskMutableLiveData = new MutableLiveData<>();
     }
 
-    public void uploadImagesToFirebase(Uri uri , PhotoRoomViewModel photoRoomViewModel, Long lastProductionID, Product product){
-        firebasePhotoRepo.uploadImage(uri, photoRoomViewModel, lastProductionID, product);
+    public void uploadImagesToFirebase(PhotoRoomViewModel photoRoomViewModel, Long lastProductionID, Product product){
+        firebasePhotoRepo.uploadImage(photoRoomViewModel, lastProductionID, product);
     }
 
     public void getImagesFromFirebase(PhotoRoomViewModel photoRoomViewModel){

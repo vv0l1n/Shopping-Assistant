@@ -5,7 +5,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
+import android.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,8 +25,11 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
@@ -46,8 +50,10 @@ import com.wolin.warehouseapp.utils.model.Shop;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AddActivity extends AppCompatActivity implements ShopSelectListener {
 
@@ -62,17 +68,24 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
     private ImageView shopLogoAdd;
     private Button addActivityAddButton;
     private Button addActivityCancelButton;
+    private Button dateToBuyAddButton;
+    private RadioGroup radioGroup;
+    private RadioButton lowPriorityButton;
+    private RadioButton mediumPriorityButton;
+    private RadioButton highPriorityButton;
+
     private Dialog dialog;
     private RecyclerView addActivityShopRecyclerView;
     private List<Shop> shops;
     Long lastProductID;
+    private DatePickerDialog datePickerDialog;
 
     private Shop choosenShop;
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
 
-    private Uri mImageURI = null;
+    private Uri mImageURI;
     private FirebaseViewModel firebaseViewModel;
     private PhotoRoomViewModel photoRoomViewModel;
 
@@ -88,6 +101,12 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
         countAdd = findViewById(R.id.countAdd);
         maxPriceAdd = findViewById(R.id.maxPriceAdd);
         noteAdd = findViewById(R.id.noteAdd);
+        dateToBuyAddButton = findViewById(R.id.dateToBuyAddButton);
+        radioGroup = findViewById(R.id.radioGroup);
+        lowPriorityButton = findViewById(R.id.lowPriorityButton);
+        mediumPriorityButton = findViewById(R.id.mediumPriorityButton);
+        highPriorityButton = findViewById(R.id.highPriorityButton);
+
         shopLogoAdd = findViewById(R.id.shopLogoAdd);
         addActivityAddButton = findViewById(R.id.addActivityAddButton);
         addActivityCancelButton = findViewById(R.id.addActivityCancelButton);
@@ -142,6 +161,8 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
                 });
         //loading dialog for
         loadDialog(productNameAdd.getRootView());
+        //loading datepicker
+        initDatePicker();
     }
 
     //picking product image
@@ -172,7 +193,7 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
     }
 
     public void uploadFromGallery(View view, Long lastProductID, Product product) {
-        firebaseViewModel.uploadImagesToFirebase(mImageURI , photoRoomViewModel, lastProductID, product);
+        firebaseViewModel.uploadImagesToFirebase(photoRoomViewModel, lastProductID, product);
         firebaseViewModel.getTaskMutableLiveData().observe(AddActivity.this, documentReferenceTask -> {
             if (documentReferenceTask.isSuccessful()) {
                 Toast.makeText(AddActivity.this, "Image Uploaded Successfully !!", Toast.LENGTH_SHORT).show();
@@ -184,6 +205,83 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
     }
 
 
+    //picking date to buy
+    public void onAddDateToBuyButton(View view) {
+        datePickerDialog.show();
+    }
+
+    private void initDatePicker()
+    {
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
+        {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day)
+            {
+                month = month + 1;
+                String date = makeDateString(day, month, year);
+                dateToBuyAddButton.setText(date);
+            }
+        };
+
+        Locale locale = getResources().getConfiguration().locale;
+        Locale.setDefault(locale);
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+
+        datePickerDialog = new DatePickerDialog(this, dateSetListener, year, month, day);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis()+31556952000l);
+
+    }
+
+    private String getTodaysDate()
+    {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        month = month + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        return makeDateString(day, month, year);
+    }
+
+    private String makeDateString(int day, int month, int year)
+    {
+        return getMonthFormat(month) + " " + day + " " + year;
+    }
+
+
+    private String getMonthFormat(int month)
+    {
+        if(month == 1)
+            return "JAN";
+        if(month == 2)
+            return "FEB";
+        if(month == 3)
+            return "MAR";
+        if(month == 4)
+            return "APR";
+        if(month == 5)
+            return "MAY";
+        if(month == 6)
+            return "JUN";
+        if(month == 7)
+            return "JUL";
+        if(month == 8)
+            return "AUG";
+        if(month == 9)
+            return "SEP";
+        if(month == 10)
+            return "OCT";
+        if(month == 11)
+            return "NOV";
+        if(month == 12)
+            return "DEC";
+
+        //default should never happen
+        return "JAN";
+    }
 
     //picking shop
     public void onShopLogoClick(View view) {
@@ -239,12 +337,18 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
             double maxPrice = Integer.parseInt(maxPriceAdd.getText().toString().trim());
             String note = noteAdd.getText().toString().trim();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            String date = simpleDateFormat.format(new Date());
-            if(mImageURI == null) {
-                mImageURI = Uri.parse("android.resource://your.package.here/drawable/noneshop");
+            String date = simpleDateFormat.format(new Date().getTime());
+            String dateToBuy = dateToBuyAddButton.getText().toString().trim();
+            String priority;
+            if(mediumPriorityButton.isChecked()) {
+                priority = "medium";
+            } else if (lowPriorityButton.isChecked()) {
+                priority = "low";
+            } else {
+                priority = "high";
             }
 
-            Product product = new Product(productName, count, maxPrice, note, choosenShop, mImageURI, true, date, currentFirebaseUser.getUid());
+            Product product = new Product(productName, count, maxPrice, note, choosenShop, mImageURI, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
             uploadFromGallery(noteAdd.getRootView(), lastProductID, product);
         }
 
@@ -254,6 +358,7 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
             Intent addActivityCancelIntent = new Intent(AddActivity.this, MainActivity.class);
             startActivity(addActivityCancelIntent);
         }
+
 
     @Override
     public void onShopClick(Shop shop) {

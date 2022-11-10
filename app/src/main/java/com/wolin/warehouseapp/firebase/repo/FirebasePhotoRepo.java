@@ -41,47 +41,69 @@ public class FirebasePhotoRepo {
     public FirebasePhotoRepo(OnDataUploaded onDataUploaded){
         this.onDataUploaded = onDataUploaded;
         firebaseFirestore = FirebaseFirestore.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference().child("Users").child("products");
+        storageReference = FirebaseStorage.getInstance().getReference().child("ProductPhotos");
     }
 
-    public void uploadImage(Uri uri, PhotoRoomViewModel photoRoomViewModel, Long lastProductID, Product product){
-        StorageReference imageRef = storageReference.child(String.valueOf(System.currentTimeMillis()));
-        imageRef.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()){
-                    if (task.isComplete()){
-                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                Photo photo = new Photo();
-                                photo.setImageURL(uri.toString());
-                                String uid = currentFirebaseUser.getUid();
-                                product.setUrl(uri.toString());
-                                firebaseFirestore.collection("Users" + currentFirebaseUser.getUid() + "/products/" + lastProductID.toString())
-                                        .add(product)
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                if (task.isSuccessful()){
-                                                    photoRoomViewModel.insertPhoto(photo);
-                                                    DocumentReference changeLastId = firebaseFirestore.collection("Users/" + uid).document("details");
-                                                    changeLastId.update("lastProductID", (lastProductID+1)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void unused) {
-                                                            System.out.println("dodano");
-                                                        }
-                                                    });
+    public void uploadImage(PhotoRoomViewModel photoRoomViewModel, Long lastProductID, Product product) {
+        if (product.getUri() != null) {
+            StorageReference imageRef = storageReference.child(String.valueOf(System.currentTimeMillis()));
+            imageRef.putFile(product.getUri()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.isComplete()) {
+                            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Photo photo = new Photo();
+                                    photo.setImageURL(uri.toString());
+                                    String uid = currentFirebaseUser.getUid();
+                                    product.setUrl(uri.toString());
+                                    firebaseFirestore.collection("Users/" + currentFirebaseUser.getUid() + "/products/" + lastProductID.toString())
+                                            .add(product)
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                    if (task.isSuccessful()) {
+                                                        photoRoomViewModel.insertPhoto(photo);
+                                                        DocumentReference changeLastId = firebaseFirestore.collection("Users/").document(uid);
+                                                        changeLastId.update("lastProductID", (lastProductID + 1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                System.out.println("dodano");
+                                                            }
+                                                        });
+                                                    }
+                                                    onDataUploaded.onDataUpload(task);
                                                 }
-                                                onDataUploaded.onDataUpload(task);
-                                            }
-                                        });
-                            }
-                        });
+                                            });
+                                }
+                            });
+                        }
                     }
                 }
-            }
-        });
+            });
+        } else {
+            product.setUrl("none");
+            firebaseFirestore.collection("Groups/" + "testgroup" + "/products/" + lastProductID.toString())
+                    .add(product)
+                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            if (task.isSuccessful()) {
+                                String uid = currentFirebaseUser.getUid();
+                                DocumentReference changeLastId = firebaseFirestore.collection("Groups").document(currentGroup);
+                                changeLastId.update("lastProductID", (lastProductID + 1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        System.out.println("dodano");
+                                    }
+                                });
+                            }
+                            onDataUploaded.onDataUpload(task);
+                        }
+                    });
+        }
     }
 
     public void getImages(PhotoRoomViewModel photoRoomViewModel){

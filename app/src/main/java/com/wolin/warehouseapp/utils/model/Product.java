@@ -17,11 +17,13 @@ public class Product {
     private Uri photo;
     private boolean active;
     private String date;
+    private String dateToBuy;
+    private String priority;
     private String owner;
     private String buyer;
     private String url;
 
-    public Product(String name, int count, double maxPrice, String note, Shop shop, Uri photo, boolean active, String date, String owner) {
+    public Product(String name, int count, double maxPrice, String note, Shop shop, Uri photo, boolean active, String date, String dateToBuy, String priority, String owner) {
         this.name = name;
         this.count = count;
         this.maxPrice = maxPrice;
@@ -30,6 +32,8 @@ public class Product {
         this.photo = photo;
         this.active = active;
         this.date = date;
+        this.dateToBuy = dateToBuy;
+        this.priority = priority;
         this.owner = owner;
     }
 
@@ -127,5 +131,21 @@ public class Product {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getDateToBuy() {
+        return dateToBuy;
+    }
+
+    public void setDateToBuy(String dateToBuy) {
+        this.dateToBuy = dateToBuy;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

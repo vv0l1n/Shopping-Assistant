@@ -1,23 +1,36 @@
 package com.wolin.warehouseapp.utils.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity(tableName = "group_table")
 public class UserGroup {
-    private Long id;
+    //id is ownerUid/groupName
+    @PrimaryKey(autoGenerate = false)
+    private String id;
     private String name;
-    private UserDetails owner;
-    private List<UserDetails> members;
+    //owner is an owner UID
+    private String owner;
+    //members is a List of members UID
+    private List<String> members;
 
-    public UserGroup(Long id, String name, UserDetails owner) {
-        this.id = id;
+    public UserGroup(String name, String owner) {
+        this.id = owner + "/" + name;
         this.name = name;
+        this.owner = owner;
+        ArrayList<String> temp = new ArrayList<>();
+        temp.add(owner);
+        this.members = temp;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -29,19 +42,19 @@ public class UserGroup {
         this.name = name;
     }
 
-    public UserDetails getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(UserDetails owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public List<UserDetails> getMembers() {
+    public List<String> getMembers() {
         return members;
     }
 
-    public void setMembers(List<UserDetails> members) {
+    public void setMembers(List<String> members) {
         this.members = members;
     }
 }
