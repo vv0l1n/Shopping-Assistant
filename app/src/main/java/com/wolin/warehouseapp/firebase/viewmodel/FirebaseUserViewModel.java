@@ -5,34 +5,30 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.wolin.warehouseapp.firebase.repo.FirebaseUserRepo;
-import com.wolin.warehouseapp.firebase.repo.OnDataUploaded;
-import com.wolin.warehouseapp.room.viewmodel.UserRoomViewModel;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
+import com.wolin.warehouseapp.firebase.repo.CallbackListener;
+import com.wolin.warehouseapp.firebase.repo.FirebaseService;
+import com.wolin.warehouseapp.firebase.repo.OnDataUploaded;;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
-public class FirebaseUserViewModel extends ViewModel implements OnDataUploaded {
-    private FirebaseUserRepo firebaseUserRepo;
-    private MutableLiveData<Task<DocumentReference>> taskMutableLiveData;
+public class FirebaseUserViewModel extends ViewModel {
+    private FirebaseService firebaseService;
+    private FirebaseFirestore firebaseFirestore;
+    private UserDetails userDetails;
 
-    public MutableLiveData<Task<DocumentReference>> getTaskMutableLiveData() {
-        return taskMutableLiveData;
-    }
 
     public FirebaseUserViewModel(){
-        firebaseUserRepo = new FirebaseUserRepo(this);
-        taskMutableLiveData = new MutableLiveData<>();
+        firebaseService = FirebaseService.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
-    public void registerUserToFirebase(UserDetails user, UserRoomViewModel userRoomViewModel){
-        firebaseUserRepo.registerUser(user, userRoomViewModel);
+    public void registerUser(UserDetails user){
+        firebaseService.registerUser(user);
     }
 
-    public void getUser(String uid, UserRoomViewModel userRoomViewModel){
-        firebaseUserRepo.getUser(uid, userRoomViewModel);
+    public MutableLiveData<UserDetails> getUser(String uid){
+        return firebaseService.getUser(uid);
     }
 
-    @Override
-    public void onDataUpload(Task<DocumentReference> task) {
-        taskMutableLiveData.setValue(task);
-    }
 }

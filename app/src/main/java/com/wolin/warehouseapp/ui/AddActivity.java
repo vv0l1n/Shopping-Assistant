@@ -40,9 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
-import com.wolin.warehouseapp.firebase.viewmodel.FirebaseViewModel;
-import com.wolin.warehouseapp.room.viewmodel.PhotoRoomViewModel;
-import com.wolin.warehouseapp.room.viewmodel.UserRoomViewModel;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.utils.adapter.AddActivityShopAdapter;
 import com.wolin.warehouseapp.utils.adapter.ShopSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
@@ -77,20 +75,17 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
     private Dialog dialog;
     private RecyclerView addActivityShopRecyclerView;
     private List<Shop> shops;
-    Long lastProductID;
     private DatePickerDialog datePickerDialog;
+
+    private String currentGroup = "TestGroup";
 
     private Shop choosenShop;
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReference();
 
     private Uri mImageURI;
-    private FirebaseViewModel firebaseViewModel;
-    private PhotoRoomViewModel photoRoomViewModel;
+    private FirebaseProductViewModel firebaseProductViewModel;
 
     private FirebaseUserViewModel firebaseUserViewModel;
-    private UserRoomViewModel userRoomViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +109,8 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
         productImageAdd.setImageResource(R.drawable.press_to_add_product_image);
         shopLogoAdd.setImageResource(R.drawable.noneshop);
 
-        photoRoomViewModel = new ViewModelProvider(this).get(PhotoRoomViewModel.class);
-        firebaseViewModel = new ViewModelProvider(this).get(FirebaseViewModel.class);
+        firebaseProductViewModel = new ViewModelProvider(this).get(FirebaseProductViewModel.class);
 
-        userRoomViewModel = new ViewModelProvider(this).get(UserRoomViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
         //permission for camera
@@ -192,16 +185,10 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
         builder.show();
     }
 
-    public void uploadFromGallery(View view, Long lastProductID, Product product) {
-        firebaseViewModel.uploadImagesToFirebase(photoRoomViewModel, lastProductID, product);
-        firebaseViewModel.getTaskMutableLiveData().observe(AddActivity.this, documentReferenceTask -> {
-            if (documentReferenceTask.isSuccessful()) {
-                Toast.makeText(AddActivity.this, "Image Uploaded Successfully !!", Toast.LENGTH_SHORT).show();
-                productImageAdd.setImageURI(mImageURI);
-            } else {
-                Toast.makeText(AddActivity.this, documentReferenceTask.getException().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void insertProduct(View view, Product product, String groupId) {
+        firebaseProductViewModel.insertProduct(product, groupId);
+        Intent intent = new Intent(AddActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
 
@@ -324,14 +311,6 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
         //adding product
         public void onAddActivityAddButtonClick (View view){
-            firebaseUserViewModel.getTaskMutableLiveData().observe(AddActivity.this, (Task<DocumentReference> documentReferenceTask) -> {
-                        if (documentReferenceTask.isSuccessful()) {
-                            lastProductID = userRoomViewModel.getUser(currentFirebaseUser.getUid()).getValue().getLastProductID();
-                        } else {
-                            System.out.println("problem!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        }
-                    });
-            lastProductID = 0l;
             String productName = productNameAdd.getText().toString().trim();
             int count = Integer.parseInt(countAdd.getText().toString().trim());
             double maxPrice = Integer.parseInt(maxPriceAdd.getText().toString().trim());
@@ -349,7 +328,7 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
             }
 
             Product product = new Product(productName, count, maxPrice, note, choosenShop, mImageURI, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
-            uploadFromGallery(noteAdd.getRootView(), lastProductID, product);
+            insertProduct(noteAdd.getRootView(), product, currentGroup);
         }
 
 

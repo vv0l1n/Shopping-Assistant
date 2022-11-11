@@ -7,17 +7,15 @@ import androidx.room.PrimaryKey;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = "group_table")
 public class Group {
     //id is ownerUid-groupName
-    @NonNull
-    @PrimaryKey(autoGenerate = false)
     private String groupId;
     private String name;
     //owner is an owner UID
     private String owner;
     //members is a List of members UID
     private List<String> members;
+    private List<Product> products;
 
     public Group(String name, String owner) {
         this.groupId = owner + "-" + name;
@@ -60,4 +58,11 @@ public class Group {
         this.members = members;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 }

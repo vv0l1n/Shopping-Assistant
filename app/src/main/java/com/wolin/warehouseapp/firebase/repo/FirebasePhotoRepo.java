@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.firebase.repo;
+/*package com.wolin.warehouseapp.firebase.repo;
 
 import android.net.Uri;
 
@@ -44,7 +44,7 @@ public class FirebasePhotoRepo {
         storageReference = FirebaseStorage.getInstance().getReference().child("ProductPhotos");
     }
 
-    public void uploadImage(PhotoRoomViewModel photoRoomViewModel, Long lastProductID, Product product) {
+    public void uploadImage(Product product) {
         if (product.getUri() != null) {
             StorageReference imageRef = storageReference.child(String.valueOf(System.currentTimeMillis()));
             imageRef.putFile(product.getUri()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -105,18 +105,4 @@ public class FirebasePhotoRepo {
                     });
         }
     }
-
-    public void getImages(PhotoRoomViewModel photoRoomViewModel){
-        firebaseFirestore.collection("images").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                for (DocumentChange doc : value.getDocumentChanges()){
-                    if (doc.getType() == DocumentChange.Type.ADDED){
-                        Photo photo = doc.getDocument().toObject(Photo.class);
-                        photoRoomViewModel.insertPhoto(photo);
-                    }
-                }
-            }
-        });
-    }
-}
+}*/

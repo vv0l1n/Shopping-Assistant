@@ -21,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
-import com.wolin.warehouseapp.room.viewmodel.UserRoomViewModel;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.regex.Pattern;
@@ -41,7 +40,6 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private FirebaseUserViewModel firebaseUserViewModel;
-    private UserRoomViewModel userRoomViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,6 @@ public class RegisterActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         ref = database.getReference("Users");
 
-        userRoomViewModel = new ViewModelProvider(this).get(UserRoomViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
         register.setOnClickListener(view -> {
@@ -97,9 +94,9 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    UserDetails user = new UserDetails(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr);
+                    UserDetails user = new UserDetails(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr, null);
                     FirebaseUser firebaseUser = auth.getCurrentUser();
-                    firebaseUserViewModel.registerUserToFirebase(user, userRoomViewModel);
+                    firebaseUserViewModel.registerUser(user);
                     Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
                     startActivity(loginActivityIntent);
                 } else {

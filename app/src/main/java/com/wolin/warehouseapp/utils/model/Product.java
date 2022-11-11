@@ -9,12 +9,9 @@ import androidx.room.PrimaryKey;
 
 import java.net.URL;
 
-@Entity(tableName = "product_table")
 public class Product {
 
-    @NonNull
-    @PrimaryKey(autoGenerate = true)
-    private Long productId;
+    private String productId;
     private String name;
     private int count;
     private double maxPrice;
@@ -30,6 +27,7 @@ public class Product {
     private String url;
 
     public Product(String name, int count, double maxPrice, String note, Shop shop, Uri photo, boolean active, String date, String dateToBuy, String priority, String owner) {
+        this.productId = owner + System.currentTimeMillis();
         this.name = name;
         this.count = count;
         this.maxPrice = maxPrice;
@@ -123,11 +121,11 @@ public class Product {
         this.buyer = buyer;
     }
 
-    public Long getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(Long id) {
+    public void setProductId(String id) {
         this.productId = id;
     }
 
