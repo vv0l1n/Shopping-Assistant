@@ -17,12 +17,12 @@ public class AddActivityShopAdapter  extends RecyclerView.Adapter<AddActivitySho
 
     private Context context;
     private List<Shop> shops;
-    private com.wolin.warehouseapp.utils.adapter.ShopSelectListener shopSelectListener;
+    private ItemSelectListener itemSelectListener;
 
-    public AddActivityShopAdapter(Context context, List<Shop> shops, ShopSelectListener shopSelectListener) {
+    public AddActivityShopAdapter(Context context, List<Shop> shops, ItemSelectListener itemSelectListener) {
         this.context = context;
         this.shops = shops;
-        this.shopSelectListener = shopSelectListener;
+        this.itemSelectListener = itemSelectListener;
     }
 
     @NonNull
@@ -39,7 +39,7 @@ public class AddActivityShopAdapter  extends RecyclerView.Adapter<AddActivitySho
         holder.getAddActivityWholeItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shopSelectListener.onShopClick(shops.get(holder.getAdapterPosition()));
+                itemSelectListener.onItemClick(shops.get(holder.getAdapterPosition()));
             }
         });
     }

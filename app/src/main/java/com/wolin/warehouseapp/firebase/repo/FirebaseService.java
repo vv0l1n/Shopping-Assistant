@@ -1,6 +1,5 @@
 package com.wolin.warehouseapp.firebase.repo;
 
-import android.content.Intent;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -20,16 +19,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.wolin.warehouseapp.ui.AddActivity;
-import com.wolin.warehouseapp.ui.MainActivity;
 import com.wolin.warehouseapp.utils.model.Group;
 import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +36,10 @@ public class FirebaseService {
 
     private static FirebaseService firebaseService;
     private static FirebaseFirestore firebaseFirestore;
+    DocumentReference userRef;
     private MutableLiveData<UserDetails> mutableLiveDataUser;
     private MutableLiveData<Group> mutableLiveDataGroup;
+    private MutableLiveData<Map<String, String>> mutableLiveDataUserGroupsName;
     private Product product;
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("ProductPhotos");
     private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -53,21 +54,19 @@ public class FirebaseService {
 
     //user
 
-    public MutableLiveData<UserDetails> getUser(String uid) {
-        DocumentReference docRef = firebaseFirestore.collection("Users").document(uid);
-        Map<String, Object> data = docRef.get().getResult().getData();
-
-        String email = (String) data.get("email");
-        String name = (String) data.get("name");
-        String lastName = (String) data.get("lastName");
-        List<String> groups = (List<String>) data.get("groups");
-
-        mutableLiveDataUser = new MutableLiveData<>();
-        UserDetails userDetails = new UserDetails(uid, email, name, lastName, groups);
-        mutableLiveDataUser.postValue(userDetails);
-
-        return mutableLiveDataUser;
+    public void getUser(String uid) {
+        firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        @Override
+        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            if (task.isSuccessful()) {
+                UserDetails userDetails = task.getResult().toObject(UserDetails.class);
+                mutableLiveDataUser.postValue(userDetails);
+                //callback.onCallback(mutableLiveDataUser);
+            }
+        }
+    });
     }
+
 
     public void registerUser(UserDetails user) {
         firebaseFirestore.collection("Users").document(user.getUid()).set(user);
@@ -110,7 +109,7 @@ public class FirebaseService {
         firebaseFirestore.collection("Groups").document(group.getId()).set(group);
     }
 
-    public MutableLiveData<Group> getGroupMutableLiveData(String groupId) {
+    public MutableLiveData<Group> getGroup(String groupId) {
         DocumentReference docRef = firebaseFirestore.collection("Groups").document(groupId);
         Map<String, Object> data = docRef.get().getResult().getData();
 
@@ -137,5 +136,21 @@ public class FirebaseService {
             }
         });
         return mutableLiveDataGroup;
+    }
+    public MutableLiveData<Map<String, String>> getUserGroupsName(String uid) {
+
+        MutableLiveData<UserDetails> user = getUser(uid);
+        getUser(uid, )
+        List<String> groupsIdList = user.getValue().getGroups();
+        HashMap<String, String> map = new HashMap<>();
+
+        for (String groupId : groupsIdList) {
+            DocumentReference docRef = firebaseFirestore.collection("Groups").document(groupId);
+            String name = (String) docRef.get().getResult().getData().get("name");
+            map.put(groupId, name);
+        }
+
+        mutableLiveDataUserGroupsName.postValue(map);
+        return mutableLiveDataUserGroupsName;
     }
 }

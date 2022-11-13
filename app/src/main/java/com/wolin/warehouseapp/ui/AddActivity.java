@@ -30,19 +30,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.utils.adapter.AddActivityShopAdapter;
-import com.wolin.warehouseapp.utils.adapter.ShopSelectListener;
+import com.wolin.warehouseapp.utils.adapter.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.Shop;
 
@@ -53,7 +48,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AddActivity extends AppCompatActivity implements ShopSelectListener {
+public class AddActivity extends AppCompatActivity implements ItemSelectListener<Shop> {
 
     ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
@@ -223,16 +218,6 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
     }
 
-    private String getTodaysDate()
-    {
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        month = month + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        return makeDateString(day, month, year);
-    }
-
     private String makeDateString(int day, int month, int year)
     {
         return getMonthFormat(month) + " " + day + " " + year;
@@ -340,7 +325,7 @@ public class AddActivity extends AppCompatActivity implements ShopSelectListener
 
 
     @Override
-    public void onShopClick(Shop shop) {
+    public void onItemClick(Shop shop) {
         choosenShop = shop;
         switch(shop.getName()) {
             case "Auchan": {
