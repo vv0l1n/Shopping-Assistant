@@ -4,6 +4,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
-public interface UserCallback {
-    void onCallback(MutableLiveData<UserDetails> mutableLiveDataUser);
+public interface MyCallback<T> {
+    void onCallback(T data);
 }

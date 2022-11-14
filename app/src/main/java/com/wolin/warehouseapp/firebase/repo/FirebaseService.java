@@ -54,14 +54,14 @@ public class FirebaseService {
 
     //user
 
-    public void getUser(String uid) {
+    public void getUser(String uid, MyCallback<MutableLiveData<UserDetails>> callback) {
         firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
         @Override
         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
             if (task.isSuccessful()) {
                 UserDetails userDetails = task.getResult().toObject(UserDetails.class);
                 mutableLiveDataUser.postValue(userDetails);
-                //callback.onCallback(mutableLiveDataUser);
+                callback.onCallback(mutableLiveDataUser);
             }
         }
     });
@@ -109,48 +109,15 @@ public class FirebaseService {
         firebaseFirestore.collection("Groups").document(group.getId()).set(group);
     }
 
-    public MutableLiveData<Group> getGroup(String groupId) {
-        DocumentReference docRef = firebaseFirestore.collection("Groups").document(groupId);
-        Map<String, Object> data = docRef.get().getResult().getData();
-
-        String name = (String) data.get("name");
-        String owner = (String) data.get("owner");
-        List<String> members = (List<String>) data.get("members");
-
-        CollectionReference colRef = firebaseFirestore.collection("Groups").document(groupId).collection("products");
-        colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+    public void getGroup(String groupId, MyCallback<Group> callback) {
+        firebaseFirestore.collection("Groups").document(groupId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                List<Product> productList = new ArrayList<>();
-
-                for (QueryDocumentSnapshot doc : value) {
-                    if (doc != null) {
-                        productList.add(doc.toObject(Product.class));
-                    }
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Group group = task.getResult().toObject(Group.class);
+                    callback.onCallback(group);
                 }
-                mutableLiveDataGroup = new MutableLiveData<>();
-                Group group = new Group(name, owner);
-                group.setMembers(members);
-                group.setProducts(productList);
-                mutableLiveDataGroup.postValue(group);
             }
         });
-        return mutableLiveDataGroup;
-    }
-    public MutableLiveData<Map<String, String>> getUserGroupsName(String uid) {
-
-        MutableLiveData<UserDetails> user = getUser(uid);
-        getUser(uid, )
-        List<String> groupsIdList = user.getValue().getGroups();
-        HashMap<String, String> map = new HashMap<>();
-
-        for (String groupId : groupsIdList) {
-            DocumentReference docRef = firebaseFirestore.collection("Groups").document(groupId);
-            String name = (String) docRef.get().getResult().getData().get("name");
-            map.put(groupId, name);
-        }
-
-        mutableLiveDataUserGroupsName.postValue(map);
-        return mutableLiveDataUserGroupsName;
     }
 }

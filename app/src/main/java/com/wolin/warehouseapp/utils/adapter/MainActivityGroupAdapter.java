@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.utils.model.Shop;
+import com.wolin.warehouseapp.utils.model.Group;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +19,12 @@ import java.util.Map;
 public class MainActivityGroupAdapter extends RecyclerView.Adapter<MainActivityGroupViewHolder>{
 
     private Context context;
-    private MutableLiveData<Map<String, String>> groupMap;
+    private MutableLiveData<List<Group>> groups;
     private ItemSelectListener itemSelectListener;
 
-    public MainActivityGroupAdapter(Context context, MutableLiveData<Map<String, String>> groupMap, ItemSelectListener itemSelectListener) {
+    public MainActivityGroupAdapter(Context context, MutableLiveData<List<Group>> groups, ItemSelectListener itemSelectListener) {
         this.context = context;
-        this.groupMap = groupMap;
+        this.groups = groups;
         this.itemSelectListener = itemSelectListener;
     }
 
@@ -36,16 +36,12 @@ public class MainActivityGroupAdapter extends RecyclerView.Adapter<MainActivityG
 
     @Override
     public void onBindViewHolder(@NonNull MainActivityGroupViewHolder holder, int position) {
-        List<String> groupNames = new ArrayList<>();
-        List<String> groupIds = new ArrayList<>();
-        groupNames.addAll(groupMap.getValue().values());
-        groupIds.addAll(groupMap.getValue().keySet());
 
-        holder.getMainActivityGroupName().setText(groupNames.get(position));
+        holder.getMainActivityGroupName().setText(groups.getValue().get(position).getName());
         holder.getGroupItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemSelectListener.onItemClick(groupIds.get(holder.getAdapterPosition()));
+                itemSelectListener.onItemClick(groups.getValue().get(holder.getAdapterPosition()));
             }
         });
     }

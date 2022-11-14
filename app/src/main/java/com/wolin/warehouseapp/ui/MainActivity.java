@@ -2,6 +2,7 @@ package com.wolin.warehouseapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +28,7 @@ import com.wolin.warehouseapp.utils.adapter.MainActivityGroupAdapter;
 import com.wolin.warehouseapp.utils.adapter.MainAdapter;
 import com.wolin.warehouseapp.utils.model.Group;
 import com.wolin.warehouseapp.utils.model.Product;
+import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     private RecyclerView groupRecyclerView;
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private Group currentGroup;
+    MutableLiveData<UserDetails> currentUser;
+    MutableLiveData<List<Group>> userGroups;
+
 
     private FirebaseUserViewModel firebaseUserViewModel;
     private FirebaseProductViewModel firebaseProductViewModel;
@@ -93,11 +98,10 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.add_activity_shop_dialog);
 
-        groupMap = firebaseGroupViewModel.getUserGroups(currentFirebaseUser.getUid());
+        currentUser = firebaseUserViewModel.getUser(currentFirebaseUser.getUid());
+        userGroups = firebaseGroupViewModel.getGroups(currentUser.getValue().getGroups());
 
-
-
-        MainActivityGroupAdapter adapter = new MainActivityGroupAdapter(this, groupMap, this);
+        MainActivityGroupAdapter adapter = new MainActivityGroupAdapter(this, userGroups, this);
         groupRecyclerView = dialog.findViewById(R.id.groupRecyclerView);
         groupRecyclerView.setAdapter(adapter);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
