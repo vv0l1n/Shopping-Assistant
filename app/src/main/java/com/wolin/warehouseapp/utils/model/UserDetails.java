@@ -23,33 +23,14 @@ public class UserDetails {
     private String lastName;
     private List<String> groups;
 
-
+    public UserDetails() {}
+    
     public UserDetails(String uid, String email, String name, String lastName, List<String> groups) {
         this.uid = uid;
         this.email = email;
         this.name = name;
         this.lastName = lastName;
         this.groups = groups;
-    }
-
-
-    public static UserDetails toUser(DocumentSnapshot documentSnapshot) {
-        try {
-            String uid = documentSnapshot.getId();
-
-            Map<String, Object> data = documentSnapshot.getData();
-            String email = (String) data.get("email");
-            String name = (String) data.get("name");
-            String lastName = (String) data.get("lastName");
-            List<String> groups = (List<String>) data.get("groups");
-
-            UserDetails user = new UserDetails(uid, email, name, lastName, groups);
-            return user;
-
-        } catch (Exception exc) {
-            System.out.println(exc);
-        }
-        return null;
     }
 
 

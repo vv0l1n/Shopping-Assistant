@@ -39,10 +39,10 @@ public class FirebaseService {
     DocumentReference userRef;
     private MutableLiveData<UserDetails> mutableLiveDataUser;
     private MutableLiveData<Group> mutableLiveDataGroup;
-    private MutableLiveData<Map<String, String>> mutableLiveDataUserGroupsName;
     private Product product;
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("ProductPhotos");
     private FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
 
     public static FirebaseService getInstance() {
         if(firebaseService == null) {
@@ -52,19 +52,24 @@ public class FirebaseService {
         return firebaseService;
     }
 
+    private FirebaseService() {}
+
     //user
 
     public void getUser(String uid, MyCallback<MutableLiveData<UserDetails>> callback) {
-        firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-        @Override
-        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-            if (task.isSuccessful()) {
-                UserDetails userDetails = task.getResult().toObject(UserDetails.class);
-                mutableLiveDataUser.postValue(userDetails);
-                callback.onCallback(mutableLiveDataUser);
-            }
-        }
-    });
+                    System.out.println("6");
+                    firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                System.out.println("7");
+                                UserDetails userDetails = task.getResult().toObject(UserDetails.class);
+                                mutableLiveDataUser.postValue(userDetails);
+                                callback.onCallback(mutableLiveDataUser);
+                            }
+                        }
+                    });
+            System.out.println("8");
     }
 
 
@@ -119,5 +124,48 @@ public class FirebaseService {
                 }
             }
         });
+    }
+
+    public void getGroups(String uid, MyCallback<Group> callback) {
+        firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    UserDetails user = task.getResult().toObject(UserDetails.class);
+                    List<Group> groups = new ArrayList<>();
+                    for(String groupId : user.getGroups()) {
+                        firebaseFirestore.collection("Groups").document(groupId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    Group group = task.getResult().toObject(Group.class);
+                                    groups.add(group);
+                                    System.out.println("GRUPA SERWIS: " + group);
+                                    callback.onCallback(group);
+                                }
+                            }
+                        });
+                    }
+
+                }
+            }
+        });
+    }
+
+
+    public MutableLiveData<UserDetails> getMutableLiveDataUser() {
+        return mutableLiveDataUser;
+    }
+
+    public void setMutableLiveDataUser(MutableLiveData<UserDetails> mutableLiveDataUser) {
+        this.mutableLiveDataUser = mutableLiveDataUser;
+    }
+
+    public MutableLiveData<Group> getMutableLiveDataGroup() {
+        return mutableLiveDataGroup;
+    }
+
+    public void setMutableLiveDataGroup(MutableLiveData<Group> mutableLiveDataGroup) {
+        this.mutableLiveDataGroup = mutableLiveDataGroup;
     }
 }

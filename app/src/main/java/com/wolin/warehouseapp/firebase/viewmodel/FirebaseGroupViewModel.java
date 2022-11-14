@@ -1,5 +1,9 @@
 package com.wolin.warehouseapp.firebase.viewmodel;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -24,36 +28,34 @@ public class FirebaseGroupViewModel  extends ViewModel {
         groupMutableLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<Group> getGroup(String groupId) {
-        groupMutableLiveData = new MutableLiveData<>();
+    public LiveData<Group> getGroup(String groupId) {
         loadGroup(groupId);
         return groupMutableLiveData;
     }
 
-    public MutableLiveData<List<Group>> getGroups(List<String> groupsId) {
-        groupMutableLiveData = new MutableLiveData<>();
-        loadGroups(groupsId);
+    public LiveData<List<Group>> getGroups(String uid) {
+        loadGroups(uid);
+        System.out.println("GRUPA: " + groupListMutableLiveData.getValue());
         return groupListMutableLiveData;
     }
 
-    private void loadGroups(List<String> groupsId) {
-        List<Group> groupList = new ArrayList<>();
-        for(String groupId : groupsId) {
-            firebaseService.getGroup(groupId, new MyCallback<Group>() {
+    private void loadGroups(String uid) {
+            firebaseService.getGroups(uid, new MyCallback<Group>() {
                 @Override
-                public void onCallback(Group data) {
-                    groupList.add(data);
+                public void onCallback(Group group) {
+                    List<Group> tempList = new ArrayList<>();
+                    tempList.add(group);
+                    groupListMutableLiveData.postValue(tempList);
                 }
             });
         }
-        groupListMutableLiveData.postValue(groupList);
-    }
 
     public void loadGroup(String groupId) {
         firebaseService.getGroup(groupId, new MyCallback<Group>() {
             @Override
             public void onCallback(Group data) {
                 groupMutableLiveData.postValue(data);
+                System.out.println("DANE ZALADOWANE: " + data);
             }
         });
     }

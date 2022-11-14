@@ -17,6 +17,8 @@ public class Group {
     private List<String> members;
     private List<Product> products;
 
+    public Group(){}
+
     public Group(String name, String owner) {
         this.groupId = owner + "-" + name;
         this.name = name;

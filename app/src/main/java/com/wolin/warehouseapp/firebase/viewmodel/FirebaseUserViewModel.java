@@ -13,7 +13,7 @@ import com.wolin.warehouseapp.firebase.repo.MyCallback;
 import com.wolin.warehouseapp.firebase.repo.OnDataUploaded;;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
-public class FirebaseUserViewModel extends ViewModel implements Observer<UserDetails> {
+public class FirebaseUserViewModel extends ViewModel {
     private FirebaseService firebaseService;
     private FirebaseFirestore firebaseFirestore;
     private MutableLiveData<UserDetails> user;
@@ -22,6 +22,7 @@ public class FirebaseUserViewModel extends ViewModel implements Observer<UserDet
     public FirebaseUserViewModel(){
         firebaseService = FirebaseService.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        user = new MutableLiveData<>();
     }
 
     public void registerUser(UserDetails user){
@@ -29,22 +30,19 @@ public class FirebaseUserViewModel extends ViewModel implements Observer<UserDet
     }
 
     public MutableLiveData<UserDetails> getUser(String uid){
-        user = new MutableLiveData<>();
+        System.out.println("2");
         loadUser(uid);
         return user;
     }
 
     private void loadUser(String uid) {
+        System.out.println("3");
         firebaseService.getUser(uid, new MyCallback<MutableLiveData<UserDetails>>() {
             @Override
             public void onCallback(MutableLiveData<UserDetails> data) {
                 user = data;
+                System.out.println("4");
             }
         });
-    }
-
-    @Override
-    public void onChanged(UserDetails userDetails) {
-
     }
 }
