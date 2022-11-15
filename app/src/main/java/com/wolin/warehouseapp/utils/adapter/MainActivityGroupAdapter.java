@@ -6,25 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.utils.model.Group;
-import com.wolin.warehouseapp.utils.model.Shop;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivityGroupAdapter extends RecyclerView.Adapter<MainActivityGroupViewHolder>{
 
     private Context context;
     private List<Group> groupList;
-    private ItemSelectListener itemSelectListener;
+    private ItemSelectListener<Integer> itemSelectListener;
 
-    public MainActivityGroupAdapter(Context context, List<Group> groupList , ItemSelectListener itemSelectListener) {
+    public MainActivityGroupAdapter(Context context, List<Group> groupList , ItemSelectListener<Integer> itemSelectListener) {
         this.context = context;
         this.groupList = groupList;
         this.itemSelectListener = itemSelectListener;
@@ -45,7 +40,8 @@ public class MainActivityGroupAdapter extends RecyclerView.Adapter<MainActivityG
             holder.getGroupItem().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    itemSelectListener.onItemClick(group);
+                    itemSelectListener.onItemClick(holder.getBindingAdapterPosition());
+                    System.out.println("ADAPTER KLIKNIECIE: " + group.getName());
                 }
             });
         }

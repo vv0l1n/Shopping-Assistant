@@ -17,9 +17,9 @@ public class AddActivityShopAdapter  extends RecyclerView.Adapter<AddActivitySho
 
     private Context context;
     private List<Shop> shops;
-    private ItemSelectListener itemSelectListener;
+    private ItemSelectListener<Shop> itemSelectListener;
 
-    public AddActivityShopAdapter(Context context, List<Shop> shops, ItemSelectListener itemSelectListener) {
+    public AddActivityShopAdapter(Context context, List<Shop> shops, ItemSelectListener<Shop> itemSelectListener) {
         this.context = context;
         this.shops = shops;
         this.itemSelectListener = itemSelectListener;
@@ -39,7 +39,7 @@ public class AddActivityShopAdapter  extends RecyclerView.Adapter<AddActivitySho
         holder.getAddActivityWholeItem().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemSelectListener.onItemClick(shops.get(holder.getAdapterPosition()));
+                itemSelectListener.onItemClick(shops.get(holder.getBindingAdapterPosition()));
             }
         });
     }

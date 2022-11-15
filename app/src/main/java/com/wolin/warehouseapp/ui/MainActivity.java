@@ -1,30 +1,25 @@
 package com.wolin.warehouseapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.firebase.repo.FirebaseService;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseGroupViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
@@ -39,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements ItemSelectListener<Group> {
+public class MainActivity extends AppCompatActivity implements ItemSelectListener<Integer> {
 
     private Dialog dialog;
     private CheckBox onlyActive;
@@ -50,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     private RecyclerView productRecyclerView;
     private Button addButton;
     private RecyclerView groupRecyclerView;
+    private TextView actualGroupTextView;
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private Group currentGroup;
     LiveData<UserDetails> currentUser;
@@ -73,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         hamburger = findViewById(R.id.hamburger);
         productRecyclerView = findViewById(R.id.recyclerView);
         addButton = findViewById(R.id.addButton);
+        actualGroupTextView = findViewById(R.id.actualGroupTextView);
 
         userGroups = new ArrayList<>();
 
@@ -84,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(new MainAdapter(getApplicationContext(), testItems));
 
+        actualGroupTextView.setText("Aktualna grupa: brak");
 
         loadDialog(addButton.getRootView());
     }
@@ -108,17 +106,27 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         groupRecyclerView.setAdapter(adapter);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
 
-        firebaseGroupViewModel.getGroups(currentFirebaseUser.getUid()).observe(this, groups -> {
+        firebaseGroupViewModel.getGroups(currentFirebaseUser.getUid()).observe(this, (List<Group> groups) -> {
             System.out.println("OBSERVER: " + groups);
-            adapter.updateData(groups);
-            adapter.notifyDataSetChanged();
+            if(groups != null && groups.size() > 0) {
+                currentGroup = groups.get(0);
+                updateCurrentGroupName();
+                adapter.updateData(groups);
+                adapter.notifyDataSetChanged();
+            }
         });
+
+    }
+
+    private void updateCurrentGroupName() {
+        actualGroupTextView.setText("Aktualna grupa: " + currentGroup.getName());
     }
 
     @Override
-    public void onItemClick(Group item) {
-        System.out.println(item.getId() + "KIKNIETO");
-        currentGroup = item;
+    public void onItemClick(Integer position) {
+        System.out.println("KIKNIETO " + userGroups.get(position).getName());
+        currentGroup = userGroups.get(position);
+        updateCurrentGroupName();
         dialog.dismiss();
     }
 }
