@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,16 +47,13 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     private Button addButton;
     private RecyclerView groupRecyclerView;
     private TextView actualGroupTextView;
-    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private Group currentGroup;
-    LiveData<UserDetails> currentUser;
-    List<Group> userGroups;
+    private List<Group> userGroups;
 
     private FirebaseUserViewModel firebaseUserViewModel;
     private FirebaseProductViewModel firebaseProductViewModel;
     private FirebaseGroupViewModel firebaseGroupViewModel;
-
-    private MutableLiveData<Map<String, String>> groupMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +85,15 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     }
 
     public void onMainActivityAddButtonClick(View view) {
-        Intent addIntent = new Intent(MainActivity.this, AddActivity.class);
-        startActivity(addIntent);
+        System.out.println("AKTUALNA GRUPA: " + currentGroup.getId());
+        if(currentGroup != null) {
+            Intent addIntent = new Intent(MainActivity.this, AddActivity.class);
+            System.out.println("PODAJE ID GRUPY: " + currentGroup.getId());
+            addIntent.putExtra("currentGroupId", currentGroup.getId());
+            startActivity(addIntent);
+        } else {
+            Toast.makeText(this, "Nie możesz dodać produktu, jeżeli nie jesteś w żadnej grupie.", Toast.LENGTH_LONG);
+        }
     }
 
     public void onGroupButtonCick(View view) {

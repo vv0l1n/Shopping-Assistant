@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -74,6 +75,7 @@ public class FirebaseService {
     //product
 
     public void insertProduct(Product product, String groupId) {
+        System.out.println("ID GRUPY: " + groupId);
         if (product.getUri() != null) {
             StorageReference imageRef = storageReference.child(String.valueOf(System.currentTimeMillis()));
             imageRef.putFile(product.getUri()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -84,9 +86,8 @@ public class FirebaseService {
                             imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    String uid = currentUser.getUid();
                                     product.setUrl(uri.toString());
-                                    firebaseFirestore.collection("Groups/" + groupId + "/products/").add(product);
+                                    firebaseFirestore.collection("Groups").document(groupId).collection("products").add(product);
                                 }
                             });
                         }
@@ -95,10 +96,21 @@ public class FirebaseService {
             });
         } else {
             product.setUrl("none");
-            firebaseFirestore.collection("Groups/" + groupId + "/products/").add(product);
+            firebaseFirestore.collection("Groups").document(groupId).collection("products").add(product);
         }
     }
 
+
+    /*public LiveData<List<Product>> getProducts(String groupId) {
+        System.out.println("POBIERAM PRODUKTY GRUPY: " + groupId);
+        firebaseFirestore.collection("Groups").document(groupId).collection("products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+            }
+        });
+        return
+    }*/
 
 
     //group
@@ -113,8 +125,11 @@ public class FirebaseService {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
+                    System.out.println();
                     Group group = task.getResult().toObject(Group.class);
-                    System.out.println("ZWRACAM GRUPE");
+                    group.setId(group.getOwner() + "-" + group.getName());
+
+                    System.out.println("ZWRACAM GRUPE: " + group.getId()+ ":::" + group.getName()+ ":::" + group.getMembers()+ ":::" + group.getOwner() + ":::" + group.getProducts());
                     callback.onCallback(group);
                 }
             }

@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -72,7 +73,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     private List<Shop> shops;
     private DatePickerDialog datePickerDialog;
 
-    private String currentGroup = "TestGroup";
+    private String currentGroup;
 
     private Shop choosenShop;
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -107,6 +108,9 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         firebaseProductViewModel = new ViewModelProvider(this).get(FirebaseProductViewModel.class);
 
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
+
+        currentGroup = getIntent().getStringExtra("currentGroupId");
+        System.out.println("ID GRUPY GETINTENT: " + getIntent().getStringExtra("currentGroupId"));
 
         //permission for camera
         if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA)
@@ -199,7 +203,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day)
             {
-                month = month + 1;
+                month++;
                 String date = makeDateString(day, month, year);
                 dateToBuyAddButton.setText(date);
             }
@@ -295,10 +299,11 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     }
 
         //adding product
-        public void onAddActivityAddButtonClick (View view){
+    public void onAddActivityAddButtonClick (View view){
+        if(!productNameAdd.getText().equals(null)) {
             String productName = productNameAdd.getText().toString().trim();
             int count = Integer.parseInt(countAdd.getText().toString().trim());
-            double maxPrice = Integer.parseInt(maxPriceAdd.getText().toString().trim());
+            double maxPrice = Double.parseDouble(maxPriceAdd.getText().toString().trim());
             String note = noteAdd.getText().toString().trim();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String date = simpleDateFormat.format(new Date().getTime());
@@ -313,8 +318,12 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
             }
 
             Product product = new Product(productName, count, maxPrice, note, choosenShop, mImageURI, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
+            System.out.println("ID GRUPY ADDACTIVITY: " + currentGroup);
             insertProduct(noteAdd.getRootView(), product, currentGroup);
+        } else {
+            Toast.makeText(this, "Nazwa produktu musi zostać podana.", Toast.LENGTH_LONG);
         }
+    }
 
 
         //cancel button

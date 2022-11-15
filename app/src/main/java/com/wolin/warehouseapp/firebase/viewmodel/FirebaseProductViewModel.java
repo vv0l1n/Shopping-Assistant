@@ -27,6 +27,7 @@ public class FirebaseProductViewModel extends ViewModel /*implements OnDataUploa
     }
 
     public void insertProduct(Product product, String groupId){
+        System.out.println("GROUP ID VIEWMODEL: " + groupId);
         firebaseService.insertProduct(product, groupId);
     }
 
