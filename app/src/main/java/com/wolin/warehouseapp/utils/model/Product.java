@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.database.Exclude;
+
 import java.net.URL;
 
 public class Product {
@@ -17,23 +19,23 @@ public class Product {
     private double maxPrice;
     private String note;
     private com.wolin.warehouseapp.utils.model.Shop shop;
-    private Uri photo;
+    private String photo;
     private boolean active;
     private String date;
     private String dateToBuy;
     private String priority;
     private String owner;
     private String buyer;
-    private String url;
 
-    public Product(String name, int count, double maxPrice, String note, Shop shop, Uri photo, boolean active, String date, String dateToBuy, String priority, String owner) {
+    public Product(){}
+
+    public Product(String name, int count, double maxPrice, String note, Shop shop, boolean active, String date, String dateToBuy, String priority, String owner) {
         this.productId = owner + System.currentTimeMillis();
         this.name = name;
         this.count = count;
         this.maxPrice = maxPrice;
         this.note = note;
         this.shop = shop;
-        this.photo = photo;
         this.active = active;
         this.date = date;
         this.dateToBuy = dateToBuy;
@@ -81,11 +83,11 @@ public class Product {
         this.shop = SHOP;
     }
 
-    public Uri getUri() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setUri(Uri imageOfProduct) {
+    public void setPhoto(String imageOfProduct) {
         this.photo = imageOfProduct;
     }
 
@@ -127,14 +129,6 @@ public class Product {
 
     public void setProductId(String id) {
         this.productId = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getDateToBuy() {

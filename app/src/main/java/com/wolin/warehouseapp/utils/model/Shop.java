@@ -4,6 +4,8 @@ public class Shop {
     private String name;
     private int shopLogo;
 
+    public Shop(){}
+
     public Shop(String name, int shopLogo) {
         this.name = name;
         this.shopLogo = shopLogo;

@@ -1,5 +1,7 @@
 package com.wolin.warehouseapp.firebase.viewmodel;
 
+import android.net.Uri;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -26,9 +28,9 @@ public class FirebaseProductViewModel extends ViewModel /*implements OnDataUploa
         productListMutableLiveData = new MutableLiveData<>();
     }
 
-    public void insertProduct(Product product, String groupId){
+    public void insertProduct(Product product, Uri uri, String groupId){
         System.out.println("GROUP ID VIEWMODEL: " + groupId);
-        firebaseService.insertProduct(product, groupId);
+        firebaseService.insertProduct(product, uri, groupId);
     }
 
 

@@ -184,8 +184,8 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         builder.show();
     }
 
-    public void insertProduct(View view, Product product, String groupId) {
-        firebaseProductViewModel.insertProduct(product, groupId);
+    public void insertProduct(View view, Product product, Uri uri, String groupId) {
+        firebaseProductViewModel.insertProduct(product, uri, groupId);
         Intent intent = new Intent(AddActivity.this, MainActivity.class);
         startActivity(intent);
     }
@@ -317,9 +317,9 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
                 priority = "high";
             }
 
-            Product product = new Product(productName, count, maxPrice, note, choosenShop, mImageURI, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
+            Product product = new Product(productName, count, maxPrice, note, choosenShop, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
             System.out.println("ID GRUPY ADDACTIVITY: " + currentGroup);
-            insertProduct(noteAdd.getRootView(), product, currentGroup);
+            insertProduct(noteAdd.getRootView(), product, mImageURI, currentGroup);
         } else {
             Toast.makeText(this, "Nazwa produktu musi zostać podana.", Toast.LENGTH_LONG);
         }

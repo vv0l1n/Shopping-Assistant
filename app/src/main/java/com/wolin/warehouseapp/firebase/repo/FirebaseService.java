@@ -74,11 +74,11 @@ public class FirebaseService {
 
     //product
 
-    public void insertProduct(Product product, String groupId) {
+    public void insertProduct(Product product, Uri uri, String groupId) {
         System.out.println("ID GRUPY: " + groupId);
-        if (product.getUri() != null) {
+        if (uri != null) {
             StorageReference imageRef = storageReference.child(String.valueOf(System.currentTimeMillis()));
-            imageRef.putFile(product.getUri()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            imageRef.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if (task.isSuccessful()) {
@@ -86,7 +86,7 @@ public class FirebaseService {
                             imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    product.setUrl(uri.toString());
+                                    product.setPhoto(uri.toString());
                                     firebaseFirestore.collection("Groups").document(groupId).collection("products").add(product);
                                 }
                             });
@@ -95,22 +95,26 @@ public class FirebaseService {
                 }
             });
         } else {
-            product.setUrl("none");
             firebaseFirestore.collection("Groups").document(groupId).collection("products").add(product);
         }
     }
 
 
-    /*public LiveData<List<Product>> getProducts(String groupId) {
+    public void getProducts(String groupId, MyCallback<List<Product>> callback) {
         System.out.println("POBIERAM PRODUKTY GRUPY: " + groupId);
         firebaseFirestore.collection("Groups").document(groupId).collection("products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
+                List<Product> products = new ArrayList<>();
+                for(DocumentSnapshot documentSnapshot : task.getResult()) {
+                    Product product = documentSnapshot.toObject(Product.class);
+                    products.add(product);
+                }
+                System.out.println("PRODUCT CALLBACK");
+                callback.onCallback(products);
             }
         });
-        return
-    }*/
+    }
 
 
     //group
@@ -128,9 +132,14 @@ public class FirebaseService {
                     System.out.println();
                     Group group = task.getResult().toObject(Group.class);
                     group.setId(group.getOwner() + "-" + group.getName());
-
-                    System.out.println("ZWRACAM GRUPE: " + group.getId()+ ":::" + group.getName()+ ":::" + group.getMembers()+ ":::" + group.getOwner() + ":::" + group.getProducts());
-                    callback.onCallback(group);
+                    getProducts(groupId, new MyCallback<List<Product>>() {
+                        @Override
+                        public void onCallback(List<Product> data) {
+                            group.setProducts(data);
+                            System.out.println("ZWRACAM GRUPE: " + group.getId()+ ":::" + group.getName()+ ":::" + group.getMembers()+ ":::" + group.getOwner() + ":::" + group.getProducts());
+                            callback.onCallback(group);
+                        }
+                    });
                 }
             }
         });

@@ -118,6 +118,11 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
                 updateCurrentGroupName();
                 adapter.updateData(groups);
                 adapter.notifyDataSetChanged();
+                System.out.println("PRODUKTY GRUPY: "); {
+                    for(Product product : currentGroup.getProducts()) {
+                        System.out.println(product.getName());
+                    }
+                }
             }
         });
 
