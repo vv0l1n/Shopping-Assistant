@@ -33,6 +33,10 @@ public class FirebaseProductViewModel extends ViewModel /*implements OnDataUploa
         firebaseService.insertProduct(product, uri, groupId);
     }
 
+    public void setBought(String productId, String uid, String groupId) {
+        firebaseService.setBought(productId, uid, groupId);
+    }
+
 
     /*@Override
     public void onDataUpload(Task<DocumentReference> task) {

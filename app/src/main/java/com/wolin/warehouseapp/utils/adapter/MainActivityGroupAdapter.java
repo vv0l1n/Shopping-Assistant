@@ -17,9 +17,9 @@ public class MainActivityGroupAdapter extends RecyclerView.Adapter<MainActivityG
 
     private Context context;
     private List<Group> groupList;
-    private ItemSelectListener<Integer> itemSelectListener;
+    private ItemSelectListener<Object> itemSelectListener;
 
-    public MainActivityGroupAdapter(Context context, List<Group> groupList , ItemSelectListener<Integer> itemSelectListener) {
+    public MainActivityGroupAdapter(Context context, List<Group> groupList , ItemSelectListener<Object> itemSelectListener) {
         this.context = context;
         this.groupList = groupList;
         this.itemSelectListener = itemSelectListener;

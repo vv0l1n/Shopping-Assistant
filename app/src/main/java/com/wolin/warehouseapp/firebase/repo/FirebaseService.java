@@ -87,7 +87,7 @@ public class FirebaseService {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     product.setPhoto(uri.toString());
-                                    firebaseFirestore.collection("Groups").document(groupId).collection("products").add(product);
+                                    firebaseFirestore.collection("Groups").document(groupId).collection("products").document(product.getProductId()).set(product);
                                 }
                             });
                         }
@@ -114,6 +114,11 @@ public class FirebaseService {
                 callback.onCallback(products);
             }
         });
+    }
+
+    public void setBought(String productId, String uid, String groupId) {
+        System.out.println("Zmieniam pole active: " + productId + " " + groupId);
+        firebaseFirestore.collection("Groups").document(groupId).collection("products").document(productId).update("active", false, "buyer", uid);
     }
 
 
@@ -192,4 +197,5 @@ public class FirebaseService {
     public void setMutableLiveDataGroup(MutableLiveData<Group> mutableLiveDataGroup) {
         this.mutableLiveDataGroup = mutableLiveDataGroup;
     }
+
 }
