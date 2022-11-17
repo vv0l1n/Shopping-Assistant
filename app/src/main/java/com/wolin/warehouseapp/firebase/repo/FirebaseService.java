@@ -3,6 +3,7 @@ package com.wolin.warehouseapp.firebase.repo;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -11,9 +12,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -102,15 +106,16 @@ public class FirebaseService {
 
     public void getProducts(String groupId, MyCallback<List<Product>> callback) {
         System.out.println("POBIERAM PRODUKTY GRUPY: " + groupId);
-        firebaseFirestore.collection("Groups").document(groupId).collection("products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        CollectionReference productsColRef = firebaseFirestore.collection("Groups").document(groupId).collection("products");
+        productsColRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 List<Product> products = new ArrayList<>();
-                for(DocumentSnapshot documentSnapshot : task.getResult()) {
+                for(DocumentSnapshot documentSnapshot : value.getDocuments()) {
                     Product product = documentSnapshot.toObject(Product.class);
                     products.add(product);
                 }
-                System.out.println("PRODUCT CALLBACK");
+                System.out.println("PRODUCT CALLBACK: " + products);
                 callback.onCallback(products);
             }
         });
@@ -130,34 +135,33 @@ public class FirebaseService {
 
     public void getGroup(String groupId, MyCallback<Group> callback) {
         System.out.println("POBIERAM GRUPE: " + groupId);
-        firebaseFirestore.collection("Groups").document(groupId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        DocumentReference groupDocRef = firebaseFirestore.collection("Groups").document(groupId);
+        groupDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()) {
-                    System.out.println();
-                    Group group = task.getResult().toObject(Group.class);
-                    group.setId(group.getOwner() + "-" + group.getName());
-                    getProducts(groupId, new MyCallback<List<Product>>() {
-                        @Override
-                        public void onCallback(List<Product> data) {
-                            group.setProducts(data);
-                            System.out.println("ZWRACAM GRUPE: " + group.getId()+ ":::" + group.getName()+ ":::" + group.getMembers()+ ":::" + group.getOwner() + ":::" + group.getProducts());
-                            callback.onCallback(group);
-                        }
-                    });
-                }
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                Group group = value.toObject(Group.class);
+                group.setId(group.getOwner() + "-" + group.getName());
+                getProducts(groupId, new MyCallback<List<Product>>() {
+                    @Override
+                    public void onCallback(List<Product> data) {
+                        group.setProducts(data);
+                        System.out.println("ZWRACAM GRUPE: " + group.getId() + ":::" + group.getName() + ":::" + group.getMembers() + ":::" + group.getOwner() + ":::" + group.getProducts());
+                        callback.onCallback(group);
+                    }
+                });
             }
         });
     }
 
     public LiveData<List<Group>> getGroups(String uid) {
         System.out.println("ROZPOCZYNAM POBIERANIE UZYTKOWNIKA");
-        firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        DocumentReference userDocRef = firebaseFirestore.collection("Users").document(uid);
+        userDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 System.out.println("POBRANO UZYTKOWNIKA");
-                if(task.isSuccessful()) {
-                    UserDetails user = task.getResult().toObject(UserDetails.class);
+                if(value.exists()) {
+                    UserDetails user = value.toObject(UserDetails.class);
                     List<Group> groupsList = new ArrayList<>();
                     System.out.println("GRUPY UZYTKOWNIKA: " + user.getGroups());
                     groupsMutable.postValue(groupsList);
@@ -165,9 +169,18 @@ public class FirebaseService {
                         getGroup(groupId, new MyCallback<Group>() {
                             @Override
                             public void onCallback(Group data) {
-                                System.out.println("POBRANO GRUPE CALLBACK " + data.getName());
+                                System.out.println("POBRANO GRUPE CALLBACK " + data.getName() + " " + data.getProducts());
                                 List<Group> tempList = groupsMutable.getValue();
-                                tempList.add(data);
+                                boolean found = false;
+                                for(int i = 0; i < tempList.size(); i++) {
+                                    if(tempList.get(i).getId().equals(data.getId())) {
+                                        tempList.set(i, data);
+                                        found = true;
+                                    }
+                                }
+                                if(!found) {
+                                    tempList.add(data);
+                                }
                                 groupsMutable.postValue(tempList);
                                 System.out.println("GRUPY: " + groupsMutable.getValue());
                             }
@@ -179,7 +192,6 @@ public class FirebaseService {
         System.out.println("ZWRACAM LIVEDATA");
         return groupsMutable;
     }
-
 
 
     public MutableLiveData<UserDetails> getMutableLiveDataUser() {

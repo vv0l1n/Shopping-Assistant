@@ -80,9 +80,8 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         mainAdapter = new MainAdapter(this, currentGroup.getProducts(), this, this,firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
-        recyclerView.setAdapter(mainAdapter);
+        productRecyclerView.setAdapter(mainAdapter);
 
         actualGroupTextView.setText("Aktualna grupa: brak");
 
@@ -123,7 +122,11 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
                 updateCurrentGroupName();
                 adapter.updateData(groups);
                 adapter.notifyDataSetChanged();
-                mainAdapter.updateData(currentGroup.getProducts(), currentGroup.getId());
+                //mainAdapter.updateData(currentGroup.getProducts(), currentGroup.getId());
+                mainAdapter = new MainAdapter(this, currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
+                productRecyclerView.setAdapter(mainAdapter);
+                productRecyclerView.refreshDrawableState();
+                productRecyclerView.getRecycledViewPool().clear();
 
                 System.out.println("PRODUKTY GRUPY: "); {
                     for(Product product : currentGroup.getProducts()) {
@@ -162,6 +165,6 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
 
     @Override
     public void buy() {
-
+        System.out.println("Kupiono");
     }
 }

@@ -59,11 +59,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
         holder.getShopLogo().setImageResource(product.getShop().getShopLogo());
         holder.getBoughtButton().setOnClickListener(view -> {
             firebaseProductViewModel.setBought(product.getProductId(), uid, groupId);
+            itemBuyListener.buy();
+
         });
         if(!product.isActive()) {
             holder.getBoughtButton().setText("Kupiony");
             holder.getBoughtButton().setBackgroundColor(Color.RED);
-            itemBuyListener.buy();
         }
     }
 
