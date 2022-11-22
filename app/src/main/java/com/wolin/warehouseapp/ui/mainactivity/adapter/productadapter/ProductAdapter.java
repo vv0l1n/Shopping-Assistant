@@ -1,8 +1,7 @@
-package com.wolin.warehouseapp.utils.adapter;
+package com.wolin.warehouseapp.ui.mainactivity.adapter.productadapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
-import com.wolin.warehouseapp.utils.model.Group;
+import com.wolin.warehouseapp.utils.listeners.ItemBuyListener;
+import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 
 import java.util.List;
-import java.util.Locale;
 
-public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
+public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
 
     private Context context;
     private List<Product> items;
@@ -26,26 +25,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
     private FirebaseProductViewModel firebaseProductViewModel;
     private String uid;
     private String groupId;
-    private ItemBuyListener itemBuyListener;
 
-    public MainAdapter(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, ItemBuyListener itemBuyListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid) {
+    public ProductAdapter(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid) {
         this.context = context;
         this.items = items;
         this.itemSelectListener = itemSelectListener;
         this.firebaseProductViewModel = firebaseProductViewModel;
         this.groupId = groupId;
         this.uid = uid;
-        this.itemBuyListener = itemBuyListener;
     }
 
     @NonNull
     @Override
-    public MainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MainViewHolder(LayoutInflater.from(context).inflate(R.layout.main_item_view, parent, false));
+    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ProductViewHolder(LayoutInflater.from(context).inflate(R.layout.main_item_view, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         System.out.println("1");
         Product product = items.get(position);
         System.out.println("2");
@@ -59,8 +56,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainViewHolder>{
         holder.getShopLogo().setImageResource(product.getShop().getShopLogo());
         holder.getBoughtButton().setOnClickListener(view -> {
             firebaseProductViewModel.setBought(product.getProductId(), uid, groupId);
-            itemBuyListener.buy();
-
         });
         if(!product.isActive()) {
             holder.getBoughtButton().setText("Kupiony");

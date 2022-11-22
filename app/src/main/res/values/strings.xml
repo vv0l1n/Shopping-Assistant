@@ -28,4 +28,10 @@
     <string name="lowPriority">Mało ważne</string>
     <string name="mediumPriority">Ważne</string>
     <string name="highPriority">Bardzo ważne</string>
+    <string name="profile">Profil</string>
+    <string name="productslist">Lista zakupów</string>
+    <string name="createGroup">Stwórz grupę</string>
+    <string name="manageGroup">Zarządzaj grupą</string>
+    <string name="invitesToGroup">Zaproszenia do grup</string>
+    <string name="logout">Wyloguj</string>
 </resources>

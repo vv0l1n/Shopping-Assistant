@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.utils.adapter;
+package com.wolin.warehouseapp.ui.addactivity.adapter;
 
 import android.view.View;
 import android.widget.ImageView;

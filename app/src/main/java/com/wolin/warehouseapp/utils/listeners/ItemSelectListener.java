@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.utils.adapter;
+package com.wolin.warehouseapp.utils.listeners;
 
 
 import com.wolin.warehouseapp.utils.model.Shop;

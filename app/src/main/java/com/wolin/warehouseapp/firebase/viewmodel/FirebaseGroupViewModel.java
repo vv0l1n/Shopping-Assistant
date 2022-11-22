@@ -30,12 +30,7 @@ public class FirebaseGroupViewModel  extends ViewModel {
     }
 
     private void loadGroups(String uid) {
-        System.out.println("LOADGROUPS 111111111111111");
             groupListLiveData = Transformations.switchMap(firebaseService.getGroups(uid), groups -> {
-                System.out.println("LOADGROUPS: ");
-                for(Group group : groups) {
-                    System.out.println(group.getName() + ":::" + group.getProducts());
-                }
                 MutableLiveData<List<Group>> liveData = new MutableLiveData<>();
                 liveData.postValue(groups);
                 return liveData;

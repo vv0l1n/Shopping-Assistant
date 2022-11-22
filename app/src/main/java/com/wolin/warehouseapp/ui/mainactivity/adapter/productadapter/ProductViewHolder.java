@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.utils.adapter;
+package com.wolin.warehouseapp.ui.mainactivity.adapter.productadapter;
 
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.wolin.warehouseapp.R;
 
 
-public class MainViewHolder extends RecyclerView.ViewHolder {
+public class ProductViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView imageView;
     private TextView productName;
@@ -19,7 +19,7 @@ public class MainViewHolder extends RecyclerView.ViewHolder {
     private Button boughtButton;
     private ImageView shopLogo;
 
-    public MainViewHolder(@NonNull View itemView) {
+    public ProductViewHolder(@NonNull View itemView) {
         super(itemView);
         imageView = itemView.findViewById(R.id.imageView);
         productName = itemView.findViewById(R.id.productName);
