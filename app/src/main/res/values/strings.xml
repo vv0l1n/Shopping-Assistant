@@ -34,4 +34,7 @@
     <string name="manageGroup">Zarządzaj grupą</string>
     <string name="invitesToGroup">Zaproszenia do grup</string>
     <string name="logout">Wyloguj</string>
+    <string name="navigation_drawer_open">Otwieram menu</string>
+    <string name="navigation_drawer_close">Zamykam menu</string>
+    <string name="shoppingAssistant">Shopping Assistant</string>
 </resources>

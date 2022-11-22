@@ -1,6 +1,10 @@
 package com.wolin.warehouseapp.ui.mainactivity;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
@@ -48,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private Group currentGroup;
     private List<Group> userGroups;
+    private DrawerLayout drawerLayout;
+    private NavigationView navViev;
+    private Toolbar toolbar;
+
 
     private FirebaseUserViewModel firebaseUserViewModel;
     private FirebaseProductViewModel firebaseProductViewModel;
@@ -68,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         productRecyclerView = findViewById(R.id.recyclerView);
         addButton = findViewById(R.id.addButton);
         actualGroupTextView = findViewById(R.id.actualGroupTextView);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navViev = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
 
         currentGroup = new Group("brak", "brak");
         currentGroup.setProducts(new ArrayList<>());
@@ -83,6 +95,10 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         actualGroupTextView.setText("Aktualna grupa: brak");
 
         loadDialog(addButton.getRootView());
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     public void onMainActivityAddButtonClick(View view) {
@@ -146,6 +162,15 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         } else {
             Product p = (Product) o;
             System.out.println("KLIKNIETO PRODUKT: " + p.getName());
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 }

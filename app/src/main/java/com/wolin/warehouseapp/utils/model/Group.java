@@ -1,8 +1,6 @@
 package com.wolin.warehouseapp.utils.model;
 
 import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import java.util.ArrayList;
 import java.util.List;

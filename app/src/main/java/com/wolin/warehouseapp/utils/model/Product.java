@@ -4,8 +4,6 @@ package com.wolin.warehouseapp.utils.model;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import com.google.firebase.database.Exclude;
 

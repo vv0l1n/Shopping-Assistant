@@ -2,19 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
     <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_profile"
-                android:title="@string/profile"
-                android:icon="@drawable/noneshop">
-            </item>
+                android:icon="@drawable/noneshop"
+                android:title="@string/profile"></item>
             <item
                 android:id="@+id/nav_list"
-                android:title="@string/productslist"
-                android:icon="@drawable/noneshop">
-            </item>
+                android:icon="@drawable/noneshop"
+                android:title="@string/productslist"></item>
         </menu>
     </item>
 
@@ -22,28 +19,24 @@
         <menu>
             <item
                 android:id="@+id/nav_add_group"
-                android:title="@string/createGroup"
-                android:icon="@drawable/noneshop">
-            </item>
+                android:icon="@drawable/noneshop"
+                android:title="@string/createGroup"></item>
             <item
                 android:id="@+id/nav_manage_group"
-                android:title="@string/manageGroup"
-                android:icon="@drawable/noneshop">
-            </item>
+                android:icon="@drawable/noneshop"
+                android:title="@string/manageGroup"></item>
             <item
                 android:id="@+id/nav_invites"
-                android:title="@string/invitesToGroup"
-                android:icon="@drawable/noneshop">
-            </item>
+                android:icon="@drawable/noneshop"
+                android:title="@string/invitesToGroup"></item>
         </menu>
     </item>
     <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_logout"
-                android:title="@string/logout"
-                android:icon="@drawable/noneshop">
-            </item>
+                android:icon="@drawable/noneshop"
+                android:title="@string/logout"></item>
         </menu>
     </item>
 </menu>
