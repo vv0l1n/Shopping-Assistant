@@ -1,8 +1,7 @@
-package com.wolin.warehouseapp.ui.addactivity.adapter;
+package com.wolin.warehouseapp.ui.addActivity.adapter;
 
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;

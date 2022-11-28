@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.ui.addactivity.adapter;
+package com.wolin.warehouseapp.ui.addActivity.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

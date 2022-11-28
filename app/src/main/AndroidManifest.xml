@@ -58,21 +58,21 @@
 
 
         <activity
-            android:name=".ui.addactivity.AddActivity"
+            android:name=".ui.addActivity.AddActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.registeractivity.RegisterActivity"
+            android:name=".ui.registerActivity.RegisterActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.mainactivity.MainActivity"
+            android:name=".ui.mainActivity.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <meta-data
@@ -80,7 +80,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.loginactivity.LoginActivity"
+            android:name=".ui.loginActivity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -92,6 +92,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name="com.wolin.warehouseapp.ui.createGroupActivity.CreateGroupActivity" />
     </application>
 
 </manifest>

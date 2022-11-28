@@ -36,4 +36,8 @@ public class FirebaseGroupViewModel  extends ViewModel {
                 return liveData;
             });
         }
+
+    public void addGroup(String uid, String name, List<String> groups) {
+        firebaseService.addGroup(new Group(name, uid), groups);
+    }
 }

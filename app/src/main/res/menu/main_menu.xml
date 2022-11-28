@@ -12,6 +12,10 @@
                 android:id="@+id/nav_list"
                 android:icon="@drawable/noneshop"
                 android:title="@string/productslist"></item>
+            <item
+                android:id="@+id/nav_your_products"
+                android:icon="@drawable/noneshop"
+                android:title="@string/yourProducts"></item>
         </menu>
     </item>
 

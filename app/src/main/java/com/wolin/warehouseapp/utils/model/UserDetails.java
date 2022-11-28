@@ -71,4 +71,15 @@ public class UserDetails {
     public void setGroups(List<String> groups) {
         this.groups = groups;
     }
+
+    @Override
+    public String toString() {
+        return "UserDetails{" +
+                "uid='" + uid + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", groups=" + groups +
+                '}';
+    }
 }

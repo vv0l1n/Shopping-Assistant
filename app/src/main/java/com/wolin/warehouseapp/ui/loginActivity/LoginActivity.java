@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.ui.loginactivity;
+package com.wolin.warehouseapp.ui.loginActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +15,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.ui.registeractivity.RegisterActivity;
-import com.wolin.warehouseapp.ui.mainactivity.MainActivity;
+import com.wolin.warehouseapp.ui.registerActivity.RegisterActivity;
+import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 

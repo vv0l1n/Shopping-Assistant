@@ -19,6 +19,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -34,8 +35,8 @@ public class FirebaseService {
     private static FirebaseService firebaseService;
     private static FirebaseFirestore firebaseFirestore;
     DocumentReference userRef;
-    private MutableLiveData<UserDetails> mutableLiveDataUser;
-    private MutableLiveData<Group> mutableLiveDataGroup;
+    private MutableLiveData<UserDetails> mutableLiveDataUser = new MutableLiveData<>();
+    private MutableLiveData<Group> mutableLiveDataGroup = new MutableLiveData<>();
     private MutableLiveData<List<Group>> groupsMutable = new MutableLiveData<>();
     private Product product;
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference("ProductPhotos");
@@ -54,16 +55,15 @@ public class FirebaseService {
 
     //user
 
-    public void getUser(String uid, MyCallback<MutableLiveData<UserDetails>> callback) {
-                    System.out.println("6");
+    public void getUser(String uid, MyCallback<UserDetails> callback) {
+                    System.out.println("6 " + uid);
                     firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
-                                System.out.println("7");
+                                System.out.println(task.getResult().get("uid"));
                                 UserDetails userDetails = task.getResult().toObject(UserDetails.class);
-                                mutableLiveDataUser.postValue(userDetails);
-                                callback.onCallback(mutableLiveDataUser);
+                                callback.onCallback(userDetails);
                             }
                         }
                     });
@@ -72,7 +72,15 @@ public class FirebaseService {
 
 
     public void registerUser(UserDetails user) {
-        firebaseFirestore.collection("Users").document(user.getUid()).set(user);
+        firebaseFirestore.collection("Users").document(user.getUid()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    List<String> emptyList = new ArrayList<>();
+                    addGroup(new Group("Prywatna lista", user.getUid()), emptyList);
+                }
+            }
+        });
     }
 
 
@@ -129,8 +137,10 @@ public class FirebaseService {
 
     //group
 
-    public void addGroup(Group group) {
+    public void addGroup(Group group, List<String> groups) {
+        groups.add(group.getId());
         firebaseFirestore.collection("Groups").document(group.getId()).set(group);
+        firebaseFirestore.collection("Users").document(group.getOwner()).update("groups", groups);
     }
 
     public void getGroup(String groupId, MyCallback<Group> callback) {

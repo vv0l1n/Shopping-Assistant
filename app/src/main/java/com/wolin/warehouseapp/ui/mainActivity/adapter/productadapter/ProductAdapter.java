@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.ui.mainactivity.adapter.productadapter;
+package com.wolin.warehouseapp.ui.mainActivity.adapter.productadapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
-import com.wolin.warehouseapp.utils.listeners.ItemBuyListener;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 

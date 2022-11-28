@@ -37,4 +37,8 @@
     <string name="navigation_drawer_open">Otwieram menu</string>
     <string name="navigation_drawer_close">Zamykam menu</string>
     <string name="shoppingAssistant">Shopping Assistant</string>
+    <string name="yourProducts">Twoje produkty</string>
+    <string name="confirm">Potwierdź</string>
+    <string name="passGroupName">Podaj nazwę grupy (nie możesz mieć dwóch grup o tej samej nazwie).</string>
+    <string name="groupName">Nazwa grupy.</string>
 </resources>

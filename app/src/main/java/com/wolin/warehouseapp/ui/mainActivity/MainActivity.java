@@ -1,5 +1,6 @@
-package com.wolin.warehouseapp.ui.mainactivity;
+package com.wolin.warehouseapp.ui.mainActivity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -24,13 +26,13 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.ui.addactivity.AddActivity;
-import com.wolin.warehouseapp.ui.mainactivity.adapter.productadapter.ProductAdapter;
+import com.wolin.warehouseapp.ui.addActivity.AddActivity;
+import com.wolin.warehouseapp.ui.createGroupActivity.CreateGroupActivity;
+import com.wolin.warehouseapp.ui.mainActivity.adapter.productadapter.ProductAdapter;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseGroupViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
-import com.wolin.warehouseapp.ui.mainactivity.adapter.groupadapter.MainActivityGroupAdapter;
-import com.wolin.warehouseapp.utils.listeners.ItemBuyListener;
+import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Group;
 import com.wolin.warehouseapp.utils.model.Product;
@@ -38,7 +40,7 @@ import com.wolin.warehouseapp.utils.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ItemSelectListener<Object> {
+public class MainActivity extends AppCompatActivity implements ItemSelectListener<Object>, NavigationView.OnNavigationItemSelectedListener {
 
     private Dialog dialog;
     private CheckBox onlyActive;
@@ -99,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        navViev.setNavigationItemSelectedListener(this);
     }
 
     public void onMainActivityAddButtonClick(View view) {
@@ -156,8 +160,6 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
             productRecyclerView.setAdapter(productAdapter);
             productRecyclerView.refreshDrawableState();
             productRecyclerView.getRecycledViewPool().clear();
-            //productAdapter.updateData(currentGroup.getProducts(), currentGroup.getId());
-            //productAdapter.notifyDataSetChanged();
             dialog.dismiss();
         } else {
             Product p = (Product) o;
@@ -172,5 +174,15 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_add_group:
+                Intent intent = new Intent(MainActivity.this, CreateGroupActivity.class);
+                startActivity(intent);
+        }
+        return true;
     }
 }

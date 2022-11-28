@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.ui.addactivity;
+package com.wolin.warehouseapp.ui.addActivity;
 
 
 import androidx.activity.result.ActivityResult;
@@ -37,8 +37,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
-import com.wolin.warehouseapp.ui.mainactivity.MainActivity;
-import com.wolin.warehouseapp.ui.addactivity.adapter.AddActivityShopAdapter;
+import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
+import com.wolin.warehouseapp.ui.addActivity.adapter.AddActivityShopAdapter;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.Shop;

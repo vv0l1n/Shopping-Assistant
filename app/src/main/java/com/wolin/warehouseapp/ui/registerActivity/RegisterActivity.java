@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.ui.registeractivity;
+package com.wolin.warehouseapp.ui.registerActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
-import com.wolin.warehouseapp.ui.loginactivity.LoginActivity;
+import com.wolin.warehouseapp.ui.loginActivity.LoginActivity;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.regex.Pattern;
