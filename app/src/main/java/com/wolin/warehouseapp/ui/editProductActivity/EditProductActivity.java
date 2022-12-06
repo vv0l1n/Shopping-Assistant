@@ -1,4 +1,4 @@
-package com.wolin.warehouseapp.ui.addActivity;
+package com.wolin.warehouseapp.ui.editProductActivity;
 
 
 import androidx.activity.result.ActivityResult;
@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +33,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
@@ -39,6 +41,7 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.addActivity.adapter.AddActivityShopAdapter;
+import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.Shop;
@@ -50,20 +53,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AddActivity extends AppCompatActivity implements ItemSelectListener<Shop> {
+public class EditProductActivity extends AppCompatActivity implements ItemSelectListener<Shop> {
 
     ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
 
-    private ImageView productImageAdd;
-    private EditText productNameAdd;
-    private EditText countAdd;
-    private EditText maxPriceAdd;
-    private EditText noteAdd;
-    private ImageView shopLogoAdd;
-    private Button addActivityAddButton;
-    private Button addActivityCancelButton;
-    private Button dateToBuyAddButton;
+    private ImageView productImage;
+    private EditText productName;
+    private EditText count;
+    private EditText maxPrice;
+    private EditText note;
+    private ImageView shopLogo;
+    private Button editButton;
+    private Button cancelButton;
+    private Button dateToBuyButton;
     private RadioGroup radioGroup;
     private RadioButton lowPriorityButton;
     private RadioButton mediumPriorityButton;
@@ -75,6 +78,8 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     private DatePickerDialog datePickerDialog;
 
     private String currentGroupId;
+    private String currentProductId;
+    private Product currentProduct;
 
     private Shop chosenShop;
     FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -87,36 +92,39 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_product_activity);
-        productImageAdd = findViewById(R.id.productImageAdd);
-        productNameAdd = findViewById(R.id.productNameAdd);
-        countAdd = findViewById(R.id.countAdd);
-        maxPriceAdd = findViewById(R.id.maxPriceAdd);
-        noteAdd = findViewById(R.id.noteAdd);
-        dateToBuyAddButton = findViewById(R.id.dateToBuyAddButton);
-        radioGroup = findViewById(R.id.radioGroup);
-        lowPriorityButton = findViewById(R.id.lowPriorityButton);
-        mediumPriorityButton = findViewById(R.id.mediumPriorityButton);
-        highPriorityButton = findViewById(R.id.highPriorityButton);
+        setContentView(R.layout.edit_product_activity);
+        productImage = findViewById(R.id.productImageAddE);
+        productName = findViewById(R.id.productNameAddE);
+        count = findViewById(R.id.countAddE);
+        maxPrice = findViewById(R.id.maxPriceAddE);
+        note = findViewById(R.id.noteAddE);
+        dateToBuyButton = findViewById(R.id.dateToBuyAddButtonE);
+        radioGroup = findViewById(R.id.radioGroupE);
+        lowPriorityButton = findViewById(R.id.lowPriorityButtonE);
+        mediumPriorityButton = findViewById(R.id.mediumPriorityButtonE);
+        highPriorityButton = findViewById(R.id.highPriorityButtonE);
 
-        shopLogoAdd = findViewById(R.id.shopLogoAdd);
-        addActivityAddButton = findViewById(R.id.addActivityAddButton);
-        addActivityCancelButton = findViewById(R.id.addActivityCancelButton);
+        shopLogo = findViewById(R.id.shopLogoAddE);
+        editButton = findViewById(R.id.editButtonE);
+        cancelButton = findViewById(R.id.cancelButtonE);
 
-        productImageAdd.setImageResource(R.drawable.press_to_add_product_image);
-        shopLogoAdd.setImageResource(R.drawable.noneshop);
+        productImage.setImageResource(R.drawable.press_to_add_product_image);
+        shopLogo.setImageResource(R.drawable.noneshop);
 
         firebaseProductViewModel = new ViewModelProvider(this).get(FirebaseProductViewModel.class);
 
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
         currentGroupId = getIntent().getStringExtra("currentGroupId");
+        currentProductId = getIntent().getStringExtra("currentProductId");
         System.out.println("ID GRUPY GETINTENT: " + getIntent().getStringExtra("currentGroupId"));
 
+        loadProduct();
+
         //permission for camera
-        if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA)
+        if (ContextCompat.checkSelfPermission(EditProductActivity.this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddActivity.this, new String[]{
+            ActivityCompat.requestPermissions(EditProductActivity.this, new String[]{
                     Manifest.permission.CAMERA
             }, 100);
         }
@@ -128,8 +136,8 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == RESULT_OK) {
                             if (result.getData() != null) {
-                                productImageAdd.setImageBitmap((Bitmap) result.getData().getExtras().get("data"));
-                                System.out.println(result.getData() + "niger");
+                                productImage.setImageBitmap((Bitmap) result.getData().getExtras().get("data"));
+                                System.out.println(result.getData());
                             } else {
                                 System.out.println("bład kamery");
                             }
@@ -142,21 +150,22 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
-                        productImageAdd.setImageURI(result.getData().getData());
-                        productImageAdd.setMaxWidth(130);
-                        productImageAdd.setMinimumWidth(130);
-                        productImageAdd.setMaxHeight(130);
-                        productImageAdd.setMinimumHeight(130);
+                        productImage.setImageURI(result.getData().getData());
+                        productImage.setMaxWidth(130);
+                        productImage.setMinimumWidth(130);
+                        productImage.setMaxHeight(130);
+                        productImage.setMinimumHeight(130);
                         mImageURI = result.getData().getData();
                     } else {
                         System.out.println("błąd galerii");
                     }
                 });
         //loading dialog for
-        loadDialog(productNameAdd.getRootView());
+        loadDialog(productName.getRootView());
         //loading datepicker
         initDatePicker();
     }
+
 
     //picking product image
     public void onProductImageClick(View view) {
@@ -165,7 +174,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
 
     private void selectImage() {
         final CharSequence[] options = {"Zrób zdjęcie", "Wybierz z galerii", "Anuluj"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditProductActivity.this);
         builder.setTitle("Wybierz zdjęcie!");
         builder.setItems(options, (dialog, item) -> {
             if (options[item].equals("Zrób zdjęcie")) {
@@ -199,7 +208,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
             {
                 month++;
                 String date = makeDateString(day, month, year);
-                dateToBuyAddButton.setText(date);
+                dateToBuyButton.setText(date);
             }
         };
 
@@ -292,16 +301,14 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         shops.add(new Shop("Żabka", R.drawable.zabka));
     }
 
-        //adding product
-    public void onAddActivityAddButtonClick (View view){
-        if(!productNameAdd.getText().equals(null)) {
-            String productName = productNameAdd.getText().toString().trim();
-            int count = Integer.parseInt(countAdd.getText().toString().trim());
-            double maxPrice = Double.parseDouble(maxPriceAdd.getText().toString().trim());
-            String note = noteAdd.getText().toString().trim();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            String date = simpleDateFormat.format(new Date().getTime());
-            String dateToBuy = dateToBuyAddButton.getText().toString().trim();
+    //adding product
+    public void onEditButtonClick (View view){
+        if(!productName.getText().equals(null)) {
+            currentProduct.setName(productName.getText().toString().trim());
+            currentProduct.setCount(Integer.parseInt(count.getText().toString().trim()));
+            currentProduct.setMaxPrice(Double.parseDouble(maxPrice.getText().toString().trim()));
+            currentProduct.setNote(note.getText().toString().trim());
+            currentProduct.setDateToBuy(dateToBuyButton.getText().toString().trim());
             String priority;
             if(mediumPriorityButton.isChecked()) {
                 priority = "medium";
@@ -310,11 +317,11 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
             } else {
                 priority = "high";
             }
+            currentProduct.setPriority(priority);
+            System.out.println("ID GRUPY ADDACTIVITY: " + currentGroupId);
 
-            Product product = new Product(productName, count, maxPrice, note, chosenShop, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
-
-            firebaseProductViewModel.insertProduct(product, mImageURI, currentGroupId);
-            Intent intent = new Intent(AddActivity.this, MainActivity.class);
+            firebaseProductViewModel.update(currentProduct, mImageURI, currentGroupId);
+            Intent intent = new Intent(EditProductActivity.this, YourProductsActivity.class);
             intent.putExtra("currentGroupId", currentGroupId);
             startActivity(intent);
         } else {
@@ -323,12 +330,12 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     }
 
 
-        //cancel button
-        public void onAddActivityCancelButtonClick (View view){
-            Intent addActivityCancelIntent = new Intent(AddActivity.this, MainActivity.class);
-            addActivityCancelIntent.putExtra("currentGroupId", currentGroupId);
-            startActivity(addActivityCancelIntent);
-        }
+    //cancel button
+    public void onCancelButtonClick (View view){
+        Intent addActivityCancelIntent = new Intent(EditProductActivity.this, YourProductsActivity.class);
+        addActivityCancelIntent.putExtra("currentGroupId", currentGroupId);
+        startActivity(addActivityCancelIntent);
+    }
 
 
     @Override
@@ -336,51 +343,80 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         chosenShop = shop;
         switch(shop.getName()) {
             case "Auchan": {
-                shopLogoAdd.setImageResource(R.drawable.auchan);
+                shopLogo.setImageResource(R.drawable.auchan);
                 break;
             }
             case "Biedronka": {
-                shopLogoAdd.setImageResource(R.drawable.biedronka);
+                shopLogo.setImageResource(R.drawable.biedronka);
                 break;
             }
             case "Carrefour": {
-                shopLogoAdd.setImageResource(R.drawable.carrefour);
+                shopLogo.setImageResource(R.drawable.carrefour);
                 break;
             }
             case "Delikatesy-Centrum": {
-                shopLogoAdd.setImageResource(R.drawable.delikatesy);
+                shopLogo.setImageResource(R.drawable.delikatesy);
                 break;
             }
             case "Dino": {
-                shopLogoAdd.setImageResource(R.drawable.dino);
+                shopLogo.setImageResource(R.drawable.dino);
                 break;
             }
             case "Kaufland": {
-                shopLogoAdd.setImageResource(R.drawable.kaufland);
+                shopLogo.setImageResource(R.drawable.kaufland);
                 break;
             }
             case "Lewiatan": {
-                shopLogoAdd.setImageResource(R.drawable.lewiatan);
+                shopLogo.setImageResource(R.drawable.lewiatan);
                 break;
             }
             case "Lidl": {
-                shopLogoAdd.setImageResource(R.drawable.lidl);
+                shopLogo.setImageResource(R.drawable.lidl);
                 break;
             }
             case "Top Market": {
-                shopLogoAdd.setImageResource(R.drawable.topmarket);
+                shopLogo.setImageResource(R.drawable.topmarket);
                 break;
             }
             case "Żabka": {
-                shopLogoAdd.setImageResource(R.drawable.zabka);
+                shopLogo.setImageResource(R.drawable.zabka);
                 break;
             }
             default: {
-                shopLogoAdd.setImageResource(R.drawable.noneshop);
+                shopLogo.setImageResource(R.drawable.noneshop);
                 break;
             }
         }
 
         dialog.dismiss();
+    }
+
+    public void loadProduct() {
+        firebaseProductViewModel.getProduct(currentProductId, currentGroupId).observe(this, new Observer<Product>() {
+            @Override
+            public void onChanged(Product product) {
+                currentProduct = product;
+                if(product.getPhoto() != null) {
+                    Glide.with(getApplicationContext()).load(product.getPhoto()).into(productImage);
+                }
+                productName.setText(product.getName());
+                count.setText(Integer.toString(product.getCount()));
+                maxPrice.setText(Double.toString(product.getMaxPrice()));
+                note.setText(product.getNote());
+                dateToBuyButton.setText(product.getDateToBuy());
+                switch(product.getPriority()) {
+                    case "low":
+                        lowPriorityButton.setActivated(true);
+                        break;
+                    case "medium":
+                        mediumPriorityButton.setActivated(true);
+                        break;
+                    case "high":
+                        highPriorityButton.setActivated(true);
+                        break;
+                }
+                shopLogo.setImageResource(product.getShop().getShopLogo());
+            }
+        });
     }
 }

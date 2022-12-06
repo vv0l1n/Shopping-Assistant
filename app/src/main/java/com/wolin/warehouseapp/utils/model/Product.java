@@ -144,4 +144,23 @@ public class Product {
     public void setPriority(String priority) {
         this.priority = priority;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId='" + productId + '\'' +
+                ", name='" + name + '\'' +
+                ", count=" + count +
+                ", maxPrice=" + maxPrice +
+                ", note='" + note + '\'' +
+                ", shop=" + shop +
+                ", photo='" + photo + '\'' +
+                ", active=" + active +
+                ", date='" + date + '\'' +
+                ", dateToBuy='" + dateToBuy + '\'' +
+                ", priority='" + priority + '\'' +
+                ", owner='" + owner + '\'' +
+                ", buyer='" + buyer + '\'' +
+                '}';
+    }
 }

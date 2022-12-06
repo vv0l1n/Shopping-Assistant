@@ -41,4 +41,7 @@
     <string name="confirm">Potwierdź</string>
     <string name="passGroupName">Podaj nazwę grupy (nie możesz mieć dwóch grup o tej samej nazwie).</string>
     <string name="groupName">Nazwa grupy.</string>
+    <string name="edit">Edytuj</string>
+    <string name="delete">Usuń</string>
+    <string name="list">Lista zakupów</string>
 </resources>

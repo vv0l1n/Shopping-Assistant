@@ -28,6 +28,7 @@ import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.UserDetails;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FirebaseService {
@@ -107,7 +108,7 @@ public class FirebaseService {
                 }
             });
         } else {
-            firebaseFirestore.collection("Groups").document(groupId).collection("products").add(product);
+            firebaseFirestore.collection("Groups").document(groupId).collection("products").document(product.getProductId()).set(product);
         }
     }
 
@@ -132,6 +133,54 @@ public class FirebaseService {
     public void setBought(String productId, String uid, String groupId) {
         System.out.println("Zmieniam pole active: " + productId + " " + groupId);
         firebaseFirestore.collection("Groups").document(groupId).collection("products").document(productId).update("active", false, "buyer", uid);
+    }
+
+    public void deleteProduct(String productId, String uid, String groupId) {
+        firebaseFirestore.collection("Groups").document(groupId).collection("products").document(productId).delete();
+    }
+
+    public void getProduct(String productId, String groupId, MyCallback<Product> callback) {
+        firebaseFirestore.collection("Groups").document(groupId).collection("products").document(productId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    System.out.println(task.getResult().get("uid"));
+                    Product product = task.getResult().toObject(Product.class);
+                    callback.onCallback(product);
+                }
+            }
+        });
+    }
+
+    public void updateProduct(Product product, Uri uri, String groupId) {
+        System.out.println("ID GRUPY: " + groupId);
+        System.out.println("ZDJECIE: " + uri);
+        if (uri != null) {
+            StorageReference imageRef = storageReference.child(String.valueOf(System.currentTimeMillis()));
+            imageRef.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.isComplete()) {
+                            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    product.setPhoto(uri.toString());
+                                    HashMap shop = new HashMap<String, String>();
+                                    shop.put("name", product.getShop().getName());
+                                    shop.put("shopLogo", product.getShop().getShopLogo());
+                                    firebaseFirestore.collection("Groups").document(groupId).collection("products").document(product.getProductId()).set(product);
+                                    System.out.println("photo: " + product.getPhoto());
+                                    System.out.println("ZAKTUALIZOWANO PRODUKT: " + product);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        } else {
+            firebaseFirestore.collection("Groups").document(groupId).collection("products").document(product.getProductId()).set(product);
+        }
     }
 
 
@@ -202,22 +251,4 @@ public class FirebaseService {
         System.out.println("ZWRACAM LIVEDATA");
         return groupsMutable;
     }
-
-
-    public MutableLiveData<UserDetails> getMutableLiveDataUser() {
-        return mutableLiveDataUser;
-    }
-
-    public void setMutableLiveDataUser(MutableLiveData<UserDetails> mutableLiveDataUser) {
-        this.mutableLiveDataUser = mutableLiveDataUser;
-    }
-
-    public MutableLiveData<Group> getMutableLiveDataGroup() {
-        return mutableLiveDataGroup;
-    }
-
-    public void setMutableLiveDataGroup(MutableLiveData<Group> mutableLiveDataGroup) {
-        this.mutableLiveDataGroup = mutableLiveDataGroup;
-    }
-
 }

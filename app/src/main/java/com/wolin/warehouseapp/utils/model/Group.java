@@ -65,4 +65,15 @@ public class Group {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "groupId='" + groupId + '\'' +
+                ", name='" + name + '\'' +
+                ", owner='" + owner + '\'' +
+                ", members=" + members +
+                ", products=" + products +
+                '}';
+    }
 }

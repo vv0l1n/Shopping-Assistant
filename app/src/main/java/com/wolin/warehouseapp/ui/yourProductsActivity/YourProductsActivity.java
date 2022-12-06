@@ -1,14 +1,4 @@
-package com.wolin.warehouseapp.ui.mainActivity;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.wolin.warehouseapp.ui.yourProductsActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -20,29 +10,42 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
-import com.wolin.warehouseapp.ui.addActivity.AddActivity;
-import com.wolin.warehouseapp.ui.createGroupActivity.CreateGroupActivity;
-import com.wolin.warehouseapp.ui.loginActivity.LoginActivity;
-import com.wolin.warehouseapp.ui.mainActivity.adapter.productadapter.ProductAdapter;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseGroupViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
+import com.wolin.warehouseapp.ui.createGroupActivity.CreateGroupActivity;
+import com.wolin.warehouseapp.ui.editProductActivity.EditProductActivity;
+import com.wolin.warehouseapp.ui.loginActivity.LoginActivity;
+import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
-import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
+import com.wolin.warehouseapp.ui.yourProductsActivity.productadapter.ProductAdapterYPA;
+import com.wolin.warehouseapp.utils.listeners.ItemEditListener;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Group;
 import com.wolin.warehouseapp.utils.model.Product;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ItemSelectListener<Object>, NavigationView.OnNavigationItemSelectedListener {
+public class YourProductsActivity extends AppCompatActivity implements ItemSelectListener<Object>, ItemEditListener<Product>, NavigationView.OnNavigationItemSelectedListener {
 
     private Dialog dialog;
     private CheckBox onlyActive;
@@ -50,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     private ImageButton filterButton;
     private ImageButton groupButton;
     private RecyclerView productRecyclerView;
-    private Button addButton;
     private RecyclerView groupRecyclerView;
     private TextView actualGroupTextView;
     private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -59,34 +61,32 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     private DrawerLayout drawerLayout;
     private NavigationView navViev;
     private Toolbar toolbar;
-    private FirebaseAuth auth;
 
+    private FirebaseAuth auth;
 
     private FirebaseUserViewModel firebaseUserViewModel;
     private FirebaseProductViewModel firebaseProductViewModel;
     private FirebaseGroupViewModel firebaseGroupViewModel;
 
-    private ProductAdapter productAdapter;
+    private ProductAdapterYPA productAdapterYPA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        System.out.println("YPA");
+        setContentView(R.layout.your_products_activity);
 
-        System.out.println("MainActivity");
+        onlyActive = findViewById(R.id.onlyActiveYPA);
+        sortButton = findViewById(R.id.sortButtonYPA);
+        filterButton = findViewById(R.id.filterButtonYPA);
+        groupButton = findViewById(R.id.groupButtonYPA);
+        productRecyclerView = findViewById(R.id.recyclerViewYPA);
+        actualGroupTextView = findViewById(R.id.actualGroupTextViewYPA);
+        drawerLayout = findViewById(R.id.drawerLayoutYPA);
+        navViev = findViewById(R.id.nav_viewYPA);
+        toolbar = findViewById(R.id.toolbarYPA);
 
         auth = FirebaseAuth.getInstance();
-
-        onlyActive = findViewById(R.id.onlyActive);
-        sortButton = findViewById(R.id.sortButton);
-        filterButton = findViewById(R.id.filterButton);
-        groupButton = findViewById(R.id.groupButton);
-        productRecyclerView = findViewById(R.id.recyclerView);
-        addButton = findViewById(R.id.addButton);
-        actualGroupTextView = findViewById(R.id.actualGroupTextView);
-        drawerLayout = findViewById(R.id.drawerLayout);
-        navViev = findViewById(R.id.nav_view);
-        toolbar = findViewById(R.id.toolbar);
 
         currentGroup = new Group("brak", "brak");
         currentGroup.setProducts(new ArrayList<>());
@@ -96,12 +96,12 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
-        productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
-        productRecyclerView.setAdapter(productAdapter);
+        productAdapterYPA = new ProductAdapterYPA(this, currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
+        productRecyclerView.setAdapter(productAdapterYPA);
 
         actualGroupTextView.setText("Aktualna grupa: brak");
 
-        loadDialog(addButton.getRootView());
+        loadDialog(filterButton.getRootView());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -110,15 +110,6 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         navViev.setNavigationItemSelectedListener(this);
     }
 
-    public void onMainActivityAddButtonClick(View view) {
-        if(!currentGroup.getName().equals("brak")) {
-            Intent addIntent = new Intent(MainActivity.this, AddActivity.class);
-            addIntent.putExtra("currentGroupId", currentGroup.getId());
-            startActivity(addIntent);
-        } else {
-            Toast.makeText(this, "Nie możesz dodać produktu, jeżeli nie jesteś w żadnej grupie.", Toast.LENGTH_LONG);
-        }
-    }
 
     public void onGroupButtonCick(View view) {
         dialog.show();
@@ -136,10 +127,6 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
 
         firebaseGroupViewModel.getGroups(currentFirebaseUser.getUid()).observe(this, (List<Group> groups) -> {
-            System.out.println("change");
-            for(Group group : groups) {
-                System.out.println(group);
-            }
             if(groups != null && groups.size() > 0) {
                 String lastGroupId = getIntent().getStringExtra("currentGroupId");
                 if(lastGroupId != null) {
@@ -153,17 +140,14 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
                 } else {
                     currentGroup = groups.get(0);
                 }
+
                 updateCurrentGroupName();
                 adapter.updateData(groups);
                 adapter.notifyDataSetChanged();
-                productAdapter.updateData(currentGroup.getProducts(), currentGroup.getId());
-                //productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
-                System.out.println("PRODUKTY: ");
-                for(Product product : currentGroup.getProducts()) {
-                    System.out.println(product);
-                }
-                productAdapter.notifyDataSetChanged();
-                //productRecyclerView.setAdapter(productAdapter);
+                productAdapterYPA.updateData(currentGroup.getProducts(), currentGroup.getId());
+                productAdapterYPA.notifyDataSetChanged();
+                //productAdapterYPA = new ProductAdapterYPA(this, currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
+                productRecyclerView.setAdapter(productAdapterYPA);
                 productRecyclerView.refreshDrawableState();
                 productRecyclerView.getRecycledViewPool().clear();
             }
@@ -181,8 +165,8 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
             int position = (int) o;
             currentGroup = userGroups.get(position);
             updateCurrentGroupName();
-            productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
-            productRecyclerView.setAdapter(productAdapter);
+            productAdapterYPA = new ProductAdapterYPA(this, currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
+            productRecyclerView.setAdapter(productAdapterYPA);
             productRecyclerView.refreshDrawableState();
             productRecyclerView.getRecycledViewPool().clear();
             dialog.dismiss();
@@ -205,20 +189,30 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_add_group:
-                Intent intentAdd = new Intent(MainActivity.this, CreateGroupActivity.class);
-                startActivity(intentAdd);
+                Intent addGroup = new Intent(YourProductsActivity.this, CreateGroupActivity.class);
+                startActivity(addGroup);
+                break;
             case R.id.nav_your_products:
-                Intent intentYP = new Intent(MainActivity.this, YourProductsActivity.class);
-                intentYP.putExtra("currentGroupId", currentGroup.getId());
-                startActivity(intentYP);
                 break;
             case R.id.nav_list:
+                Intent main = new Intent(YourProductsActivity.this, MainActivity.class);
+                main.putExtra("currentGroupId", currentGroup.getId());
+                finish();
+                startActivity(main);
                 break;
             case R.id.nav_logout:
                 auth.signOut();
-                Intent intentLogOut = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intentLogOut = new Intent(YourProductsActivity.this, LoginActivity.class);
                 startActivity(intentLogOut);
         }
         return true;
+    }
+
+    @Override
+    public void onItemEdit(Product item) {
+        Intent editIntent = new Intent(YourProductsActivity.this, EditProductActivity.class);
+        editIntent.putExtra("currentGroupId", currentGroup.getId());
+        editIntent.putExtra("currentProductId", item.getProductId());
+        startActivity(editIntent);
     }
 }

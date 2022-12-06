@@ -2,6 +2,7 @@ package com.wolin.warehouseapp.firebase.viewmodel;
 
 import android.net.Uri;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.wolin.warehouseapp.firebase.repo.FirebaseService;
+import com.wolin.warehouseapp.firebase.repo.MyCallback;
 import com.wolin.warehouseapp.firebase.repo.OnDataUploaded;
 import com.wolin.warehouseapp.utils.model.Product;
 
@@ -17,19 +19,13 @@ import java.util.List;
 public class FirebaseProductViewModel extends ViewModel {
 
     private FirebaseService firebaseService;
-    private MutableLiveData<List<Product>> productListMutableLiveData;
-
-    public MutableLiveData<List<Product>> getProductListMutableLiveData() {
-        return productListMutableLiveData;
-    }
+    private MutableLiveData<Product> productLiveData;
 
     public FirebaseProductViewModel(){
         firebaseService = FirebaseService.getInstance();
-        productListMutableLiveData = new MutableLiveData<>();
     }
 
     public void insertProduct(Product product, Uri uri, String groupId){
-        System.out.println("GROUP ID VIEWMODEL: " + groupId);
         firebaseService.insertProduct(product, uri, groupId);
     }
 
@@ -37,9 +33,28 @@ public class FirebaseProductViewModel extends ViewModel {
         firebaseService.setBought(productId, uid, groupId);
     }
 
+    public void deleteProduct(String productId, String uid, String groupId) {
+        firebaseService.deleteProduct(productId, uid, groupId);
+    }
 
-    /*@Override
-    public void onDataUpload(Task<DocumentReference> task) {
-        productListMutableLiveData.setValue(task);
-    }*/
+    public LiveData<Product> getProduct(String productId, String groupId) {
+        if(productLiveData == null) {
+            productLiveData = new MutableLiveData<Product>();
+            loadProduct(productId, groupId);
+        }
+        return productLiveData;
+    }
+
+    private void loadProduct(String productId, String groupId) {
+        firebaseService.getProduct(productId, groupId, new MyCallback<Product>() {
+            @Override
+            public void onCallback(Product data) {
+                productLiveData.postValue(data);
+            }
+        });
+    }
+
+    public void update(Product product, Uri mImageURI, String currentGroupId) {
+        firebaseService.updateProduct(product, mImageURI, currentGroupId);
+    }
 }

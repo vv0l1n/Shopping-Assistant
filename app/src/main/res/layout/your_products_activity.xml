@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drawerLayout"
+    android:id="@+id/drawerLayoutYPA"
     tools:context=".ui.mainActivity.MainActivity"
     android:fitsSystemWindows="true">
 
@@ -12,32 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <TextView
-            android:id="@+id/actualGroupTextView"
+            android:id="@+id/actualGroupTextViewYPA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/list"
-            android:textSize="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/recyclerViewYPA"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
-            android:layout_marginBottom="52dp"
+            android:layout_height="600dp"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -45,21 +35,8 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-         <Button
-        android:id="@+id/addButton"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
-        android:onClick="onMainActivityAddButtonClick"
-        android:text="@string/add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
-
-
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbarYPA"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorPrimary"
@@ -75,37 +52,37 @@
 
 
                 <CheckBox
-                    android:id="@+id/onlyActive"
+                    android:id="@+id/onlyActiveYPA"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
                     android:text="@string/onlyActive"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/sortButton"
+                    app:layout_constraintEnd_toStartOf="@+id/sortButtonYPA"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/sortButton"
+                    android:id="@+id/sortButtonYPA"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/filterButton"
+                    app:layout_constraintEnd_toStartOf="@+id/filterButtonYPA"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageButton
-                    android:id="@+id/filterButton"
+                    android:id="@+id/filterButtonYPA"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/groupButton"
+                    app:layout_constraintEnd_toStartOf="@+id/groupButtonYPA"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageButton
-                    android:id="@+id/groupButton"
+                    android:id="@+id/groupButtonYPA"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
@@ -118,14 +95,26 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/yourProducts"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarYPA" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:id="@+id/nav_view"
+        android:id="@+id/nav_viewYPA"
         app:headerLayout="@layout/header"
         app:menu="@menu/main_menu"/>
 
