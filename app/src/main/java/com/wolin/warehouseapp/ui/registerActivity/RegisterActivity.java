@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.ui.loginActivity.LoginActivity;
-import com.wolin.warehouseapp.utils.model.UserDetails;
+import com.wolin.warehouseapp.utils.model.User;
 
 import java.util.regex.Pattern;
 
@@ -95,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    UserDetails user = new UserDetails(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr, null);
+                    User user = new User(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr, null);
                     FirebaseUser firebaseUser = auth.getCurrentUser();
                     firebaseUserViewModel.registerUser(user);
                     Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);

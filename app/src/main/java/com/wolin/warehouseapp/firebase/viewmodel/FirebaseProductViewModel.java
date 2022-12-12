@@ -7,14 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.wolin.warehouseapp.firebase.repo.FirebaseService;
 import com.wolin.warehouseapp.firebase.repo.MyCallback;
-import com.wolin.warehouseapp.firebase.repo.OnDataUploaded;
 import com.wolin.warehouseapp.utils.model.Product;
 
-import java.util.List;
 
 public class FirebaseProductViewModel extends ViewModel {
 

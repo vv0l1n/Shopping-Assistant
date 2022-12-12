@@ -44,4 +44,10 @@
     <string name="edit">Edytuj</string>
     <string name="delete">Usuń</string>
     <string name="list">Lista zakupów</string>
+    <string name="selectGroup">Wybierz grupę, którą chcesz zarządzać.</string>
+    <string name="youHaveNoGroups">Nie jesteś właścicielem żadnej grupy.</string>
+    <string name="back">Wróć</string>
+    <string name="invite">Zaproś do grupy</string>
+    <string name="leave">Opuść grupę</string>
+    <string name="deleteGroup">Usuń grupę</string>
 </resources>

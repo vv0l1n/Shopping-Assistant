@@ -1,14 +1,5 @@
 package com.wolin.warehouseapp.utils.model;
 
-
-import android.net.Uri;
-
-import androidx.annotation.NonNull;
-
-import com.google.firebase.database.Exclude;
-
-import java.net.URL;
-
 public class Product {
 
     private String productId;
@@ -16,7 +7,7 @@ public class Product {
     private int count;
     private double maxPrice;
     private String note;
-    private com.wolin.warehouseapp.utils.model.Shop shop;
+    private Shop shop;
     private String photo;
     private boolean active;
     private String date;
@@ -77,8 +68,8 @@ public class Product {
         return shop;
     }
 
-    public void setShop(Shop SHOP) {
-        this.shop = SHOP;
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public String getPhoto() {

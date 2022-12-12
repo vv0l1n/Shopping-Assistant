@@ -34,6 +34,7 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseGroupViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
+import com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.SelectGroupActivity;
 import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Group;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.activity_main);
 
         System.out.println("MainActivity");
 
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
-        productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
+        productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
         productRecyclerView.setAdapter(productAdapter);
 
         actualGroupTextView.setText("Aktualna grupa: brak");
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.main_activity_group_dialog);
+        dialog.setContentView(R.layout.main_group_dialog);
 
         MainActivityGroupAdapter adapter = new MainActivityGroupAdapter(this, userGroups, this);
         groupRecyclerView = dialog.findViewById(R.id.groupRecyclerView);
@@ -157,13 +158,11 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
                 adapter.updateData(groups);
                 adapter.notifyDataSetChanged();
                 productAdapter.updateData(currentGroup.getProducts(), currentGroup.getId());
-                //productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
                 System.out.println("PRODUKTY: ");
                 for(Product product : currentGroup.getProducts()) {
                     System.out.println(product);
                 }
                 productAdapter.notifyDataSetChanged();
-                //productRecyclerView.setAdapter(productAdapter);
                 productRecyclerView.refreshDrawableState();
                 productRecyclerView.getRecycledViewPool().clear();
             }
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
             int position = (int) o;
             currentGroup = userGroups.get(position);
             updateCurrentGroupName();
-            productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid());
+            productAdapter = new ProductAdapter(this, currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
             productRecyclerView.setAdapter(productAdapter);
             productRecyclerView.refreshDrawableState();
             productRecyclerView.getRecycledViewPool().clear();
@@ -213,6 +212,10 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
                 startActivity(intentYP);
                 break;
             case R.id.nav_list:
+                break;
+            case R.id.nav_manage_group:
+                Intent intentManageGroups = new Intent(MainActivity.this, SelectGroupActivity.class);
+                startActivity(intentManageGroups);
                 break;
             case R.id.nav_logout:
                 auth.signOut();

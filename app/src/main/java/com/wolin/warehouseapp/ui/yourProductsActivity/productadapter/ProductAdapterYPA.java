@@ -1,6 +1,7 @@
 package com.wolin.warehouseapp.ui.yourProductsActivity.productadapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,9 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
     private FirebaseProductViewModel firebaseProductViewModel;
     private String uid;
     private String groupId;
+    private Resources resources;
 
-    public ProductAdapterYPA(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, ItemEditListener<Product> itemEditListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid) {
+    public ProductAdapterYPA(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, ItemEditListener<Product> itemEditListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid, Resources resources) {
         this.context = context;
         this.items = items;
         this.itemSelectListener = itemSelectListener;
@@ -35,6 +37,7 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
         this.firebaseProductViewModel = firebaseProductViewModel;
         this.groupId = groupId;
         this.uid = uid;
+        this.resources = resources;
     }
 
     @NonNull
@@ -56,7 +59,7 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
             System.out.println("3");
             holder.getProductName().setText(product.getName());
             holder.getCount().setText(Integer.toString(product.getCount()));
-            holder.getShopLogo().setImageResource(product.getShop().getShopLogo());
+            holder.getShopLogo().setImageResource(resources.getIdentifier(product.getShop().getShopLogo(), "drawable", "com.wolin.warehouseapp"));
             if(!product.isActive()) {
                 holder.getBackground().setBackgroundResource(R.color.lightRed);
                 holder.getEditButton().setVisibility(View.GONE);

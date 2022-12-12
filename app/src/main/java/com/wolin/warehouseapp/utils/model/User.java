@@ -1,19 +1,9 @@
 package com.wolin.warehouseapp.utils.model;
 
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.auth.User;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class UserDetails {
+public class User {
 
     private String uid;
     private String email;
@@ -21,9 +11,9 @@ public class UserDetails {
     private String lastName;
     private List<String> groups;
 
-    public UserDetails() {}
+    public User() {}
     
-    public UserDetails(String uid, String email, String name, String lastName, List<String> groups) {
+    public User(String uid, String email, String name, String lastName, List<String> groups) {
         this.uid = uid;
         this.email = email;
         this.name = name;
@@ -74,7 +64,7 @@ public class UserDetails {
 
     @Override
     public String toString() {
-        return "UserDetails{" +
+        return "User{" +
                 "uid='" + uid + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +

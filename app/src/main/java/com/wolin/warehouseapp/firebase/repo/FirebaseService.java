@@ -19,13 +19,12 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.wolin.warehouseapp.utils.model.Group;
 import com.wolin.warehouseapp.utils.model.Product;
-import com.wolin.warehouseapp.utils.model.UserDetails;
+import com.wolin.warehouseapp.utils.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +35,7 @@ public class FirebaseService {
     private static FirebaseService firebaseService;
     private static FirebaseFirestore firebaseFirestore;
     DocumentReference userRef;
-    private MutableLiveData<UserDetails> mutableLiveDataUser = new MutableLiveData<>();
+    private MutableLiveData<User> mutableLiveDataUser = new MutableLiveData<>();
     private MutableLiveData<Group> mutableLiveDataGroup = new MutableLiveData<>();
     private MutableLiveData<List<Group>> groupsMutable = new MutableLiveData<>();
     private Product product;
@@ -56,27 +55,32 @@ public class FirebaseService {
 
     //user
 
-    public void getUser(String uid, MyCallback<UserDetails> callback) {
-                    System.out.println("6 " + uid);
-                    firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                System.out.println(task.getResult().get("uid"));
-                                UserDetails userDetails = task.getResult().toObject(UserDetails.class);
-                                callback.onCallback(userDetails);
-                            }
-                        }
-                    });
-            System.out.println("8");
+    public void getUser(String uid, MyCallback<User> callback) {
+        firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User user = task.getResult().toObject(User.class);
+                    callback.onCallback(user);
+                }
+            }
+        });
     }
 
 
-    public void registerUser(UserDetails user) {
+
+    public void registerUser(User user) {
         firebaseFirestore.collection("Users").document(user.getUid()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
+                    //add his email to EmailToID collection
+                    HashMap<String, String> uid = new HashMap<>();
+                    uid.put("uid", user.getUid());
+                    firebaseFirestore.collection("EmailToID").document(user.getEmail()).set(uid);
+
+                    //create his private list
+                    //empty list is because its not main screen so we dont have to pass current groups
                     List<String> emptyList = new ArrayList<>();
                     addGroup(new Group("Prywatna lista", user.getUid()), emptyList);
                 }
@@ -220,7 +224,7 @@ public class FirebaseService {
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 System.out.println("POBRANO UZYTKOWNIKA");
                 if(value.exists()) {
-                    UserDetails user = value.toObject(UserDetails.class);
+                    User user = value.toObject(User.class);
                     List<Group> groupsList = new ArrayList<>();
                     System.out.println("GRUPY UZYTKOWNIKA: " + user.getGroups());
                     groupsMutable.postValue(groupsList);
@@ -250,5 +254,69 @@ public class FirebaseService {
         });
         System.out.println("ZWRACAM LIVEDATA");
         return groupsMutable;
+    }
+
+    public void deleteFromGroup(String uid, String groupId) {
+        //deleting from User collection
+        firebaseFirestore.collection("Users").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    ArrayList<String> newUserGroups = new ArrayList<>();
+                    User user = task.getResult().toObject(User.class);
+                    for(String groupIdLoop : user.getGroups()) {
+                        if(!groupId.equals(groupIdLoop)) {
+                            newUserGroups.add(groupIdLoop);
+                        }
+                    }
+                    firebaseFirestore.collection("Users").document(uid).update("groups", newUserGroups);
+                }
+            }
+        });
+        //deleting from Groups collection
+        firebaseFirestore.collection("Groups").document(groupId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    ArrayList<String> newMembers = new ArrayList<>();
+                    Group group = task.getResult().toObject(Group.class);
+                    for(String memberId : group.getMembers()) {
+                        if(!memberId.equals(uid)) {
+                            newMembers.add(memberId);
+                        }
+                    }
+                    firebaseFirestore.collection("Groups").document(groupId).update("members", newMembers);
+                }
+            }
+        });
+    }
+
+    public void deleteUserProductsInGroup(String uid, String groupId) {
+        firebaseFirestore.collection("Groups").document(groupId).collection("products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isComplete()) {
+                    if(task.isSuccessful()) {
+                        List<Product> products = task.getResult().toObjects(Product.class);
+                        for(Product product : products) {
+                            if(product.getOwner().equals(uid)) {
+                                firebaseFirestore.collection("Groups").document(groupId).collection("products").document(product.getProductId()).delete();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void getSimpleGroup(String groupId, MyCallback<Group> callback) {
+        firebaseFirestore.collection("Groups").document(groupId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    callback.onCallback(task.getResult().toObject(Group.class));
+                }
+            }
+        });
     }
 }

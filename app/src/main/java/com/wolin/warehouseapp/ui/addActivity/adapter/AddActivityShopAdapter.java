@@ -1,6 +1,7 @@
 package com.wolin.warehouseapp.ui.addActivity.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,22 +20,24 @@ public class AddActivityShopAdapter  extends RecyclerView.Adapter<AddActivitySho
     private Context context;
     private List<Shop> shops;
     private ItemSelectListener<Shop> itemSelectListener;
+    private Resources resources;
 
-    public AddActivityShopAdapter(Context context, List<Shop> shops, ItemSelectListener<Shop> itemSelectListener) {
+    public AddActivityShopAdapter(Context context, List<Shop> shops, ItemSelectListener<Shop> itemSelectListener, Resources resources) {
         this.context = context;
         this.shops = shops;
         this.itemSelectListener = itemSelectListener;
+        this.resources = resources;
     }
 
     @NonNull
     @Override
     public AddActivityShopViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new AddActivityShopViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.add_activity_shop_dialog_item, parent, false));
+        return new AddActivityShopViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.shop_dialog_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull AddActivityShopViewHolder holder, int position) {
-        holder.getAddActivityShopLogo().setImageResource(shops.get(position).getShopLogo());
+        holder.getAddActivityShopLogo().setImageResource(resources.getIdentifier(shops.get(position).getShopLogo(), "drawable", "com.wolin.warehouseapp"));
         holder.getAddActivityShopName().setText(shops.get(position).getName());
 
         holder.getAddActivityWholeItem().setOnClickListener(new View.OnClickListener() {

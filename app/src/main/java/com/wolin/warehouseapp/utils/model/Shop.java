@@ -2,11 +2,11 @@ package com.wolin.warehouseapp.utils.model;
 
 public class Shop {
     private String name;
-    private int shopLogo;
+    private String shopLogo;
 
     public Shop(){}
 
-    public Shop(String name, int shopLogo) {
+    public Shop(String name, String shopLogo) {
         this.name = name;
         this.shopLogo = shopLogo;
     }
@@ -19,11 +19,19 @@ public class Shop {
         this.name = name;
     }
 
-    public int getShopLogo() {
+    public String getShopLogo() {
         return shopLogo;
     }
 
-    public void setShopLogo(int shopLogo) {
+    public void setShopLogo(String shopLogo) {
         this.shopLogo = shopLogo;
+    }
+
+    @Override
+    public String toString() {
+        return "Shop{" +
+                "name='" + name + '\'' +
+                ", shopLogo=" + shopLogo +
+                '}';
     }
 }

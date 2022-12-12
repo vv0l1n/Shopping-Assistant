@@ -18,6 +18,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.addActivity.adapter.AddActivityShopAdapter;
+import com.wolin.warehouseapp.utils.common.TimeFormatter;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.Shop;
@@ -87,7 +89,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_product_activity);
+        setContentView(R.layout.activity_add_product);
         productImageAdd = findViewById(R.id.productImageAdd);
         productNameAdd = findViewById(R.id.productNameAdd);
         countAdd = findViewById(R.id.countAdd);
@@ -198,7 +200,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
             public void onDateSet(DatePicker datePicker, int year, int month, int day)
             {
                 month++;
-                String date = makeDateString(day, month, year);
+                String date = TimeFormatter.makeDateString(day, month, year);
                 dateToBuyAddButton.setText(date);
             }
         };
@@ -216,42 +218,6 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
 
     }
 
-    private String makeDateString(int day, int month, int year)
-    {
-        return getMonthFormat(month) + " " + day + " " + year;
-    }
-
-
-    private String getMonthFormat(int month)
-    {
-        if(month == 1)
-            return "JAN";
-        if(month == 2)
-            return "FEB";
-        if(month == 3)
-            return "MAR";
-        if(month == 4)
-            return "APR";
-        if(month == 5)
-            return "MAY";
-        if(month == 6)
-            return "JUN";
-        if(month == 7)
-            return "JUL";
-        if(month == 8)
-            return "AUG";
-        if(month == 9)
-            return "SEP";
-        if(month == 10)
-            return "OCT";
-        if(month == 11)
-            return "NOV";
-        if(month == 12)
-            return "DEC";
-
-        //default should never happen
-        return "JAN";
-    }
 
     //picking shop
     public void onShopLogoClick(View view) {
@@ -263,33 +229,35 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.add_activity_shop_dialog);
+        dialog.setContentView(R.layout.shop_dialog);
 
         //add shops
         addData();
 
-        AddActivityShopAdapter adapter = new AddActivityShopAdapter(this ,shops, this);
+        AddActivityShopAdapter adapter = new AddActivityShopAdapter(this ,shops, this, getResources());
 
         addActivityShopRecyclerView = dialog.findViewById(R.id.addActivityShopRecyclerView);
         addActivityShopRecyclerView.setAdapter(adapter);
         addActivityShopRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
     }
 
+
     public void addData() {
+        Resources resources = getResources();
         shops = new ArrayList<>();
-        Shop dowolny = new Shop("Dowolny", R.drawable.noneshop);
-        chosenShop = dowolny;
-        shops.add(dowolny);
-        shops.add(new Shop("Auchan", R.drawable.auchan));
-        shops.add(new Shop("Biedronka", R.drawable.biedronka));
-        shops.add(new Shop("Carrefour", R.drawable.carrefour));
-        shops.add(new Shop("Delikatesy-Centrum", R.drawable.delikatesy));
-        shops.add(new Shop("Dino", R.drawable.dino));
-        shops.add(new Shop("Kaufland", R.drawable.kaufland));
-        shops.add(new Shop("Lewiatan", R.drawable.lewiatan));
-        shops.add(new Shop("Lidl", R.drawable.lidl));
-        shops.add(new Shop("Top Market", R.drawable.topmarket));
-        shops.add(new Shop("Żabka", R.drawable.zabka));
+        Shop defaultShop = new Shop("Dowolny", resources.getResourceEntryName(R.drawable.noneshop));
+        chosenShop = defaultShop;
+        shops.add(defaultShop);
+        shops.add(new Shop("Auchan", resources.getResourceEntryName(R.drawable.auchan)));
+        shops.add(new Shop("Biedronka", resources.getResourceEntryName(R.drawable.biedronka)));
+        shops.add(new Shop("Carrefour", resources.getResourceEntryName(R.drawable.carrefour)));
+        shops.add(new Shop("Delikatesy-Centrum", resources.getResourceEntryName(R.drawable.delikatesy)));
+        shops.add(new Shop("Dino", resources.getResourceEntryName(R.drawable.dino)));
+        shops.add(new Shop("Kaufland", resources.getResourceEntryName(R.drawable.kaufland)));
+        shops.add(new Shop("Lewiatan", resources.getResourceEntryName(R.drawable.lewiatan)));
+        shops.add(new Shop("Lidl", resources.getResourceEntryName(R.drawable.lidl)));
+        shops.add(new Shop("Top Market", resources.getResourceEntryName(R.drawable.topmarket)));
+        shops.add(new Shop("Żabka", resources.getResourceEntryName(R.drawable.zabka)));
     }
 
         //adding product

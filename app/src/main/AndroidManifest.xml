@@ -96,6 +96,8 @@
         <activity android:name="com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity android:name="com.wolin.warehouseapp.ui.editProductActivity.EditProductActivity" />
+        <activity android:name="com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.SelectGroupActivity" />
+        <activity android:name="com.wolin.warehouseapp.ui.manageGroupActivities.manageGroupActivity.ManageGroupActivity" />
     </application>
 
 </manifest>

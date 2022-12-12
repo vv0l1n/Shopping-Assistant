@@ -19,6 +19,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,17 +40,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
-import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.addActivity.adapter.AddActivityShopAdapter;
 import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
+import com.wolin.warehouseapp.utils.common.ShopLoader;
+import com.wolin.warehouseapp.utils.common.TimeFormatter;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.Shop;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -82,17 +81,19 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
     private Product currentProduct;
 
     private Shop chosenShop;
-    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private Uri mImageURI;
     private FirebaseProductViewModel firebaseProductViewModel;
 
     private FirebaseUserViewModel firebaseUserViewModel;
 
+    private Resources resources;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_product_activity);
+        setContentView(R.layout.activity_edit_product);
         productImage = findViewById(R.id.productImageAddE);
         productName = findViewById(R.id.productNameAddE);
         count = findViewById(R.id.countAddE);
@@ -110,6 +111,8 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
 
         productImage.setImageResource(R.drawable.press_to_add_product_image);
         shopLogo.setImageResource(R.drawable.noneshop);
+
+        resources = getResources();
 
         firebaseProductViewModel = new ViewModelProvider(this).get(FirebaseProductViewModel.class);
 
@@ -207,7 +210,7 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
             public void onDateSet(DatePicker datePicker, int year, int month, int day)
             {
                 month++;
-                String date = makeDateString(day, month, year);
+                String date = TimeFormatter.makeDateString(day, month, year);
                 dateToBuyButton.setText(date);
             }
         };
@@ -225,43 +228,6 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
 
     }
 
-    private String makeDateString(int day, int month, int year)
-    {
-        return getMonthFormat(month) + " " + day + " " + year;
-    }
-
-
-    private String getMonthFormat(int month)
-    {
-        if(month == 1)
-            return "JAN";
-        if(month == 2)
-            return "FEB";
-        if(month == 3)
-            return "MAR";
-        if(month == 4)
-            return "APR";
-        if(month == 5)
-            return "MAY";
-        if(month == 6)
-            return "JUN";
-        if(month == 7)
-            return "JUL";
-        if(month == 8)
-            return "AUG";
-        if(month == 9)
-            return "SEP";
-        if(month == 10)
-            return "OCT";
-        if(month == 11)
-            return "NOV";
-        if(month == 12)
-            return "DEC";
-
-        //default should never happen
-        return "JAN";
-    }
-
     //picking shop
     public void onShopLogoClick(View view) {
         dialog.show();
@@ -272,33 +238,17 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.add_activity_shop_dialog);
+        dialog.setContentView(R.layout.shop_dialog);
 
         //add shops
-        addData();
+        shops = ShopLoader.loadShop(getResources());
+        //gets first shop ("Dowolny")
 
-        AddActivityShopAdapter adapter = new AddActivityShopAdapter(this ,shops, this);
+        AddActivityShopAdapter adapter = new AddActivityShopAdapter(this ,shops, this, getResources());
 
         addActivityShopRecyclerView = dialog.findViewById(R.id.addActivityShopRecyclerView);
         addActivityShopRecyclerView.setAdapter(adapter);
         addActivityShopRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
-    }
-
-    public void addData() {
-        shops = new ArrayList<>();
-        Shop dowolny = new Shop("Dowolny", R.drawable.noneshop);
-        chosenShop = dowolny;
-        shops.add(dowolny);
-        shops.add(new Shop("Auchan", R.drawable.auchan));
-        shops.add(new Shop("Biedronka", R.drawable.biedronka));
-        shops.add(new Shop("Carrefour", R.drawable.carrefour));
-        shops.add(new Shop("Delikatesy-Centrum", R.drawable.delikatesy));
-        shops.add(new Shop("Dino", R.drawable.dino));
-        shops.add(new Shop("Kaufland", R.drawable.kaufland));
-        shops.add(new Shop("Lewiatan", R.drawable.lewiatan));
-        shops.add(new Shop("Lidl", R.drawable.lidl));
-        shops.add(new Shop("Top Market", R.drawable.topmarket));
-        shops.add(new Shop("Żabka", R.drawable.zabka));
     }
 
     //adding product
@@ -318,7 +268,7 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
                 priority = "high";
             }
             currentProduct.setPriority(priority);
-            System.out.println("ID GRUPY ADDACTIVITY: " + currentGroupId);
+            currentProduct.setShop(chosenShop);
 
             firebaseProductViewModel.update(currentProduct, mImageURI, currentGroupId);
             Intent intent = new Intent(EditProductActivity.this, YourProductsActivity.class);
@@ -415,7 +365,14 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
                         highPriorityButton.setActivated(true);
                         break;
                 }
-                shopLogo.setImageResource(product.getShop().getShopLogo());
+
+                shopLogo.setImageResource(resources.getIdentifier(product.getShop().getShopLogo(), "drawable", "com.wolin.warehouseapp"));
+                for(Shop shop : shops) {
+                    if(product.getShop().getName().equals(shop.getName())) {
+                        chosenShop = shop;
+                        break;
+                    }
+                }
             }
         });
     }

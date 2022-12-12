@@ -1,6 +1,7 @@
 package com.wolin.warehouseapp.ui.mainActivity.adapter.productadapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -24,20 +25,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
     private FirebaseProductViewModel firebaseProductViewModel;
     private String uid;
     private String groupId;
+    private Resources resources;
 
-    public ProductAdapter(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid) {
+    public ProductAdapter(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid, Resources resources) {
         this.context = context;
         this.items = items;
         this.itemSelectListener = itemSelectListener;
         this.firebaseProductViewModel = firebaseProductViewModel;
         this.groupId = groupId;
         this.uid = uid;
+        this.resources = resources;
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProductViewHolder(LayoutInflater.from(context).inflate(R.layout.main_item_view, parent, false));
+        return new ProductViewHolder(LayoutInflater.from(context).inflate(R.layout.main_product_item, parent, false));
     }
 
     @Override
@@ -52,7 +55,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
         System.out.println("3");
         holder.getProductName().setText(product.getName());
         holder.getCount().setText(Integer.toString(product.getCount()));
-        holder.getShopLogo().setImageResource(product.getShop().getShopLogo());
+        holder.getShopLogo().setImageResource(resources.getIdentifier(product.getShop().getShopLogo(), "drawable", "com.wolin.warehouseapp"));
+        System.out.println("Logo sklepu " + product.getShop().getName() + product.getShop().getShopLogo());
         holder.getBoughtButton().setOnClickListener(view -> {
             firebaseProductViewModel.setBought(product.getProductId(), uid, groupId);
         });
