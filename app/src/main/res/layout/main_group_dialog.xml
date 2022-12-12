@@ -9,7 +9,7 @@
         android:id="@+id/groupRecyclerView"
         android:layout_width="240dp"
         android:layout_height="272dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
