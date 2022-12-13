@@ -6,15 +6,15 @@
         <menu>
             <item
                 android:id="@+id/nav_profile"
-                android:icon="@drawable/noneshop"
+                android:icon="@drawable/icon_profil"
                 android:title="@string/profile"></item>
             <item
                 android:id="@+id/nav_list"
-                android:icon="@drawable/noneshop"
+                android:icon="@drawable/icon_shoppinglist"
                 android:title="@string/productslist"></item>
             <item
                 android:id="@+id/nav_your_products"
-                android:icon="@drawable/noneshop"
+                android:icon="@drawable/icon_yourproducts"
                 android:title="@string/yourProducts"></item>
         </menu>
     </item>
@@ -23,15 +23,15 @@
         <menu>
             <item
                 android:id="@+id/nav_add_group"
-                android:icon="@drawable/noneshop"
+                android:icon="@drawable/icon_group"
                 android:title="@string/createGroup"></item>
             <item
                 android:id="@+id/nav_manage_group"
-                android:icon="@drawable/noneshop"
+                android:icon="@drawable/icon_managegroup"
                 android:title="@string/manageGroup"></item>
             <item
                 android:id="@+id/nav_invites"
-                android:icon="@drawable/noneshop"
+                android:icon="@drawable/icon_invites"
                 android:title="@string/invitesToGroup"></item>
         </menu>
     </item>
@@ -39,7 +39,7 @@
         <menu>
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/noneshop"
+                android:icon="@drawable/icon_logout"
                 android:title="@string/logout"></item>
         </menu>
     </item>
