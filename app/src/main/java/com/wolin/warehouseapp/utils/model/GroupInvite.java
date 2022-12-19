@@ -3,13 +3,17 @@ package com.wolin.warehouseapp.utils.model;
 public class GroupInvite {
 
     private String groupId;
-    private String inviterUid;
-    private String targetEmail;
+    private String groupName;
+    private String inviterEmail;
+    private String date;
 
-    public GroupInvite(String groupId, String inviterUid, String targetEmail) {
+    public GroupInvite(){}
+
+    public GroupInvite(String groupId, String groupName, String inviterEmail, String date) {
         this.groupId = groupId;
-        this.inviterUid = inviterUid;
-        this.targetEmail = targetEmail;
+        this.groupName = groupName;
+        this.inviterEmail = inviterEmail;
+        this.date = date;
     }
 
     public String getGroupId() {
@@ -20,19 +24,37 @@ public class GroupInvite {
         this.groupId = groupId;
     }
 
-    public String getInviterUid() {
-        return inviterUid;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setInviterUid(String inviterUid) {
-        this.inviterUid = inviterUid;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
-    public String getTargetEmail() {
-        return targetEmail;
+    public String getInviterEmail() {
+        return inviterEmail;
     }
 
-    public void setTargetEmail(String targetEmail) {
-        this.targetEmail = targetEmail;
+    public void setInviterEmail(String inviterEmail) {
+        this.inviterEmail = inviterEmail;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupInvite{" +
+                "groupId='" + groupId + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", inviterEmail='" + inviterEmail + '\'' +
+                ", date='" + date + '\'' +
+                '}';
     }
 }

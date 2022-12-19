@@ -19,7 +19,6 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
 
-    private Context context;
     private List<Product> items;
     private ItemSelectListener<Object> itemSelectListener;
     private FirebaseProductViewModel firebaseProductViewModel;
@@ -27,8 +26,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
     private String groupId;
     private Resources resources;
 
-    public ProductAdapter(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid, Resources resources) {
-        this.context = context;
+    public ProductAdapter(List<Product> items, ItemSelectListener<Object> itemSelectListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid, Resources resources) {
         this.items = items;
         this.itemSelectListener = itemSelectListener;
         this.firebaseProductViewModel = firebaseProductViewModel;
@@ -40,7 +38,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProductViewHolder(LayoutInflater.from(context).inflate(R.layout.main_product_item, parent, false));
+        return new ProductViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.main_product_item, parent, false));
     }
 
     @Override

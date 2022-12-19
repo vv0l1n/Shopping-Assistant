@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.wolin.warehouseapp.firebase.repo.FirebaseService;
 import com.wolin.warehouseapp.firebase.repo.MyCallback;
 import com.wolin.warehouseapp.utils.model.Group;
+import com.wolin.warehouseapp.utils.model.GroupInvite;
 import com.wolin.warehouseapp.utils.model.Product;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class FirebaseGroupViewModel  extends ViewModel {
     }
 
     public LiveData<List<Group>> getGroups(String uid) {
-        if(groupListLiveData == null) {
+        if (groupListLiveData == null) {
             groupListLiveData = new MutableLiveData<List<Group>>();
             loadGroups(uid);
         }
@@ -32,18 +33,18 @@ public class FirebaseGroupViewModel  extends ViewModel {
     }
 
     private void loadGroups(String uid) {
-            groupListLiveData = Transformations.switchMap(firebaseService.getGroups(uid), groups -> {
-                MutableLiveData<List<Group>> liveData = new MutableLiveData<>();
-                liveData.postValue(groups);
-                System.out.println("FIREBASEGROUPVIEWMODEL");
-                if(liveData != null) {
-                    for(Group group : groups) {
-                        System.out.println(group);
-                    }
+        groupListLiveData = Transformations.switchMap(firebaseService.getGroups(uid), groups -> {
+            MutableLiveData<List<Group>> liveData = new MutableLiveData<>();
+            liveData.postValue(groups);
+            System.out.println("FIREBASEGROUPVIEWMODEL");
+            if (liveData != null) {
+                for (Group group : groups) {
+                    System.out.println(group);
                 }
-                return liveData;
-            });
-        }
+            }
+            return liveData;
+        });
+    }
 
 
     public void addGroup(String uid, String name, List<String> groups) {
@@ -55,8 +56,13 @@ public class FirebaseGroupViewModel  extends ViewModel {
         firebaseService.deleteUserProductsInGroup(uid, groupId);
     }
 
+    public void inviteUser(String target, String inviterUid, String groupId) {
+        firebaseService.inviteUser(target, inviterUid, groupId);
+    }
+
+
     public LiveData<Group> getGroup(String groupId) {
-        if(groupLiveData == null) {
+        if (groupLiveData == null) {
             groupLiveData = new MutableLiveData<Group>();
             loadGroup(groupId);
         }
@@ -64,11 +70,12 @@ public class FirebaseGroupViewModel  extends ViewModel {
     }
 
     private void loadGroup(String groupId) {
-       firebaseService.getSimpleGroup(groupId, new MyCallback<Group>() {
-           @Override
-           public void onCallback(Group data) {
-               groupLiveData.postValue(data);
-           }
-       });
+        firebaseService.getSimpleGroup(groupId, new MyCallback<Group>() {
+            @Override
+            public void onCallback(Group data) {
+                groupLiveData.postValue(data);
+            }
+        });
     }
+
 }

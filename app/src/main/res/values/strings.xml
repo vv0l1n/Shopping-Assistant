@@ -50,4 +50,8 @@
     <string name="invite">Zaproś do grupy</string>
     <string name="leave">Opuść grupę</string>
     <string name="deleteGroup">Usuń grupę</string>
+    <string name="passEmailOfInvited">Podaj Email osoby, którą chesz zaprosić do grupy.</string>
+    <string name="decline">Odrzuć</string>
+    <string name="accept">Akceptuj</string>
+    <string name="noInvites">Nie masz żadnych zaproszeń do grup.</string>
 </resources>

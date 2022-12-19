@@ -33,30 +33,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="550dp"
-            android:layout_marginBottom="52dp"
+            android:layout_height="530dp"
+            android:layout_marginTop="15dp"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/actualGroupTextView" />
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:onClick="onMainActivityAddButtonClick"
+            android:text="@string/add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
-
-         <Button
-        android:id="@+id/addButton"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
-        android:onClick="onMainActivityAddButtonClick"
-        android:text="@string/add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
-
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -87,37 +86,39 @@
 
                 <ImageButton
                     android:id="@+id/sortButton"
-                    android:icon="@drawable/icon_profil"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
+                    android:background="@drawable/icon_profil"
+                    android:scaleType="fitXY"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/filterButton"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@tools:sample/avatars" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
                     android:id="@+id/filterButton"
-                    android:icon="@drawable/icon_filter"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
+                    android:background="@drawable/icon_filter"
+                    android:icon="@drawable/icon_filter"
+                    android:scaleType="centerInside"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/groupButton"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@tools:sample/avatars" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
                     android:id="@+id/groupButton"
-                    android:icon="@drawable/icon_group"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
+                    android:background="@drawable/icon_group"
+                    android:icon="@drawable/icon_group"
                     android:onClick="onGroupButtonCick"
+                    android:scaleType="centerInside"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>

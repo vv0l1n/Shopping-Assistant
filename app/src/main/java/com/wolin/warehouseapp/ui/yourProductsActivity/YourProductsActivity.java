@@ -29,6 +29,7 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.ui.createGroupActivity.CreateGroupActivity;
 import com.wolin.warehouseapp.ui.editProductActivity.EditProductActivity;
+import com.wolin.warehouseapp.ui.invitesActivity.InvitesActivity;
 import com.wolin.warehouseapp.ui.loginActivity.LoginActivity;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
@@ -70,7 +71,6 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("YPA");
         setContentView(R.layout.activity_your_products);
 
         onlyActive = findViewById(R.id.onlyActiveYPA);
@@ -93,16 +93,20 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
-        productAdapterYPA = new ProductAdapterYPA(this, currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
+        productAdapterYPA = new ProductAdapterYPA( currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
         productRecyclerView.setAdapter(productAdapterYPA);
 
         actualGroupTextView.setText("Aktualna grupa: brak");
 
-        loadDialog(filterButton.getRootView());
+        loadDialog();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        //toggle.setDrawerIndicatorEnabled(false);
+        //toolbar.setNavigationIcon(R.drawable.icon_burger);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+
 
         navViev.setNavigationItemSelectedListener(this);
     }
@@ -112,13 +116,13 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
         dialog.show();
     }
 
-    private void loadDialog(View view) {
+    private void loadDialog() {
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.main_group_dialog);
 
-        MainActivityGroupAdapter adapter = new MainActivityGroupAdapter(this, userGroups, this);
+        MainActivityGroupAdapter adapter = new MainActivityGroupAdapter(userGroups, this);
         groupRecyclerView = dialog.findViewById(R.id.groupRecyclerView);
         groupRecyclerView.setAdapter(adapter);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
@@ -143,7 +147,6 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
                 adapter.notifyDataSetChanged();
                 productAdapterYPA.updateData(currentGroup.getProducts(), currentGroup.getId());
                 productAdapterYPA.notifyDataSetChanged();
-                productRecyclerView.setAdapter(productAdapterYPA);
                 productRecyclerView.refreshDrawableState();
                 productRecyclerView.getRecycledViewPool().clear();
             }
@@ -161,7 +164,7 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
             int position = (int) o;
             currentGroup = userGroups.get(position);
             updateCurrentGroupName();
-            productAdapterYPA = new ProductAdapterYPA(this, currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
+            productAdapterYPA = new ProductAdapterYPA(currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
             productRecyclerView.setAdapter(productAdapterYPA);
             productRecyclerView.refreshDrawableState();
             productRecyclerView.getRecycledViewPool().clear();
@@ -193,12 +196,16 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
             case R.id.nav_list:
                 Intent main = new Intent(YourProductsActivity.this, MainActivity.class);
                 main.putExtra("currentGroupId", currentGroup.getId());
-                finish();
                 startActivity(main);
                 break;
             case R.id.nav_manage_group:
                 Intent intentManageGroups = new Intent(YourProductsActivity.this, SelectGroupActivity.class);
                 startActivity(intentManageGroups);
+                break;
+            case R.id.nav_invites:
+                Intent intentInvites = new Intent(YourProductsActivity.this, InvitesActivity.class);
+                intentInvites.putExtra("lastIntent", "yp");
+                startActivity(intentInvites);
                 break;
             case R.id.nav_logout:
                 auth.signOut();

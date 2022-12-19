@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseGroupViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.utils.model.Group;
 import com.wolin.warehouseapp.utils.model.User;
 
@@ -23,15 +24,17 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder>{
 
     private Context context;
     private FirebaseGroupViewModel firebaseGroupViewModel;
+    private FirebaseUserViewModel firebaseUserViewModel;
     private Group group;
     private List<User> userList;
     private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-    public UserAdapter(Context context, Group group, List<User> userList, FirebaseGroupViewModel firebaseGroupViewModel) {
+    public UserAdapter(Context context, Group group, List<User> userList, FirebaseGroupViewModel firebaseGroupViewModel, FirebaseUserViewModel firebaseUserViewModel) {
         this.context = context;
         this.group = group;
         this.userList = userList;
         this.firebaseGroupViewModel = firebaseGroupViewModel;
+        this.firebaseUserViewModel = firebaseUserViewModel;
     }
 
     @NonNull
@@ -55,6 +58,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder>{
                         @Override
                         public void onClick(View view) {
                             firebaseGroupViewModel.kickMember(user.getUid(), group.getId());
+                            firebaseUserViewModel.deleteFromGroupList(user.getUid());
                         }
                     });
                 } else {

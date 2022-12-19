@@ -98,6 +98,7 @@
         <activity android:name="com.wolin.warehouseapp.ui.editProductActivity.EditProductActivity" />
         <activity android:name="com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.SelectGroupActivity" />
         <activity android:name="com.wolin.warehouseapp.ui.manageGroupActivities.manageGroupActivity.ManageGroupActivity" />
+        <activity android:name="com.wolin.warehouseapp.ui.invitesActivity.InvitesActivity" />
     </application>
 
 </manifest>

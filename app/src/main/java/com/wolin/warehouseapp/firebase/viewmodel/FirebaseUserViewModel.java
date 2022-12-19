@@ -79,4 +79,14 @@ public class FirebaseUserViewModel extends ViewModel {
         }
 
     }
+
+    public void deleteFromGroupList(String uid) {
+        List<User> users = userLiveDataList.getValue();
+        for(User user : users) {
+            if(user.getUid().equals(uid)) {
+                users.remove(user);
+            }
+        }
+        userLiveDataList.postValue(users);
+    }
 }

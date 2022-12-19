@@ -1,13 +1,18 @@
 package com.wolin.warehouseapp.ui.manageGroupActivities.manageGroupActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +33,7 @@ import com.wolin.warehouseapp.utils.model.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class ManageGroupActivity extends AppCompatActivity {
 
@@ -37,6 +43,7 @@ public class ManageGroupActivity extends AppCompatActivity {
     private Button leaveButton;
     private Button deleteButton;
     private Button backButton;
+    private Dialog dialog;
 
     private FirebaseGroupViewModel firebaseGroupViewModel;
     private FirebaseUserViewModel firebaseUserViewModel;
@@ -61,6 +68,7 @@ public class ManageGroupActivity extends AppCompatActivity {
         groupId = getIntent().getStringExtra("group");
 
         loadGroup();
+        loadDialog();
     }
 
     public void loadGroup() {
@@ -68,8 +76,16 @@ public class ManageGroupActivity extends AppCompatActivity {
         firebaseGroupViewModel.getGroup(groupId).observe(this, new Observer<Group>() {
             @Override
             public void onChanged(Group group) {
-                System.out.println("USUNIETY");
                 groupNameTextView.setText(group.getName());
+
+                if(!group.getOwner().equals(currentFirebaseUser.getUid())) {
+                    inviteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
+                    deleteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
+
+                    inviteButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                }
+
                 loadRecyclerView(group);
             }
         });
@@ -77,7 +93,7 @@ public class ManageGroupActivity extends AppCompatActivity {
     }
 
     public void loadRecyclerView(Group group) {
-        UserAdapter adapter = new UserAdapter(this, group,  new ArrayList<User>(), firebaseGroupViewModel);
+        UserAdapter adapter = new UserAdapter(this, group,  new ArrayList<User>(), firebaseGroupViewModel, firebaseUserViewModel);
         usersRecyclerView.setAdapter(adapter);
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         usersRecyclerView.refreshDrawableState();
@@ -92,11 +108,35 @@ public class ManageGroupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    private void loadDialog() {
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.manage_invite_dialog);
+
+        EditText emailField = dialog.findViewById(R.id.manageDialogEmail);
+        Button inviteButton = dialog.findViewById(R.id.manageDialogInviteButton);
+
+        inviteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String emailStr = emailField.getText().toString().trim();
+                if(!emailStr.equals("")) {
+                    if(Pattern.compile("^(.+)@(.+)\\.(.+)$").matcher(emailStr).matches()) { //email validate
+                        firebaseGroupViewModel.inviteUser(emailStr, currentFirebaseUser.getUid(), groupId);
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Podany Email jest nieprawidłowy.", Toast.LENGTH_LONG);
+                    }
+                }
+            }
+        });
     }
 
     public void onInviteButtonClick(View view) {
-
+        dialog.show();
     }
 
     public void onLeaveButtonClick(View view) {
@@ -111,5 +151,6 @@ public class ManageGroupActivity extends AppCompatActivity {
         Intent selectIntent = new Intent(ManageGroupActivity.this, SelectGroupActivity.class);
         startActivity(selectIntent);
     }
+
 
 }

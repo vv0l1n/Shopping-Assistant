@@ -16,12 +16,10 @@ import java.util.List;
 
 public class MainActivityGroupAdapter extends RecyclerView.Adapter<MainActivityGroupViewHolder>{
 
-    private Context context;
     private List<Group> groupList;
     private ItemSelectListener<Object> itemSelectListener;
 
-    public MainActivityGroupAdapter(Context context, List<Group> groupList , ItemSelectListener<Object> itemSelectListener) {
-        this.context = context;
+    public MainActivityGroupAdapter(List<Group> groupList , ItemSelectListener<Object> itemSelectListener) {
         this.groupList = groupList;
         this.itemSelectListener = itemSelectListener;
     }

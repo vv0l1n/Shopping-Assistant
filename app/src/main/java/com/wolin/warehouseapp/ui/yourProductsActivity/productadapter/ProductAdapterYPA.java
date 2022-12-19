@@ -20,7 +20,6 @@ import java.util.List;
 
 public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA>{
 
-    private Context context;
     private List<Product> items;
     private ItemSelectListener<Object> itemSelectListener;
     private ItemEditListener<Product> itemEditListener;
@@ -29,8 +28,7 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
     private String groupId;
     private Resources resources;
 
-    public ProductAdapterYPA(Context context, List<Product> items, ItemSelectListener<Object> itemSelectListener, ItemEditListener<Product> itemEditListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid, Resources resources) {
-        this.context = context;
+    public ProductAdapterYPA(List<Product> items, ItemSelectListener<Object> itemSelectListener, ItemEditListener<Product> itemEditListener, FirebaseProductViewModel firebaseProductViewModel, String groupId, String uid, Resources resources) {
         this.items = items;
         this.itemSelectListener = itemSelectListener;
         this.itemEditListener = itemEditListener;
@@ -43,20 +41,17 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
     @NonNull
     @Override
     public ProductViewHolderYPA onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProductViewHolderYPA(LayoutInflater.from(context).inflate(R.layout.your_products_item, parent, false));
+        return new ProductViewHolderYPA(LayoutInflater.from(parent.getContext()).inflate(R.layout.your_products_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolderYPA holder, int position) {
-        System.out.println("1");
         Product product = items.get(position);
         if(product.getOwner().equals(uid)) {
-            System.out.println("2");
             if(!(product.getPhoto() == null)) {
                 Glide.with(holder.getBackground().getContext()).load(product.getPhoto())
                         .into(holder.getImageView());
             }
-            System.out.println("3");
             holder.getProductName().setText(product.getName());
             holder.getCount().setText(Integer.toString(product.getCount()));
             holder.getShopLogo().setImageResource(resources.getIdentifier(product.getShop().getShopLogo(), "drawable", "com.wolin.warehouseapp"));
@@ -72,8 +67,14 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
                     itemEditListener.onItemEdit(product);
                 });
             }
+            holder.itemView.setVisibility(View.VISIBLE);
+            holder.itemView.setLayoutParams(
+                    new RecyclerView.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
         } else {
             holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0,0));
         }
     }
 
@@ -84,12 +85,10 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
 
     public void updateData(List<Product> products, String groupId) {
         this.groupId = groupId;
-        System.out.println("aktualizuje dane");
         if(items != null) {
             items.clear();
         }
         items.addAll(products);
-        System.out.println("koniec metody updateData");
         this.notifyItemRangeChanged(0, products.size());
     }
 }
