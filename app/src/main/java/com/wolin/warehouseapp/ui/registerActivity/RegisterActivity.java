@@ -90,16 +90,16 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser(String emailStr, String passwordStr, String nameStr, String lastNameStr) {
-        auth.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    User user = new User(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr, null);
-                    FirebaseUser firebaseUser = auth.getCurrentUser();
-                    firebaseUserViewModel.registerUser(user);
-                    Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    startActivity(loginActivityIntent);
+                    if(task.isComplete()) {
+                        User user = new User(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr, null);
+                        firebaseUserViewModel.registerUser(user);
+                        Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(loginActivityIntent);
+                    }
                 } else {
                     Toast.makeText(RegisterActivity.this, "Rejestracja nieudana.", Toast.LENGTH_SHORT).show();
                 }

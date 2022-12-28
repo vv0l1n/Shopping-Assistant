@@ -72,7 +72,6 @@ public class InvitesActivity extends AppCompatActivity implements ButtonClickedL
                 } else {
                     noInvitesTextView.setVisibility(View.VISIBLE);
                 }
-                groupInvites.forEach(i -> System.out.println(i));
                 adapter.update(groupInvites);
             }
         });

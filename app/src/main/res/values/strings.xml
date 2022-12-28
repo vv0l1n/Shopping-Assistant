@@ -54,4 +54,5 @@
     <string name="decline">Odrzuć</string>
     <string name="accept">Akceptuj</string>
     <string name="noInvites">Nie masz żadnych zaproszeń do grup.</string>
+    <string name="email">E-mail</string>
 </resources>

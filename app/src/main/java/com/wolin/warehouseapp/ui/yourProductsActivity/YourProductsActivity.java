@@ -34,6 +34,7 @@ import com.wolin.warehouseapp.ui.loginActivity.LoginActivity;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
 import com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.SelectGroupActivity;
+import com.wolin.warehouseapp.ui.profileActivity.ProfileActivity;
 import com.wolin.warehouseapp.ui.yourProductsActivity.productadapter.ProductAdapterYPA;
 import com.wolin.warehouseapp.utils.listeners.ItemEditListener;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
@@ -187,6 +188,10 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.nav_profile:
+                Intent intentProfile = new Intent(YourProductsActivity.this, ProfileActivity.class);
+                startActivity(intentProfile);
+                break;
             case R.id.nav_add_group:
                 Intent addGroup = new Intent(YourProductsActivity.this, CreateGroupActivity.class);
                 startActivity(addGroup);
