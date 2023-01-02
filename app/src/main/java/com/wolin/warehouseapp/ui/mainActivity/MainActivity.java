@@ -36,7 +36,7 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
 import com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.SelectGroupActivity;
-import com.wolin.warehouseapp.ui.productDetails.ProductDetails;
+import com.wolin.warehouseapp.ui.productDetails.ProductDetailsActivity;
 import com.wolin.warehouseapp.ui.profileActivity.ProfileActivity;
 import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
 import com.wolin.warehouseapp.utils.listeners.ItemBuyListener;
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
             dialog.dismiss();
         } else {
             Product p = (Product) o;
-            Intent productDetails = new Intent(MainActivity.this, ProductDetails.class);
+            Intent productDetails = new Intent(MainActivity.this, ProductDetailsActivity.class);
             productDetails.putExtra("activity", "main");
             productDetails.putExtra("product", p);
             productDetails.putExtra("currentGroupId", currentGroup.getId());

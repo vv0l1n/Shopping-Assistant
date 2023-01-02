@@ -40,6 +40,7 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.addActivity.adapter.AddActivityShopAdapter;
+import com.wolin.warehouseapp.utils.common.Category;
 import com.wolin.warehouseapp.utils.common.ShopLoader;
 import com.wolin.warehouseapp.utils.common.TimeFormatter;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
@@ -55,7 +56,6 @@ import java.util.Locale;
 
 public class AddActivity extends AppCompatActivity implements ItemSelectListener<Shop> {
 
-    ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
 
     private ImageView productImageAdd;
@@ -68,6 +68,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     private RadioButton lowPriorityButton;
     private RadioButton mediumPriorityButton;
     private RadioButton highPriorityButton;
+    private Button categoryButton;
 
     private Dialog dialog;
     private RecyclerView addActivityShopRecyclerView;
@@ -97,6 +98,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         lowPriorityButton = findViewById(R.id.lowPriorityButton);
         mediumPriorityButton = findViewById(R.id.mediumPriorityButton);
         highPriorityButton = findViewById(R.id.highPriorityButton);
+        categoryButton = findViewById(R.id.AddCategoryButton);
 
         shopLogoAdd = findViewById(R.id.shopLogoAdd);
 
@@ -244,7 +246,25 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
                 priority = "Wysoki";
             }
 
-            Product product = new Product(productName, count, maxPrice, note, chosenShop, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
+            Category category;
+            String categoryStr = categoryButton.getText().toString();
+            switch (categoryStr) {
+                case "Odzież":
+                    category = Category.CLOTHES;
+                    break;
+                case "Żywność":
+                    category = Category.FOOD;
+                    break;
+                case "Użytek domowy":
+                    category = Category.HOME;
+                    break;
+                case "Inne":
+                default:
+                    category = Category.OTHERS;
+                    break;
+            }
+
+            Product product = new Product(productName, count, maxPrice, note, chosenShop, true, date, dateToBuy, priority, currentFirebaseUser.getUid(), category);
 
             firebaseProductViewModel.insertProduct(product, mImageURI, currentGroupId);
             Intent intent = new Intent(AddActivity.this, MainActivity.class);
@@ -309,7 +329,17 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
                 break;
             }
         }
-
         dialog.dismiss();
+    }
+
+    public void onAddCategoryButtonClick(View view) {
+        System.out.println("KATEGORIA");
+        final CharSequence[] categories = {"Odzież", "Żywność", "Użytek domowy", "Inne"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
+        builder.setTitle("Wybierz kategorię");
+        builder.setItems(categories, (dialog, item) -> {
+            categoryButton.setText(categories[item]);
+        });
+        builder.show();
     }
 }

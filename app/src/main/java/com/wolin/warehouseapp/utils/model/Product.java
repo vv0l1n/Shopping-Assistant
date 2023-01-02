@@ -1,5 +1,7 @@
 package com.wolin.warehouseapp.utils.model;
 
+import com.wolin.warehouseapp.utils.common.Category;
+
 import java.io.Serializable;
 
 public class Product implements Serializable {
@@ -17,10 +19,12 @@ public class Product implements Serializable {
     private String priority;
     private String owner;
     private String buyer;
+    private Category category;
 
     public Product(){}
 
-    public Product(String name, int count, double maxPrice, String note, Shop shop, boolean active, String date, String dateToBuy, String priority, String owner) {
+    public Product(String name, int count, double maxPrice, String note, Shop shop, boolean active, String date,
+                   String dateToBuy, String priority, String owner, Category category) {
         this.productId = owner + System.currentTimeMillis();
         this.name = name;
         this.count = count;
@@ -32,6 +36,7 @@ public class Product implements Serializable {
         this.dateToBuy = dateToBuy;
         this.priority = priority;
         this.owner = owner;
+        this.category = category;
     }
 
     public String getName() {
@@ -138,6 +143,14 @@ public class Product implements Serializable {
         this.priority = priority;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -154,6 +167,7 @@ public class Product implements Serializable {
                 ", priority='" + priority + '\'' +
                 ", owner='" + owner + '\'' +
                 ", buyer='" + buyer + '\'' +
+                ", category=" + category +
                 '}';
     }
 }

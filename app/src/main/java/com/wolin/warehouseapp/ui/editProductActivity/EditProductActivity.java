@@ -40,8 +40,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
+import com.wolin.warehouseapp.ui.addActivity.AddActivity;
 import com.wolin.warehouseapp.ui.addActivity.adapter.AddActivityShopAdapter;
 import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
+import com.wolin.warehouseapp.utils.common.Category;
 import com.wolin.warehouseapp.utils.common.ShopLoader;
 import com.wolin.warehouseapp.utils.common.TimeFormatter;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
@@ -56,7 +58,6 @@ import java.util.Locale;
 
 public class EditProductActivity extends AppCompatActivity implements ItemSelectListener<Shop> {
 
-    ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     ActivityResultLauncher<Intent> galleryActivityResultLauncher;
 
     private ImageView productImage;
@@ -69,6 +70,7 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
     private RadioButton lowPriorityButton;
     private RadioButton mediumPriorityButton;
     private RadioButton highPriorityButton;
+    private Button categoryButton;
 
     private Dialog dialog;
     private RecyclerView addActivityShopRecyclerView;
@@ -99,6 +101,7 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
         lowPriorityButton = findViewById(R.id.lowPriorityButtonE);
         mediumPriorityButton = findViewById(R.id.mediumPriorityButtonE);
         highPriorityButton = findViewById(R.id.highPriorityButtonE);
+        categoryButton = findViewById(R.id.EditCategoryButton);
 
         shopLogo = findViewById(R.id.shopLogoAddE);
 
@@ -244,6 +247,21 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
         }
         currentProduct.setPriority(priorityStr);
 
+        switch (categoryButton.getText().toString()) {
+            case "Odzież":
+                currentProduct.setCategory(Category.CLOTHES);
+                break;
+            case "Żywność":
+                currentProduct.setCategory(Category.FOOD);
+                break;
+            case "Użytek domowy":
+                currentProduct.setCategory(Category.HOME);
+                break;
+            case "Inne":
+                currentProduct.setCategory(Category.OTHERS);
+                break;
+        }
+
 
         firebaseProductViewModel.update(currentProduct, mImageURI, currentGroupId);
             Intent intent = new Intent(EditProductActivity.this, YourProductsActivity.class);
@@ -338,6 +356,22 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
                         break;
                 }
 
+                switch (product.getCategory()) {
+                    case CLOTHES:
+                        categoryButton.setText("Odzież");
+                        break;
+                    case FOOD:
+                        categoryButton.setText("Żywność");
+                        break;
+                    case HOME:
+                        categoryButton.setText("Użytek domowy");
+                        break;
+                    case OTHERS:
+                    default:
+                        categoryButton.setText("Inne");
+                        break;
+                }
+
                 shopLogo.setImageResource(resources.getIdentifier(product.getShop().getShopLogo(), "drawable", "com.wolin.warehouseapp"));
                 for(Shop shop : shops) {
                     if(product.getShop().getName().equals(shop.getName())) {
@@ -347,5 +381,15 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
                 }
             }
         });
+    }
+
+    public void onEditCategoryButtonClick(View view) {
+        final CharSequence[] categories = {"Odzież", "Żywność", "Użytek domowy", "Inne"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditProductActivity.this);
+        builder.setTitle("Wybierz kategorię");
+        builder.setItems(categories, (dialog, item) -> {
+            categoryButton.setText(categories[item]);
+        });
+        builder.show();
     }
 }

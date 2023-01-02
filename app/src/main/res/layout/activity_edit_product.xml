@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/productImageAddE"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="15dp"
         android:onClick="onProductImageClick"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,13 +81,13 @@
         android:id="@+id/shopLogoAddE"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="18dp"
         android:onClick="onShopLogoClick"
         android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/editButtonE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupE"
         tools:srcCompat="@drawable/noneshop" />
 
     <Button
@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="51dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="15dp"
         android:onClick="onCancelButtonClick"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -108,7 +108,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="15dp"
         android:onClick="onEditButtonClick"
         android:text="@string/edit"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -130,7 +130,7 @@
         android:id="@+id/radioGroupE"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -148,8 +148,8 @@
             android:id="@+id/mediumPriorityButtonE"
             android:layout_width="125dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:checked="true"
             android:text="@string/mediumPriority" />
 
@@ -160,5 +160,18 @@
             android:layout_marginLeft="5dp"
             android:text="@string/highPriority" />
     </RadioGroup>
+
+    <Button
+        android:id="@+id/EditCategoryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="13dp"
+        android:text="@string/category"
+        android:onClick="onEditCategoryButtonClick"
+        app:layout_constraintBottom_toTopOf="@+id/shopLogoAddE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupE" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
