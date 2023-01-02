@@ -52,9 +52,12 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
                 Glide.with(holder.getBackground().getContext()).load(product.getPhoto())
                         .into(holder.getImageView());
             }
+
             holder.getProductName().setText(product.getName());
             holder.getCount().setText(Integer.toString(product.getCount()));
-            holder.getShopLogo().setImageResource(resources.getIdentifier(product.getShop().getShopLogo(), "drawable", "com.wolin.warehouseapp"));
+            holder.getShopLogo().setImageResource(resources.getIdentifier(product.getShop().getShopLogo(),
+                    "drawable", "com.wolin.warehouseapp"));
+
             if(!product.isActive()) {
                 holder.getBackground().setBackgroundResource(R.color.lightRed);
                 holder.getEditButton().setVisibility(View.GONE);
@@ -67,6 +70,11 @@ public class ProductAdapterYPA extends RecyclerView.Adapter<ProductViewHolderYPA
                     itemEditListener.onItemEdit(product);
                 });
             }
+
+            holder.getBackground().setOnClickListener(view -> {
+                itemSelectListener.onItemClick(product);
+            });
+
             holder.itemView.setVisibility(View.VISIBLE);
             holder.itemView.setLayoutParams(
                     new RecyclerView.LayoutParams(

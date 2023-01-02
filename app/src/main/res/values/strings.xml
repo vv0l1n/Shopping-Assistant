@@ -55,4 +55,6 @@
     <string name="accept">Akceptuj</string>
     <string name="noInvites">Nie masz żadnych zaproszeń do grup.</string>
     <string name="email">E-mail</string>
+    <string name="descriptionShort">Uwagi</string>
+    <string name="shop">Sklep</string>
 </resources>

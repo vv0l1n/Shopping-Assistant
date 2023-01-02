@@ -1,6 +1,8 @@
 package com.wolin.warehouseapp.utils.model;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
 
     private String productId;
     private String name;

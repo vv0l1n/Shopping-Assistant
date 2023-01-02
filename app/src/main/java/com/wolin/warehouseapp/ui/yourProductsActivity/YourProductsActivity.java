@@ -34,6 +34,7 @@ import com.wolin.warehouseapp.ui.loginActivity.LoginActivity;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
 import com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.SelectGroupActivity;
+import com.wolin.warehouseapp.ui.productDetails.ProductDetails;
 import com.wolin.warehouseapp.ui.profileActivity.ProfileActivity;
 import com.wolin.warehouseapp.ui.yourProductsActivity.productadapter.ProductAdapterYPA;
 import com.wolin.warehouseapp.utils.listeners.ItemEditListener;
@@ -172,7 +173,11 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
             dialog.dismiss();
         } else {
             Product p = (Product) o;
-            System.out.println("KLIKNIETO PRODUKT: " + p.getName());
+            Intent productDetails = new Intent(YourProductsActivity.this, ProductDetails.class);
+            productDetails.putExtra("activity", "yourProducts");
+            productDetails.putExtra("product", p);
+            productDetails.putExtra("currentGroupId", currentGroup.getId());
+            startActivity(productDetails);
         }
     }
 

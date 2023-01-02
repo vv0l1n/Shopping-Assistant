@@ -40,6 +40,7 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.addActivity.adapter.AddActivityShopAdapter;
+import com.wolin.warehouseapp.utils.common.ShopLoader;
 import com.wolin.warehouseapp.utils.common.TimeFormatter;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
@@ -63,10 +64,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     private EditText maxPriceAdd;
     private EditText noteAdd;
     private ImageView shopLogoAdd;
-    private Button addActivityAddButton;
-    private Button addActivityCancelButton;
     private Button dateToBuyAddButton;
-    private RadioGroup radioGroup;
     private RadioButton lowPriorityButton;
     private RadioButton mediumPriorityButton;
     private RadioButton highPriorityButton;
@@ -96,14 +94,11 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         maxPriceAdd = findViewById(R.id.maxPriceAdd);
         noteAdd = findViewById(R.id.noteAdd);
         dateToBuyAddButton = findViewById(R.id.dateToBuyAddButton);
-        radioGroup = findViewById(R.id.radioGroup);
         lowPriorityButton = findViewById(R.id.lowPriorityButton);
         mediumPriorityButton = findViewById(R.id.mediumPriorityButton);
         highPriorityButton = findViewById(R.id.highPriorityButton);
 
         shopLogoAdd = findViewById(R.id.shopLogoAdd);
-        addActivityAddButton = findViewById(R.id.addActivityAddButton);
-        addActivityCancelButton = findViewById(R.id.addActivityCancelButton);
 
         productImageAdd.setImageResource(R.drawable.press_to_add_product_image);
         shopLogoAdd.setImageResource(R.drawable.noneshop);
@@ -113,31 +108,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
         currentGroupId = getIntent().getStringExtra("currentGroupId");
-        System.out.println("ID GRUPY GETINTENT: " + getIntent().getStringExtra("currentGroupId"));
 
-        //permission for camera
-        if (ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddActivity.this, new String[]{
-                    Manifest.permission.CAMERA
-            }, 100);
-        }
-
-        //product image from camera
-        cameraActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            if (result.getData() != null) {
-                                productImageAdd.setImageBitmap((Bitmap) result.getData().getExtras().get("data"));
-                                System.out.println(result.getData() + "niger");
-                            } else {
-                                System.out.println("bład kamery");
-                            }
-                        }
-                    }
-                });
 
         //product image from gallery
         galleryActivityResultLauncher = registerForActivityResult(
@@ -166,25 +137,8 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
     }
 
     private void selectImage() {
-        final CharSequence[] options = {"Zrób zdjęcie", "Wybierz z galerii", "Anuluj"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddActivity.this);
-        builder.setTitle("Wybierz zdjęcie!");
-        builder.setItems(options, (dialog, item) -> {
-            if (options[item].equals("Zrób zdjęcie")) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    cameraActivityResultLauncher.launch(intent);
-                } else {
-                    System.out.println("!!!!!!!!!!!!!!!!");
-                }
-            } else if (options[item].equals("Wybierz z galerii")) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryActivityResultLauncher.launch(intent);
-            } else if (options[item].equals("Anuluj")) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryActivityResultLauncher.launch(intent);
     }
 
     //picking date to buy
@@ -194,15 +148,10 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
 
     private void initDatePicker()
     {
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
-        {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day)
-            {
-                month++;
-                String date = TimeFormatter.makeDateString(day, month, year);
-                dateToBuyAddButton.setText(date);
-            }
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            month++;
+            String date = TimeFormatter.makeDateString(day, month, year);
+            dateToBuyAddButton.setText(date);
         };
 
         Locale locale = getResources().getConfiguration().locale;
@@ -244,39 +193,55 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
 
     public void addData() {
         Resources resources = getResources();
-        shops = new ArrayList<>();
-        Shop defaultShop = new Shop("Dowolny", resources.getResourceEntryName(R.drawable.noneshop));
-        chosenShop = defaultShop;
-        shops.add(defaultShop);
-        shops.add(new Shop("Auchan", resources.getResourceEntryName(R.drawable.auchan)));
-        shops.add(new Shop("Biedronka", resources.getResourceEntryName(R.drawable.biedronka)));
-        shops.add(new Shop("Carrefour", resources.getResourceEntryName(R.drawable.carrefour)));
-        shops.add(new Shop("Delikatesy-Centrum", resources.getResourceEntryName(R.drawable.delikatesy)));
-        shops.add(new Shop("Dino", resources.getResourceEntryName(R.drawable.dino)));
-        shops.add(new Shop("Kaufland", resources.getResourceEntryName(R.drawable.kaufland)));
-        shops.add(new Shop("Lewiatan", resources.getResourceEntryName(R.drawable.lewiatan)));
-        shops.add(new Shop("Lidl", resources.getResourceEntryName(R.drawable.lidl)));
-        shops.add(new Shop("Top Market", resources.getResourceEntryName(R.drawable.topmarket)));
-        shops.add(new Shop("Żabka", resources.getResourceEntryName(R.drawable.zabka)));
+        shops = ShopLoader.loadShop(resources);
+        chosenShop = shops.get(0);
     }
 
         //adding product
-    public void onAddActivityAddButtonClick (View view){
-        if(!productNameAdd.getText().equals(null)) {
-            String productName = productNameAdd.getText().toString().trim();
-            int count = Integer.parseInt(countAdd.getText().toString().trim());
-            double maxPrice = Double.parseDouble(maxPriceAdd.getText().toString().trim());
+    public void onAddActivityAddButtonClick(View view){
+
+        String productName;
+        if (!productNameAdd.getText().toString().isEmpty()) {
+            productName = productNameAdd.getText().toString().trim();
+        } else {
+            Toast.makeText(this, "Nazwa produktu musi zostać podana.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        int count;
+        if (!countAdd.getText().toString().isEmpty()) {
+            count = Integer.parseInt(countAdd.getText().toString().trim());
+        } else {
+            Toast.makeText(this, "Ilość produktu musi zostać podana.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        double maxPrice;
+        if(!maxPriceAdd.getText().toString().isEmpty()) {
+            maxPrice = Double.parseDouble(maxPriceAdd.getText().toString().trim());
+        } else {
+            maxPrice = 0;
+        }
+
             String note = noteAdd.getText().toString().trim();
+            if(note.isEmpty()) {
+                note = "Brak uwag";
+            }
+
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String date = simpleDateFormat.format(new Date().getTime());
             String dateToBuy = dateToBuyAddButton.getText().toString().trim();
+            if(dateToBuy.equals("Data wygaśnięcia")) {
+                dateToBuy = "Brak daty wygaśnięcia.";
+            }
+
             String priority;
             if(mediumPriorityButton.isChecked()) {
-                priority = "medium";
+                priority = "Niski";
             } else if (lowPriorityButton.isChecked()) {
-                priority = "low";
+                priority = "Średni";
             } else {
-                priority = "high";
+                priority = "Wysoki";
             }
 
             Product product = new Product(productName, count, maxPrice, note, chosenShop, true, date, dateToBuy, priority, currentFirebaseUser.getUid());
@@ -285,11 +250,7 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
             Intent intent = new Intent(AddActivity.this, MainActivity.class);
             intent.putExtra("currentGroupId", currentGroupId);
             startActivity(intent);
-        } else {
-            Toast.makeText(this, "Nazwa produktu musi zostać podana.", Toast.LENGTH_LONG);
         }
-    }
-
 
         //cancel button
         public void onAddActivityCancelButtonClick (View view){

@@ -48,7 +48,9 @@ import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Product;
 import com.wolin.warehouseapp.utils.model.Shop;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,10 +65,7 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
     private EditText maxPrice;
     private EditText note;
     private ImageView shopLogo;
-    private Button editButton;
-    private Button cancelButton;
     private Button dateToBuyButton;
-    private RadioGroup radioGroup;
     private RadioButton lowPriorityButton;
     private RadioButton mediumPriorityButton;
     private RadioButton highPriorityButton;
@@ -81,12 +80,9 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
     private Product currentProduct;
 
     private Shop chosenShop;
-    private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private Uri mImageURI;
     private FirebaseProductViewModel firebaseProductViewModel;
-
-    private FirebaseUserViewModel firebaseUserViewModel;
 
     private Resources resources;
 
@@ -100,14 +96,11 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
         maxPrice = findViewById(R.id.maxPriceAddE);
         note = findViewById(R.id.noteAddE);
         dateToBuyButton = findViewById(R.id.dateToBuyAddButtonE);
-        radioGroup = findViewById(R.id.radioGroupE);
         lowPriorityButton = findViewById(R.id.lowPriorityButtonE);
         mediumPriorityButton = findViewById(R.id.mediumPriorityButtonE);
         highPriorityButton = findViewById(R.id.highPriorityButtonE);
 
         shopLogo = findViewById(R.id.shopLogoAddE);
-        editButton = findViewById(R.id.editButtonE);
-        cancelButton = findViewById(R.id.cancelButtonE);
 
         productImage.setImageResource(R.drawable.press_to_add_product_image);
         shopLogo.setImageResource(R.drawable.noneshop);
@@ -116,37 +109,11 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
 
         firebaseProductViewModel = new ViewModelProvider(this).get(FirebaseProductViewModel.class);
 
-        firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
-
         currentGroupId = getIntent().getStringExtra("currentGroupId");
         currentProductId = getIntent().getStringExtra("currentProductId");
-        System.out.println("ID GRUPY GETINTENT: " + getIntent().getStringExtra("currentGroupId"));
 
         loadProduct();
 
-        //permission for camera
-        if (ContextCompat.checkSelfPermission(EditProductActivity.this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(EditProductActivity.this, new String[]{
-                    Manifest.permission.CAMERA
-            }, 100);
-        }
-
-        //product image from camera
-        cameraActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            if (result.getData() != null) {
-                                productImage.setImageBitmap((Bitmap) result.getData().getExtras().get("data"));
-                                System.out.println(result.getData());
-                            } else {
-                                System.out.println("bład kamery");
-                            }
-                        }
-                    }
-                });
 
         //product image from gallery
         galleryActivityResultLauncher = registerForActivityResult(
@@ -168,33 +135,14 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
         //loading datepicker
         initDatePicker();
     }
-
-
     //picking product image
     public void onProductImageClick(View view) {
         selectImage();
     }
 
     private void selectImage() {
-        final CharSequence[] options = {"Zrób zdjęcie", "Wybierz z galerii", "Anuluj"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditProductActivity.this);
-        builder.setTitle("Wybierz zdjęcie!");
-        builder.setItems(options, (dialog, item) -> {
-            if (options[item].equals("Zrób zdjęcie")) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    cameraActivityResultLauncher.launch(intent);
-                } else {
-                    System.out.println("!!!!!!!!!!!!!!!!");
-                }
-            } else if (options[item].equals("Wybierz z galerii")) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryActivityResultLauncher.launch(intent);
-            } else if (options[item].equals("Anuluj")) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryActivityResultLauncher.launch(intent);
     }
 
     //picking date to buy
@@ -204,15 +152,10 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
 
     private void initDatePicker()
     {
-        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
-        {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day)
-            {
-                month++;
-                String date = TimeFormatter.makeDateString(day, month, year);
-                dateToBuyButton.setText(date);
-            }
+        DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, day) -> {
+            month++;
+            String date = TimeFormatter.makeDateString(day, month, year);
+            dateToBuyButton.setText(date);
         };
 
         Locale locale = getResources().getConfiguration().locale;
@@ -228,6 +171,7 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
 
     }
 
+
     //picking shop
     public void onShopLogoClick(View view) {
         dialog.show();
@@ -241,8 +185,7 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
         dialog.setContentView(R.layout.shop_dialog);
 
         //add shops
-        shops = ShopLoader.loadShop(getResources());
-        //gets first shop ("Dowolny")
+        addData();
 
         AddActivityShopAdapter adapter = new AddActivityShopAdapter(this ,shops, this, getResources());
 
@@ -251,33 +194,62 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
         addActivityShopRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
     }
 
+
+    public void addData() {
+        Resources resources = getResources();
+        shops = ShopLoader.loadShop(resources);
+        chosenShop = shops.get(0);
+    }
     //adding product
     public void onEditButtonClick (View view){
-        if(!productName.getText().equals(null)) {
+        if (!productName.getText().toString().isEmpty()) {
             currentProduct.setName(productName.getText().toString().trim());
-            currentProduct.setCount(Integer.parseInt(count.getText().toString().trim()));
-            currentProduct.setMaxPrice(Double.parseDouble(maxPrice.getText().toString().trim()));
-            currentProduct.setNote(note.getText().toString().trim());
-            currentProduct.setDateToBuy(dateToBuyButton.getText().toString().trim());
-            String priority;
-            if(mediumPriorityButton.isChecked()) {
-                priority = "medium";
-            } else if (lowPriorityButton.isChecked()) {
-                priority = "low";
-            } else {
-                priority = "high";
-            }
-            currentProduct.setPriority(priority);
-            currentProduct.setShop(chosenShop);
+        } else {
+            Toast.makeText(this, "Nazwa produktu musi zostać podana.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-            firebaseProductViewModel.update(currentProduct, mImageURI, currentGroupId);
+        if (!count.getText().toString().isEmpty()) {
+            currentProduct.setCount(Integer.parseInt(count.getText().toString().trim()));
+        } else {
+            Toast.makeText(this, "Ilość produktu musi zostać podana.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(!maxPrice.getText().toString().isEmpty()) {
+            currentProduct.setMaxPrice(Double.parseDouble(maxPrice.getText().toString().trim()));
+        } else {
+            currentProduct.setMaxPrice(0);
+        }
+
+        String noteStr = note.getText().toString().trim();
+        if(!noteStr.isEmpty()) {
+            currentProduct.setNote(noteStr);
+        } else {
+            currentProduct.setNote("Brak uwag");
+        }
+
+        String dateToBuyStr = dateToBuyButton.getText().toString().trim();
+        if(!dateToBuyStr.equals("Brak daty wygaśnięcia.")) {
+            currentProduct.setDateToBuy(dateToBuyStr);
+        }
+
+        String priorityStr;
+        if(mediumPriorityButton.isChecked()) {
+            priorityStr = "Niski";
+        } else if (lowPriorityButton.isChecked()) {
+            priorityStr = "Średni";
+        } else {
+            priorityStr = "Wysoki";
+        }
+        currentProduct.setPriority(priorityStr);
+
+
+        firebaseProductViewModel.update(currentProduct, mImageURI, currentGroupId);
             Intent intent = new Intent(EditProductActivity.this, YourProductsActivity.class);
             intent.putExtra("currentGroupId", currentGroupId);
             startActivity(intent);
-        } else {
-            Toast.makeText(this, "Nazwa produktu musi zostać podana.", Toast.LENGTH_LONG);
         }
-    }
 
 
     //cancel button

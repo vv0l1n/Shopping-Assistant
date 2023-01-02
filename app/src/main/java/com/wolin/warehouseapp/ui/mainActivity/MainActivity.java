@@ -36,8 +36,10 @@ import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.adapter.groupadapter.MainActivityGroupAdapter;
 import com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.SelectGroupActivity;
+import com.wolin.warehouseapp.ui.productDetails.ProductDetails;
 import com.wolin.warehouseapp.ui.profileActivity.ProfileActivity;
 import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
+import com.wolin.warehouseapp.utils.listeners.ItemBuyListener;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Group;
 import com.wolin.warehouseapp.utils.model.Product;
@@ -45,7 +47,7 @@ import com.wolin.warehouseapp.utils.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ItemSelectListener<Object>, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements ItemSelectListener<Object>, NavigationView.OnNavigationItemSelectedListener, ItemBuyListener {
 
     private Dialog dialog;
     private CheckBox onlyActive;
@@ -76,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        System.out.println("MainActivity");
-
         auth = FirebaseAuth.getInstance();
 
         onlyActive = findViewById(R.id.onlyActive);
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
-        productAdapter = new ProductAdapter(currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
+        productAdapter = new ProductAdapter(currentGroup.getProducts(), this, this, getResources());
         productRecyclerView.setAdapter(productAdapter);
 
         actualGroupTextView.setText("Aktualna grupa: brak");
@@ -139,18 +139,15 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(dialog.getContext()));
 
         firebaseGroupViewModel.getGroups(currentFirebaseUser.getUid()).observe(this, (List<Group> groups) -> {
-            System.out.println("change");
             for(Group group : groups) {
                 System.out.println(group);
             }
             if(groups != null && groups.size() > 0) {
                 String lastGroupId = getIntent().getStringExtra("currentGroupId");
                 if(lastGroupId != null) {
-                    System.out.println("lastGroupId: " + lastGroupId);
                     for(Group group : groups) {
                         if(group.getId().equals(lastGroupId)) {
                             currentGroup = group;
-                            System.out.println("NOWA AKTUALNA GRUPA");
                         }
                     }
                 } else {
@@ -159,8 +156,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
                 updateCurrentGroupName();
                 adapter.updateData(groups);
                 adapter.notifyDataSetChanged();
-                productAdapter.updateData(currentGroup.getProducts(), currentGroup.getId());
-                System.out.println("PRODUKTY: ");
+                productAdapter.updateData(currentGroup.getProducts());
                 for(Product product : currentGroup.getProducts()) {
                     System.out.println(product);
                 }
@@ -182,14 +178,18 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
             int position = (int) o;
             currentGroup = userGroups.get(position);
             updateCurrentGroupName();
-            productAdapter = new ProductAdapter(currentGroup.getProducts(), this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
+            productAdapter = new ProductAdapter(currentGroup.getProducts(), this, this, getResources());
             productRecyclerView.setAdapter(productAdapter);
             productRecyclerView.refreshDrawableState();
             productRecyclerView.getRecycledViewPool().clear();
             dialog.dismiss();
         } else {
             Product p = (Product) o;
-            System.out.println("KLIKNIETO PRODUKT: " + p.getName());
+            Intent productDetails = new Intent(MainActivity.this, ProductDetails.class);
+            productDetails.putExtra("activity", "main");
+            productDetails.putExtra("product", p);
+            productDetails.putExtra("currentGroupId", currentGroup.getId());
+            startActivity(productDetails);
         }
     }
 
@@ -235,5 +235,11 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
                 startActivity(intentLogOut);
         }
         return true;
+    }
+
+    @Override
+    public void buy(Product product) {
+        getIntent().putExtra("currentGroupId", currentGroup.getId());
+        firebaseProductViewModel.setBought(product.getProductId(), currentFirebaseUser.getUid(), currentGroup.getId());
     }
 }

@@ -2,6 +2,8 @@ package com.wolin.warehouseapp.utils.model;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class Group {
     private String owner;
     //members is a List of members UID
     private List<String> members;
+    @Exclude
     private List<Product> products;
 
     public Group(){}

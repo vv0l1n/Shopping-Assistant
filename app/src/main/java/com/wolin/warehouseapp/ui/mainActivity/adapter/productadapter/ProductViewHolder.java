@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wolin.warehouseapp.R;
@@ -18,6 +19,7 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
     private TextView count;
     private Button boughtButton;
     private ImageView shopLogo;
+    private ConstraintLayout background;
 
     public ProductViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -26,6 +28,7 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
         count = itemView.findViewById(R.id.count);
         boughtButton = itemView.findViewById(R.id.boughtButton);
         shopLogo = itemView.findViewById(R.id.shopLogo);
+        background = itemView.findViewById(R.id.productItemBackground);
     }
 
     public ImageView getImageView() {
@@ -66,5 +69,13 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
 
     public void setShopLogo(ImageView shopLogo) {
         this.shopLogo = shopLogo;
+    }
+
+    public ConstraintLayout getBackground() {
+        return background;
+    }
+
+    public void setBackground(ConstraintLayout background) {
+        this.background = background;
     }
 }

@@ -100,6 +100,7 @@
         <activity android:name="com.wolin.warehouseapp.ui.manageGroupActivities.manageGroupActivity.ManageGroupActivity" />
         <activity android:name="com.wolin.warehouseapp.ui.invitesActivity.InvitesActivity" />
         <activity android:name="com.wolin.warehouseapp.ui.profileActivity.ProfileActivity" />
+        <activity android:name="com.wolin.warehouseapp.ui.productDetails.ProductDetails" />
     </application>
 
 </manifest>
