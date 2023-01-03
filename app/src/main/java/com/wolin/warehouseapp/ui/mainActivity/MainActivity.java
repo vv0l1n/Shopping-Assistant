@@ -6,13 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -26,6 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseInviteViewModel;
 import com.wolin.warehouseapp.ui.addActivity.AddActivity;
 import com.wolin.warehouseapp.ui.createGroupActivity.CreateGroupActivity;
 import com.wolin.warehouseapp.ui.invitesActivity.InvitesActivity;
@@ -42,6 +47,7 @@ import com.wolin.warehouseapp.ui.yourProductsActivity.YourProductsActivity;
 import com.wolin.warehouseapp.utils.listeners.ItemBuyListener;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Group;
+import com.wolin.warehouseapp.utils.model.GroupInvite;
 import com.wolin.warehouseapp.utils.model.Product;
 
 import java.util.ArrayList;
@@ -66,8 +72,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
     private Toolbar toolbar;
     private FirebaseAuth auth;
 
-
-    private FirebaseUserViewModel firebaseUserViewModel;
+    private FirebaseInviteViewModel firebaseInviteViewModel;
     private FirebaseProductViewModel firebaseProductViewModel;
     private FirebaseGroupViewModel firebaseGroupViewModel;
 
@@ -95,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         currentGroup.setProducts(new ArrayList<>());
         userGroups = new ArrayList<>();
 
+        firebaseInviteViewModel = new ViewModelProvider(this).get(FirebaseInviteViewModel.class);
         firebaseProductViewModel = new ViewModelProvider(this).get(FirebaseProductViewModel.class);
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
-        firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
         productAdapter = new ProductAdapter(currentGroup.getProducts(), this, this, getResources());
         productRecyclerView.setAdapter(productAdapter);
@@ -105,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
         actualGroupTextView.setText("Aktualna grupa: brak");
 
         loadDialog();
+        loadInvites();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -170,6 +176,20 @@ public class MainActivity extends AppCompatActivity implements ItemSelectListene
 
     private void updateCurrentGroupName() {
         actualGroupTextView.setText("Aktualna grupa: " + currentGroup.getName());
+    }
+
+    private void loadInvites() {
+        firebaseInviteViewModel.getInvites(currentFirebaseUser.getUid()).observe(this, groupInvites -> {
+            if(groupInvites.size() > 0) {
+                SpannableString s = new SpannableString("Zaproszenia do grup: " + groupInvites.size());
+                s.setSpan(new ForegroundColorSpan(Color.CYAN), 0, s.length(), 0);
+                navViev.getMenu().getItem(1).getSubMenu().getItem(2).setTitle(s);
+            } else {
+                SpannableString s = new SpannableString("Zaproszenia do grup");
+                s.setSpan(new ForegroundColorSpan(Color.BLACK), 0, s.length(), 0);
+                navViev.getMenu().getItem(1).getSubMenu().getItem(2).setTitle(s);
+            }
+        });
     }
 
     @Override

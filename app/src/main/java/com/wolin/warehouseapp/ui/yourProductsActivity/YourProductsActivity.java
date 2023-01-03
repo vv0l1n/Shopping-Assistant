@@ -2,7 +2,10 @@ package com.wolin.warehouseapp.ui.yourProductsActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -25,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseGroupViewModel;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseInviteViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseProductViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.ui.createGroupActivity.CreateGroupActivity;
@@ -64,7 +68,7 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
 
     private FirebaseAuth auth;
 
-    private FirebaseUserViewModel firebaseUserViewModel;
+    private FirebaseInviteViewModel firebaseInviteViewModel;
     private FirebaseProductViewModel firebaseProductViewModel;
     private FirebaseGroupViewModel firebaseGroupViewModel;
 
@@ -93,7 +97,7 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
 
         firebaseProductViewModel = new ViewModelProvider(this).get(FirebaseProductViewModel.class);
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
-        firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
+        firebaseInviteViewModel = new ViewModelProvider(this).get(FirebaseInviteViewModel.class);
 
         productAdapterYPA = new ProductAdapterYPA( currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
         productRecyclerView.setAdapter(productAdapterYPA);
@@ -158,6 +162,20 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
 
     private void updateCurrentGroupName() {
         actualGroupTextView.setText("Aktualna grupa: " + currentGroup.getName());
+    }
+
+    private void loadInvites() {
+        firebaseInviteViewModel.getInvites(currentFirebaseUser.getUid()).observe(this, groupInvites -> {
+            if(groupInvites.size() > 0) {
+                SpannableString s = new SpannableString("Zaproszenia do grup: " + groupInvites.size());
+                s.setSpan(new ForegroundColorSpan(Color.CYAN), 0, s.length(), 0);
+                navViev.getMenu().getItem(1).getSubMenu().getItem(2).setTitle(s);
+            } else {
+                SpannableString s = new SpannableString("Zaproszenia do grup");
+                s.setSpan(new ForegroundColorSpan(Color.BLACK), 0, s.length(), 0);
+                navViev.getMenu().getItem(1).getSubMenu().getItem(2).setTitle(s);
+            }
+        });
     }
 
     @Override
