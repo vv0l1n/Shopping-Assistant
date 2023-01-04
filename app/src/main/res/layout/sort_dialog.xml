@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/sortDialogLayout"
+        android:layout_width="250dp"
+        android:layout_height="300dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="@string/sortProducts"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/sortDialogHighPriority"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="@string/highestPriority"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/sortDialogLowPriority"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="@string/lowestPriority"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/sortDialogClosestDate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="@string/closestDate"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/sortDialogFurthestDate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="@string/FurthestDate"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/sortDialogDeafault"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="@string/deafault"
+            android:textAlignment="center" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

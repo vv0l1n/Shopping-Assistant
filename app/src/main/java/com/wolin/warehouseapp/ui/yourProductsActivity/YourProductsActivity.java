@@ -56,6 +56,8 @@ import java.util.List;
 public class YourProductsActivity extends AppCompatActivity implements ItemSelectListener<Object>, ItemEditListener<Product>, ItemDeleteListener, NavigationView.OnNavigationItemSelectedListener {
 
     private Dialog dialog;
+    private Dialog sortDialog;
+    private Dialog filterDialog;
     private CheckBox onlyActive;
     private ImageButton sortButton;
     private ImageButton filterButton;
@@ -115,6 +117,8 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
         actualGroupTextView.setText("Aktualna grupa: brak");
 
         loadDialog();
+        loadSortDialog();
+        loadFilterDialog();
         loadInvites();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -134,63 +138,132 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
     }
 
     public void onYourProductsFilterButtonClick(View view) {
-        final CharSequence[] categories = {"Odzież", "Żywność", "Użytek domowy", "Inne", "Wszystkie"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(YourProductsActivity.this);
-        builder.setTitle("Wybierz kategorię");
-        builder.setItems(categories, (dialog, item) -> {
-            switch (categories[item].toString()) {
-                case "Odzież":
-                    currentCategory = Category.CLOTHES;
-                    break;
-                case "Żywność":
-                    currentCategory = Category.FOOD;
-                    break;
-                case "Użytek domowy":
-                    currentCategory = Category.HOME;
-                    break;
-                case "Inne":
-                    currentCategory = Category.OTHERS;
-                    break;
-                case "Wszystkie":
-                    currentCategory = Category.NONE;
-                    break;
-            }
-            System.out.println("IS SELECTED: " + selected);
-            productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
-            productRecyclerView.refreshDrawableState();
-            productRecyclerView.getRecycledViewPool().clear();
-        });
-        builder.show();
+        filterDialog.show();
     }
 
     public void onYourProductsSortButtonClick(View view) {
-        final CharSequence[] categories = {"Najważniejsze", "Najmniej ważne", "Najbliższy termin zakupu",
-                "Najpóźniejszy termin zakupu", "Domyślnie"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(YourProductsActivity.this);
-        builder.setTitle("Sortuj produkty");
-        builder.setItems(categories, (dialog, item) -> {
-            switch (categories[item].toString()) {
-                case "Najważniejsze":
-                    sortState = SortState.DESCPRIORITY;
-                    break;
-                case "Najmniej ważne":
-                    sortState = SortState.ASCPRIORITY;
-                    break;
-                case "Najbliższy termin zakupu":
-                    sortState = SortState.DESCDATE;
-                    break;
-                case "Najpóźniejszy termin zakupu":
-                    sortState = SortState.ASCDATE;
-                    break;
-                case "Domyślnie":
-                    sortState = SortState.NONE;
-                    break;
-            }
-            productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
-            productRecyclerView.refreshDrawableState();
-            productRecyclerView.getRecycledViewPool().clear();
+        sortDialog.show();
+    }
+
+    private void loadFilterDialog() {
+        filterDialog = new Dialog(this);
+        filterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        filterDialog.setCancelable(true);
+        filterDialog.setContentView(R.layout.filter_dialog);
+
+        TextView clothes = filterDialog.findViewById(R.id.filterDialogClothes);
+        TextView food = filterDialog.findViewById(R.id.filterDialogFood);
+        TextView home = filterDialog.findViewById(R.id.filterDialogHome);
+        TextView others = filterDialog.findViewById(R.id.filterDialogOthers);
+        TextView none = filterDialog.findViewById(R.id.filterDialogNone);
+
+        clothes.setOnClickListener(v -> {
+            currentCategory = Category.CLOTHES;
+            afterFilterClick();
+            setDialogTextViewColor(clothes, food, home, others, none);
+            clothes.setBackgroundColor(Color.LTGRAY);
         });
-        builder.show();
+
+        food.setOnClickListener(v -> {
+            currentCategory = Category.FOOD;
+            afterFilterClick();
+            setDialogTextViewColor(clothes, food, home, others, none);
+            food.setBackgroundColor(Color.LTGRAY);
+        });
+
+        home.setOnClickListener(v -> {
+            currentCategory = Category.HOME;
+            afterFilterClick();
+            setDialogTextViewColor(clothes, food, home, others, none);
+            home.setBackgroundColor(Color.LTGRAY);
+        });
+
+        others.setOnClickListener(v -> {
+            currentCategory = Category.OTHERS;
+            afterFilterClick();
+            setDialogTextViewColor(clothes, food, home, others, none);
+            others.setBackgroundColor(Color.LTGRAY);
+        });
+
+        none.setBackgroundColor(Color.LTGRAY);
+        none.setOnClickListener(v -> {
+            currentCategory = Category.NONE;
+            afterFilterClick();
+            setDialogTextViewColor(clothes, food, home, others, none);
+            none.setBackgroundColor(Color.LTGRAY);
+        });
+    }
+
+    private void afterFilterClick() {
+        filterDialog.dismiss();
+        productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
+        productRecyclerView.refreshDrawableState();
+        productRecyclerView.getRecycledViewPool().clear();
+    }
+
+    private void loadSortDialog() {
+        sortDialog = new Dialog(this);
+        sortDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        sortDialog.setCancelable(true);
+        sortDialog.setContentView(R.layout.sort_dialog);
+
+        TextView highestPriority = sortDialog.findViewById(R.id.sortDialogHighPriority);
+        TextView lowestPriority = sortDialog.findViewById(R.id.sortDialogLowPriority);
+        TextView closestDate = sortDialog.findViewById(R.id.sortDialogClosestDate);
+        TextView furthestDate = sortDialog.findViewById(R.id.sortDialogFurthestDate);
+        TextView defaultSort = sortDialog.findViewById(R.id.sortDialogDeafault);
+
+        highestPriority.setOnClickListener(v -> {
+            sortState = SortState.DESCPRIORITY;
+            afterSortClick();
+            setDialogTextViewColor(highestPriority, lowestPriority, closestDate, furthestDate, defaultSort);
+            highestPriority.setBackgroundColor(Color.LTGRAY);
+        });
+
+        lowestPriority.setOnClickListener(v -> {
+            sortState = SortState.ASCPRIORITY;
+            afterSortClick();
+            setDialogTextViewColor(highestPriority, lowestPriority, closestDate, furthestDate, defaultSort);
+            lowestPriority.setBackgroundColor(Color.LTGRAY);
+        });
+
+        closestDate.setOnClickListener(v -> {
+            sortState = SortState.DESCDATE;
+            setDialogTextViewColor(highestPriority, lowestPriority, closestDate, furthestDate, defaultSort);
+            afterSortClick();
+            closestDate.setBackgroundColor(Color.LTGRAY);
+        });
+
+        furthestDate.setOnClickListener(v -> {
+            sortState = SortState.ASCDATE;
+            setDialogTextViewColor(highestPriority, lowestPriority, closestDate, furthestDate, defaultSort);
+            afterSortClick();
+            furthestDate.setBackgroundColor(Color.LTGRAY);
+        });
+
+        defaultSort.setBackgroundColor(Color.LTGRAY);
+        defaultSort.setOnClickListener(v -> {
+            sortState = SortState.NONE;
+            setDialogTextViewColor(highestPriority, lowestPriority, closestDate, furthestDate, defaultSort);
+            afterSortClick();
+            defaultSort.setBackgroundColor(Color.LTGRAY);
+        });
+
+    }
+
+    private void setDialogTextViewColor(TextView t1, TextView t2, TextView t3, TextView t4, TextView t5) {
+        t1.setBackgroundColor(Color.WHITE);
+        t2.setBackgroundColor(Color.WHITE);
+        t3.setBackgroundColor(Color.WHITE);
+        t4.setBackgroundColor(Color.WHITE);
+        t5.setBackgroundColor(Color.WHITE);
+    }
+
+    private void afterSortClick() {
+        sortDialog.dismiss();
+        productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
+        productRecyclerView.refreshDrawableState();
+        productRecyclerView.getRecycledViewPool().clear();
     }
 
     public void onGroupButtonCick(View view) {

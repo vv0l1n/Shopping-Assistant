@@ -59,4 +59,16 @@
     <string name="shop">Sklep</string>
     <string name="category">Kategoria</string>
     <string name="category2">Kategoria:</string>
+    <string name="deafault">Domyślnie</string>
+    <string name="FurthestDate">Najpóźniejszy termin zakupu</string>
+    <string name="closestDate">Najbliższy termin zakupu</string>
+    <string name="lowestPriority">Najmniej ważne</string>
+    <string name="highestPriority">Najważniejsze</string>
+    <string name="sortProducts">Sortuj produkty</string>
+    <string name="allCategories">Wszystkie</string>
+    <string name="others">Inne</string>
+    <string name="homeUsage">Użytek domowy</string>
+    <string name="food">Żywność</string>
+    <string name="clothes">Odzież</string>
+    <string name="filterProducts">Filtruj produkty</string>
 </resources>
