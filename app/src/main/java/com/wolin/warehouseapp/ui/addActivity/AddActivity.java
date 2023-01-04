@@ -239,9 +239,9 @@ public class AddActivity extends AppCompatActivity implements ItemSelectListener
 
             String priority;
             if(mediumPriorityButton.isChecked()) {
-                priority = "Niski";
-            } else if (lowPriorityButton.isChecked()) {
                 priority = "Średni";
+            } else if (lowPriorityButton.isChecked()) {
+                priority = "Niski";
             } else {
                 priority = "Wysoki";
             }

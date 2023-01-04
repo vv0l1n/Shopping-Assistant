@@ -80,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
                     android:text="@string/onlyActive"
+                    android:checked="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/sortButton"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -91,6 +92,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/icon_sorting"
                     android:scaleType="fitXY"
+                    android:onClick="onMainSortButtonClick"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/filterButton"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -102,6 +104,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/icon_filter"
                     android:scaleType="centerInside"
+                    android:onClick="onMainFilterButtonClick"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/groupButton"
                     app:layout_constraintTop_toTopOf="parent" />

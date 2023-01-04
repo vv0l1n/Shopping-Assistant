@@ -1,5 +1,6 @@
 package com.wolin.warehouseapp.ui.yourProductsActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -41,6 +42,9 @@ import com.wolin.warehouseapp.ui.manageGroupActivities.selectGroupActivity.Selec
 import com.wolin.warehouseapp.ui.productDetails.ProductDetailsActivity;
 import com.wolin.warehouseapp.ui.profileActivity.ProfileActivity;
 import com.wolin.warehouseapp.ui.yourProductsActivity.productadapter.ProductAdapterYPA;
+import com.wolin.warehouseapp.utils.common.Category;
+import com.wolin.warehouseapp.utils.common.SortState;
+import com.wolin.warehouseapp.utils.listeners.ItemDeleteListener;
 import com.wolin.warehouseapp.utils.listeners.ItemEditListener;
 import com.wolin.warehouseapp.utils.listeners.ItemSelectListener;
 import com.wolin.warehouseapp.utils.model.Group;
@@ -49,7 +53,7 @@ import com.wolin.warehouseapp.utils.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YourProductsActivity extends AppCompatActivity implements ItemSelectListener<Object>, ItemEditListener<Product>, NavigationView.OnNavigationItemSelectedListener {
+public class YourProductsActivity extends AppCompatActivity implements ItemSelectListener<Object>, ItemEditListener<Product>, ItemDeleteListener, NavigationView.OnNavigationItemSelectedListener {
 
     private Dialog dialog;
     private CheckBox onlyActive;
@@ -61,6 +65,9 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
     private TextView actualGroupTextView;
     private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private Group currentGroup;
+    private Category currentCategory = Category.NONE;
+    private boolean selected = true;
+    private SortState sortState = SortState.NONE;
     private List<Group> userGroups;
     private DrawerLayout drawerLayout;
     private NavigationView navViev;
@@ -74,12 +81,15 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
 
     private ProductAdapterYPA productAdapterYPA;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_your_products);
 
         onlyActive = findViewById(R.id.onlyActiveYPA);
+        onlyActive.setSelected(true);
+        onlyActiveListener();
         sortButton = findViewById(R.id.sortButtonYPA);
         filterButton = findViewById(R.id.filterButtonYPA);
         groupButton = findViewById(R.id.groupButtonYPA);
@@ -99,24 +109,89 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
         firebaseInviteViewModel = new ViewModelProvider(this).get(FirebaseInviteViewModel.class);
 
-        productAdapterYPA = new ProductAdapterYPA( currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
+        productAdapterYPA = new ProductAdapterYPA( currentGroup.getProducts(), this, this, this, currentFirebaseUser.getUid(), getResources());
         productRecyclerView.setAdapter(productAdapterYPA);
 
         actualGroupTextView.setText("Aktualna grupa: brak");
 
         loadDialog();
+        loadInvites();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        //toggle.setDrawerIndicatorEnabled(false);
-        //toolbar.setNavigationIcon(R.drawable.icon_burger);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
-
 
         navViev.setNavigationItemSelectedListener(this);
     }
 
+    private void onlyActiveListener() {
+        onlyActive.setOnCheckedChangeListener((compoundButton, b) -> {
+            selected = !selected;
+            productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
+            productRecyclerView.refreshDrawableState();
+            productRecyclerView.getRecycledViewPool().clear();
+        });
+    }
+
+    public void onYourProductsFilterButtonClick(View view) {
+        final CharSequence[] categories = {"Odzież", "Żywność", "Użytek domowy", "Inne", "Wszystkie"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(YourProductsActivity.this);
+        builder.setTitle("Wybierz kategorię");
+        builder.setItems(categories, (dialog, item) -> {
+            switch (categories[item].toString()) {
+                case "Odzież":
+                    currentCategory = Category.CLOTHES;
+                    break;
+                case "Żywność":
+                    currentCategory = Category.FOOD;
+                    break;
+                case "Użytek domowy":
+                    currentCategory = Category.HOME;
+                    break;
+                case "Inne":
+                    currentCategory = Category.OTHERS;
+                    break;
+                case "Wszystkie":
+                    currentCategory = Category.NONE;
+                    break;
+            }
+            System.out.println("IS SELECTED: " + selected);
+            productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
+            productRecyclerView.refreshDrawableState();
+            productRecyclerView.getRecycledViewPool().clear();
+        });
+        builder.show();
+    }
+
+    public void onYourProductsSortButtonClick(View view) {
+        final CharSequence[] categories = {"Najważniejsze", "Najmniej ważne", "Najbliższy termin zakupu",
+                "Najpóźniejszy termin zakupu", "Domyślnie"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(YourProductsActivity.this);
+        builder.setTitle("Sortuj produkty");
+        builder.setItems(categories, (dialog, item) -> {
+            switch (categories[item].toString()) {
+                case "Najważniejsze":
+                    sortState = SortState.DESCPRIORITY;
+                    break;
+                case "Najmniej ważne":
+                    sortState = SortState.ASCPRIORITY;
+                    break;
+                case "Najbliższy termin zakupu":
+                    sortState = SortState.DESCDATE;
+                    break;
+                case "Najpóźniejszy termin zakupu":
+                    sortState = SortState.ASCDATE;
+                    break;
+                case "Domyślnie":
+                    sortState = SortState.NONE;
+                    break;
+            }
+            productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
+            productRecyclerView.refreshDrawableState();
+            productRecyclerView.getRecycledViewPool().clear();
+        });
+        builder.show();
+    }
 
     public void onGroupButtonCick(View view) {
         dialog.show();
@@ -151,8 +226,7 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
                 updateCurrentGroupName();
                 adapter.updateData(groups);
                 adapter.notifyDataSetChanged();
-                productAdapterYPA.updateData(currentGroup.getProducts(), currentGroup.getId());
-                productAdapterYPA.notifyDataSetChanged();
+                productAdapterYPA.updateData(currentGroup.getProducts(), selected, currentCategory, sortState);
                 productRecyclerView.refreshDrawableState();
                 productRecyclerView.getRecycledViewPool().clear();
             }
@@ -184,7 +258,7 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
             int position = (int) o;
             currentGroup = userGroups.get(position);
             updateCurrentGroupName();
-            productAdapterYPA = new ProductAdapterYPA(currentGroup.getProducts(), this, this, firebaseProductViewModel, currentGroup.getId(), currentFirebaseUser.getUid(), getResources());
+            productAdapterYPA = new ProductAdapterYPA(currentGroup.getProducts(), this, this, this, currentFirebaseUser.getUid(), getResources());
             productRecyclerView.setAdapter(productAdapterYPA);
             productRecyclerView.refreshDrawableState();
             productRecyclerView.getRecycledViewPool().clear();
@@ -249,5 +323,10 @@ public class YourProductsActivity extends AppCompatActivity implements ItemSelec
         editIntent.putExtra("currentGroupId", currentGroup.getId());
         editIntent.putExtra("currentProductId", item.getProductId());
         startActivity(editIntent);
+    }
+
+    @Override
+    public void delete(Product product) {
+        firebaseProductViewModel.deleteProduct(product.getProductId(), product.getOwner(), currentGroup.getId());
     }
 }

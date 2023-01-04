@@ -239,9 +239,9 @@ public class EditProductActivity extends AppCompatActivity implements ItemSelect
 
         String priorityStr;
         if(mediumPriorityButton.isChecked()) {
-            priorityStr = "Niski";
-        } else if (lowPriorityButton.isChecked()) {
             priorityStr = "Średni";
+        } else if (lowPriorityButton.isChecked()) {
+            priorityStr = "Niski";
         } else {
             priorityStr = "Wysoki";
         }

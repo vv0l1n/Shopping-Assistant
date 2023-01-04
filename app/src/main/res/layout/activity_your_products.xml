@@ -58,6 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
                     android:text="@string/onlyActive"
+                    android:checked="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/sortButtonYPA"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -69,6 +70,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/icon_sorting"
                     android:scaleType="centerInside"
+                    android:onClick="onYourProductsSortButtonClick"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/filterButtonYPA"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -80,6 +82,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/icon_filter"
                     android:scaleType="centerInside"
+                    android:onClick="onYourProductsFilterButtonClick"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/groupButtonYPA"
                     app:layout_constraintTop_toTopOf="parent" />
