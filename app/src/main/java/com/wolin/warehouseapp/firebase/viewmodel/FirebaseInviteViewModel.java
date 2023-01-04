@@ -40,8 +40,8 @@ public class FirebaseInviteViewModel extends ViewModel {
         });
     }
 
-    public void declineInvite(GroupInvite invite, String email) {
-        firebaseService.declineInvite(invite, email);
+    public void declineInvite(GroupInvite invite) {
+        firebaseService.declineInvite(invite);
     }
 
     public void acceptInvite(GroupInvite invite, User user) {

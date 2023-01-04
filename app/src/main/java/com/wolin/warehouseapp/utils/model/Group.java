@@ -15,6 +15,7 @@ public class Group {
     private String owner;
     //members is a List of members UID
     private List<String> members;
+    private List<GroupInvite> invites;
     @Exclude
     private List<Product> products;
 
@@ -69,6 +70,14 @@ public class Group {
         this.products = products;
     }
 
+    public List<GroupInvite> getInvites() {
+        return invites;
+    }
+
+    public void setInvites(List<GroupInvite> invites) {
+        this.invites = invites;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
@@ -76,6 +85,7 @@ public class Group {
                 ", name='" + name + '\'' +
                 ", owner='" + owner + '\'' +
                 ", members=" + members +
+                ", invites=" + invites +
                 ", products=" + products +
                 '}';
     }

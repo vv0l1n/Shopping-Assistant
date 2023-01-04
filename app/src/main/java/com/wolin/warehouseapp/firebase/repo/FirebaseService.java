@@ -198,20 +198,21 @@ public class FirebaseService {
 
     public void getGroup(String groupId, MyCallback<Group> callback) {
         System.out.println("POBIERAM GRUPE: " + groupId);
-        DocumentReference groupDocRef = firebaseFirestore.collection("Groups").document(groupId);
-        groupDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("Groups").document(groupId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 Group group = value.toObject(Group.class);
-                group.setId(group.getOwner() + "-" + group.getName());
-                getProducts(groupId, new MyCallback<List<Product>>() {
-                    @Override
-                    public void onCallback(List<Product> data) {
-                        group.setProducts(data);
-                        System.out.println("ZWRACAM GRUPE: " + group.getId() + ":::" + group.getName() + ":::" + group.getMembers() + ":::" + group.getOwner() + ":::" + group.getProducts());
-                        callback.onCallback(group);
-                    }
-                });
+                //group.setId(group.getOwner() + "-" + group.getName());
+                if(group != null) {
+                    getProducts(groupId, new MyCallback<List<Product>>() {
+                        @Override
+                        public void onCallback(List<Product> data) {
+                            group.setProducts(data);
+                            System.out.println("ZWRACAM GRUPE: " + group.getId() + ":::" + group.getName() + ":::" + group.getMembers() + ":::" + group.getOwner() + ":::" + group.getProducts());
+                            callback.onCallback(group);
+                        }
+                    });
+                }
             }
         });
     }
@@ -356,8 +357,21 @@ public class FirebaseService {
                                                             String groupName = groupId.substring(groupId.indexOf('-') + 1);
                                                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                                                             String formattedDate = formatter.format(LocalDateTime.now());
-                                                            GroupInvite invite = new GroupInvite(groupId, groupName, userInviter.getEmail(), formattedDate);
+                                                            GroupInvite invite = new GroupInvite(groupId, groupName, userInviter.getEmail(), target,formattedDate);
                                                             firebaseFirestore.collection("EmailToID").document(target).collection("Invites").add(invite);
+
+                                                            firebaseFirestore.collection("Groups").document(groupId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                                    Group group = documentSnapshot.toObject(Group.class);
+                                                                    List<GroupInvite> invites = group.getInvites();
+                                                                    if(invites == null || invites.size() > 0) {
+                                                                        invites = new ArrayList<>();
+                                                                    }
+                                                                    invites.add(invite);
+                                                                    firebaseFirestore.collection("Groups").document(groupId).update("invites", invites);
+                                                                }
+                                                            });
                                                         }
                                                     }
                                                 });
@@ -398,8 +412,8 @@ public class FirebaseService {
 
 
 
-    public void declineInvite(GroupInvite invite, String email) {
-        firebaseFirestore.collection("EmailToID").document(email).collection("Invites").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public void declineInvite(GroupInvite invite) {
+        firebaseFirestore.collection("EmailToID").document(invite.getTargetEmail()).collection("Invites").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
@@ -408,7 +422,7 @@ public class FirebaseService {
                     for(DocumentSnapshot doc : docs) {
                         if(doc.toObject(GroupInvite.class).getGroupId().equals(invite.getGroupId())) {
                             inviteID = doc.getId();
-                            firebaseFirestore.collection("EmailToID").document(email).collection("Invites").document(inviteID).delete();
+                            firebaseFirestore.collection("EmailToID").document(invite.getTargetEmail()).collection("Invites").document(inviteID).delete();
                         }
                     }
                 }
@@ -449,6 +463,41 @@ public class FirebaseService {
                             }
                         }
                     });
+                }
+            }
+        });
+    }
+
+    public void deleteGroup(String groupId) {
+        firebaseFirestore.collection("Groups").document(groupId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Group group = task.getResult().toObject(Group.class);
+
+                    //delete members
+                    for(String uid : group.getMembers()) {
+                        deleteFromGroup(uid, groupId);
+                    }
+
+                    if(group.getInvites() != null && group.getInvites().size() > 0) {
+                        for(GroupInvite invite : group.getInvites()) {
+                            //delete invites
+                            declineInvite(invite);
+                        }
+                    }
+
+                    //delete products
+                    firebaseFirestore.collection("Groups").document(groupId).collection("products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            for(DocumentSnapshot doc : task.getResult()) {
+                                firebaseFirestore.collection("Groups").document(groupId).collection("products")
+                                        .document(doc.getId()).delete();
+                            }
+                        }
+                    });
+                    firebaseFirestore.collection("Groups").document(groupId).delete();
                 }
             }
         });

@@ -66,10 +66,10 @@ public class CreateGroupActivity  extends AppCompatActivity {
                 groupName.setText("");
                 return;
             }
-            if(name.contains("-")) {
-                Toast.makeText(this, "Nazwa zawiera niedozwolone znaki.", Toast.LENGTH_LONG).show();
-                return;
-            }
+        }
+        if(groupName.getText().toString().trim().contains("-")) {
+            Toast.makeText(this, "Nazwa zawiera niedozwolone znaki.", Toast.LENGTH_LONG).show();
+            return;
         }
         firebaseGroupViewModel.addGroup(user.getUid(), groupName.getText().toString(), userGroups);
         Intent intent = new Intent(CreateGroupActivity.this, MainActivity.class);

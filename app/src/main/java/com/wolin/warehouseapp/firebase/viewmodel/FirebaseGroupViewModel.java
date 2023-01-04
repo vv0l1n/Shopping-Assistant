@@ -36,7 +36,6 @@ public class FirebaseGroupViewModel  extends ViewModel {
         groupListLiveData = Transformations.switchMap(firebaseService.getGroups(uid), groups -> {
             MutableLiveData<List<Group>> liveData = new MutableLiveData<>();
             liveData.postValue(groups);
-            System.out.println("FIREBASEGROUPVIEWMODEL");
             if (liveData != null) {
                 for (Group group : groups) {
                     System.out.println(group);
@@ -56,11 +55,6 @@ public class FirebaseGroupViewModel  extends ViewModel {
         firebaseService.deleteUserProductsInGroup(uid, groupId);
     }
 
-    public void inviteUser(String target, String inviterUid, String groupId) {
-        firebaseService.inviteUser(target, inviterUid, groupId);
-    }
-
-
     public LiveData<Group> getGroup(String groupId) {
         if (groupLiveData == null) {
             groupLiveData = new MutableLiveData<Group>();
@@ -78,4 +72,11 @@ public class FirebaseGroupViewModel  extends ViewModel {
         });
     }
 
+    public void leave(String groupId, String uid) {
+        firebaseService.deleteFromGroup(uid, groupId);
+    }
+
+    public void delete(String groupId) {
+        firebaseService.deleteGroup(groupId);
+    }
 }

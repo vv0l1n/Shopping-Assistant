@@ -106,7 +106,7 @@ public class InvitesActivity extends AppCompatActivity implements ButtonClickedL
                 @Override
                 public void onChanged(User user) {
                     if(user != null) {
-                        firebaseInviteViewModel.declineInvite(invite, user.getEmail());
+                        firebaseInviteViewModel.declineInvite(invite);
                     }
                 }
             });

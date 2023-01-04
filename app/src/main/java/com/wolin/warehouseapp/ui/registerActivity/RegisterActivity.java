@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -90,19 +91,13 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser(String emailStr, String passwordStr, String nameStr, String lastNameStr) {
-        auth.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(emailStr, passwordStr).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
-                    if(task.isComplete()) {
-                        User user = new User(currentFirebaseUser.getUid(), emailStr, nameStr, lastNameStr, null);
-                        firebaseUserViewModel.registerUser(user);
-                        Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(loginActivityIntent);
-                    }
-                } else {
-                    Toast.makeText(RegisterActivity.this, "Rejestracja nieudana.", Toast.LENGTH_SHORT).show();
-                }
+            public void onSuccess(AuthResult authResult) {
+                User user = new User(authResult.getUser().getUid(), emailStr, nameStr, lastNameStr, null);
+                firebaseUserViewModel.registerUser(user);
+                Intent loginActivityIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(loginActivityIntent);
             }
         });
     }

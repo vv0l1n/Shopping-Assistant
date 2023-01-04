@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.wolin.warehouseapp.R;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseGroupViewModel;
+import com.wolin.warehouseapp.firebase.viewmodel.FirebaseInviteViewModel;
 import com.wolin.warehouseapp.firebase.viewmodel.FirebaseUserViewModel;
 import com.wolin.warehouseapp.ui.mainActivity.MainActivity;
 import com.wolin.warehouseapp.ui.manageGroupActivities.manageGroupActivity.adapter.UserAdapter;
@@ -45,6 +46,7 @@ public class ManageGroupActivity extends AppCompatActivity {
     private Button backButton;
     private Dialog dialog;
 
+    private FirebaseInviteViewModel firebaseInviteViewModel;
     private FirebaseGroupViewModel firebaseGroupViewModel;
     private FirebaseUserViewModel firebaseUserViewModel;
     private FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -62,6 +64,7 @@ public class ManageGroupActivity extends AppCompatActivity {
         deleteButton = findViewById(R.id.manageDeleteGroupButton);
         backButton = findViewById(R.id.manageBackButton);
 
+        firebaseInviteViewModel = new ViewModelProvider(this).get(FirebaseInviteViewModel.class);
         firebaseGroupViewModel = new ViewModelProvider(this).get(FirebaseGroupViewModel.class);
         firebaseUserViewModel = new ViewModelProvider(this).get(FirebaseUserViewModel.class);
 
@@ -72,21 +75,27 @@ public class ManageGroupActivity extends AppCompatActivity {
     }
 
     public void loadGroup() {
-        System.out.println("LoadGroup");
         firebaseGroupViewModel.getGroup(groupId).observe(this, new Observer<Group>() {
             @Override
             public void onChanged(Group group) {
-                groupNameTextView.setText(group.getName());
+                if(group == null) {
+                    Intent selectIntent = new Intent(ManageGroupActivity.this, SelectGroupActivity.class);
+                    startActivity(selectIntent);
+                } else {
+                    groupNameTextView.setText(group.getName());
 
-                if(!group.getOwner().equals(currentFirebaseUser.getUid())) {
-                    inviteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
-                    deleteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
+                    if (!group.getOwner().equals(currentFirebaseUser.getUid())) {
+                        inviteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
+                        deleteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
 
-                    inviteButton.setEnabled(false);
-                    deleteButton.setEnabled(false);
+                        inviteButton.setEnabled(false);
+                        deleteButton.setEnabled(false);
+                    } else if (group.getOwner().equals(currentFirebaseUser.getUid())) {
+                        leaveButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
+                        leaveButton.setEnabled(false);
+                    }
+                    loadRecyclerView(group);
                 }
-
-                loadRecyclerView(group);
             }
         });
 
@@ -125,7 +134,7 @@ public class ManageGroupActivity extends AppCompatActivity {
                 String emailStr = emailField.getText().toString().trim();
                 if(!emailStr.equals("")) {
                     if(Pattern.compile("^(.+)@(.+)\\.(.+)$").matcher(emailStr).matches()) { //email validate
-                        firebaseGroupViewModel.inviteUser(emailStr, currentFirebaseUser.getUid(), groupId);
+                        firebaseInviteViewModel.inviteUser(emailStr, currentFirebaseUser.getUid(), groupId);
                         dialog.dismiss();
                     } else {
                         Toast.makeText(getApplicationContext(), "Podany Email jest nieprawidłowy.", Toast.LENGTH_LONG);
@@ -140,17 +149,16 @@ public class ManageGroupActivity extends AppCompatActivity {
     }
 
     public void onLeaveButtonClick(View view) {
-
+        firebaseGroupViewModel.leave(groupId, currentFirebaseUser.getUid());
     }
 
     public void onDeleteButtonClick(View view) {
-
+        firebaseGroupViewModel.delete(groupId);
     }
 
     public void onBackButtonClick(View view) {
         Intent selectIntent = new Intent(ManageGroupActivity.this, SelectGroupActivity.class);
         startActivity(selectIntent);
     }
-
 
 }
