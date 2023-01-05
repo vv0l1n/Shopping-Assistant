@@ -428,12 +428,28 @@ public class FirebaseService {
                 }
             }
         });
+
+        firebaseFirestore.collection("Groups").document(invite.getGroupId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Group group = documentSnapshot.toObject(Group.class);
+                ArrayList<GroupInvite> newInvites = new ArrayList();
+                for(GroupInvite inv : group.getInvites()) {
+                    if (!inv.getTargetEmail().equals(invite.getTargetEmail())) {
+                        newInvites.add(inv);
+                    }
+                }
+                firebaseFirestore.collection("Groups").document(invite.getGroupId()).update("invites", newInvites);
+            }
+        });
+
     }
 
     public void acceptInvite(GroupInvite invite, User user) {
         firebaseFirestore.collection("EmailToID").document(user.getEmail()).collection("Invites").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                 if(task.isSuccessful()) {
                     List<DocumentSnapshot> docs = task.getResult().getDocuments();
                     String inviteID;
@@ -443,21 +459,34 @@ public class FirebaseService {
                             firebaseFirestore.collection("EmailToID").document(user.getEmail()).collection("Invites").document(inviteID).delete();
                         }
                     }
+
                     firebaseFirestore.collection("Groups").document(invite.getGroupId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()) {
-                                List<String> members = (List<String>) task.getResult().get("members");
+                                Group group = task.getResult().toObject(Group.class);
+                                List<String> members = group.getMembers(); //add to members
                                 members.add(user.getUid());
                                 firebaseFirestore.collection("Groups").document(invite.getGroupId()).update("members", members);
+
+                                List<GroupInvite> invites = group.getInvites();
+                                List<GroupInvite> newInvites = new ArrayList<>();
+
+                                for(GroupInvite inv : invites) {
+                                    if (!inv.getTargetEmail().equals(invite.getTargetEmail())) {
+                                        newInvites.add(inv);
+                                    }
+                                }
+                                firebaseFirestore.collection("Groups").document(invite.getGroupId()).update("invites", newInvites);
                             }
                         }
                     });
+
                     firebaseFirestore.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful()) {
-                                List<String> groups = (List<String>) task.getResult().get("groups");
+                                List<String> groups = task.getResult().toObject(User.class).getGroups();
                                 groups.add(invite.getGroupId());
                                 firebaseFirestore.collection("Users").document(user.getUid()).update("groups", groups);
                             }

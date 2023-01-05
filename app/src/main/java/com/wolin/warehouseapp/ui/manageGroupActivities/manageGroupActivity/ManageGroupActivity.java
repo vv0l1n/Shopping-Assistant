@@ -78,7 +78,7 @@ public class ManageGroupActivity extends AppCompatActivity {
         firebaseGroupViewModel.getGroup(groupId).observe(this, new Observer<Group>() {
             @Override
             public void onChanged(Group group) {
-                if(group == null) {
+                if(group == null || !group.getMembers().contains(currentFirebaseUser.getUid())) {
                     Intent selectIntent = new Intent(ManageGroupActivity.this, SelectGroupActivity.class);
                     startActivity(selectIntent);
                 } else {
@@ -150,6 +150,7 @@ public class ManageGroupActivity extends AppCompatActivity {
 
     public void onLeaveButtonClick(View view) {
         firebaseGroupViewModel.leave(groupId, currentFirebaseUser.getUid());
+
     }
 
     public void onDeleteButtonClick(View view) {
