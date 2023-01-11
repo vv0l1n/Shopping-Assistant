@@ -11,10 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginBottom="30dp"
+        android:background="@color/colorPrimary"
+        android:onClick="onCreateGroupCreate"
         android:text="@string/confirm"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:onClick="onCreateGroupCreate"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/cancelGroupButton"
@@ -39,7 +40,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/groupNameTextView"
