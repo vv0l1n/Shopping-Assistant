@@ -57,6 +57,7 @@
         android:layout_marginEnd="42dp"
         android:layout_marginBottom="5dp"
         android:text="@string/bought"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/shopLogo"
         app:layout_constraintStart_toEndOf="@+id/imageView" />

@@ -2,7 +2,7 @@
 <resources>
     <style name="bg_button" parent="ThemeOverlay.AppCompat">
        
-        <item name="android:backgroundTint">@color/purple_200</item>
+        <item name="android:backgroundTint">@color/colorPrimary</item>
 
     </style>
 </resources>

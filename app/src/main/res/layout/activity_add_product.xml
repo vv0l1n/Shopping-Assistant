@@ -99,6 +99,7 @@
         android:layout_marginBottom="15dp"
         android:onClick="onAddActivityCancelButtonClick"
         android:text="@string/cancel"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/addActivityAddButton" />
@@ -111,6 +112,7 @@
         android:layout_marginBottom="15dp"
         android:onClick="onAddActivityAddButtonClick"
         android:text="@string/add"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -122,6 +124,7 @@
         android:onClick="onAddDateToBuyButton"
         android:text="@string/dateToBuyAdd"
         android:textAlignment="center"
+        android:background="@drawable/btn_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noteAdd" />
@@ -169,6 +172,7 @@
         android:layout_marginBottom="11dp"
         android:text="@string/category"
         android:onClick="onAddCategoryButtonClick"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toTopOf="@+id/shopLogoAdd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

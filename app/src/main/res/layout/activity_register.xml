@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor">
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/registerTextView"
@@ -111,6 +111,7 @@
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
         android:text="@string/cancel"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -122,6 +123,7 @@
         android:layout_marginBottom="15dp"
         android:text="@string/register"
         android:theme="@style/bg_button"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

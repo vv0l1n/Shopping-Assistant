@@ -99,6 +99,7 @@
         android:layout_marginBottom="15dp"
         android:onClick="onCancelButtonClick"
         android:text="@string/cancel"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/editButtonE" />
@@ -111,6 +112,7 @@
         android:layout_marginBottom="15dp"
         android:onClick="onEditButtonClick"
         android:text="@string/edit"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -122,6 +124,7 @@
         android:onClick="onAddDateToBuyButton"
         android:text="@string/dateToBuyAdd"
         android:textAlignment="center"
+        android:background="@drawable/btn_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/noteAddE" />
@@ -168,6 +171,7 @@
         android:layout_marginTop="9dp"
         android:layout_marginBottom="13dp"
         android:text="@string/category"
+        android:background="@drawable/btn_bg"
         android:onClick="onEditCategoryButtonClick"
         app:layout_constraintBottom_toTopOf="@+id/shopLogoAddE"
         app:layout_constraintEnd_toEndOf="parent"

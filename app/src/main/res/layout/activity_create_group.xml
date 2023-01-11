@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginBottom="30dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/btn_bg"
         android:onClick="onCreateGroupCreate"
         android:text="@string/confirm"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,6 +24,7 @@
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:text="@string/cancel"
+        android:background="@drawable/btn_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:onClick="onCreateGroupCancel"/>
