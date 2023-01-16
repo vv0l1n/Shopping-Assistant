@@ -91,7 +91,7 @@ public class ManageGroupActivity extends AppCompatActivity {
                         inviteButton.setEnabled(false);
                         deleteButton.setEnabled(false);
                     } else if (group.getOwner().equals(currentFirebaseUser.getUid())) {
-                        leaveButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
+                        leaveButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.db_button));
                         leaveButton.setEnabled(false);
                     }
                     loadRecyclerView(group);

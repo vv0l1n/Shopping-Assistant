@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:id="@+id/drawerLayoutYPA"
     tools:context=".ui.mainActivity.MainActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/backgroundColor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -107,6 +108,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:text="@string/yourProducts"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"

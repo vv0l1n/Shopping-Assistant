@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:id="@+id/drawerLayout"
     tools:context=".ui.mainActivity.MainActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="@color/backgroundColor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,6 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/list"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +55,7 @@
             android:layout_height="48dp"
             android:onClick="onMainActivityAddButtonClick"
             android:text="@string/add"
+            android:background="@drawable/btn_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -80,7 +84,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
                     android:text="@string/onlyActive"
-                    android:checked="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/sortButton"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -90,9 +93,8 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
-                    android:background="@drawable/icon_sorting"
+                    android:background="@drawable/icon_profil"
                     android:scaleType="fitXY"
-                    android:onClick="onMainSortButtonClick"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/filterButton"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -103,8 +105,8 @@
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/icon_filter"
+                    android:icon="@drawable/icon_filter"
                     android:scaleType="centerInside"
-                    android:onClick="onMainFilterButtonClick"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/groupButton"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -115,6 +117,7 @@
                     android:layout_height="48dp"
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/icon_group"
+                    android:icon="@drawable/icon_group"
                     android:onClick="onGroupButtonCick"
                     android:scaleType="centerInside"
                     app:layout_constraintBottom_toBottomOf="parent"

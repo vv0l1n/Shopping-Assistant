@@ -7,6 +7,7 @@
     android:layout_height="70dp"
     android:onClick="onGroupItem">
 
+
     <TextView
         android:id="@+id/groupDialogTextView"
         android:layout_width="wrap_content"

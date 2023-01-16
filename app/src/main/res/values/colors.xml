@@ -11,5 +11,7 @@
     <color name="colorPrimaryDark">#006666</color>
     <color name="colorAccent">#ffff66</color>
     <color name="lightRed">#ff3c2e</color>
-    <color name="backgroundColor">#B06F6F</color>
+    <color name="backgroundColor">#5D859E</color>
+    <color name="db_button">#808080</color>
+
 </resources>

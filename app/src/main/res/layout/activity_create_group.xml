@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
 
     <Button
         android:id="@+id/createGroupButton"
@@ -49,6 +50,8 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:text="@string/passGroupName"
         app:layout_constraintBottom_toTopOf="@+id/groupNameEditText"
         app:layout_constraintEnd_toEndOf="parent"
