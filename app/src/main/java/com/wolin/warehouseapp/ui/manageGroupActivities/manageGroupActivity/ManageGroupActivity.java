@@ -85,8 +85,8 @@ public class ManageGroupActivity extends AppCompatActivity {
                     groupNameTextView.setText(group.getName());
 
                     if (!group.getOwner().equals(currentFirebaseUser.getUid())) {
-                        inviteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
-                        deleteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.purple_200));
+                        inviteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.db_button));
+                        deleteButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.db_button));
 
                         inviteButton.setEnabled(false);
                         deleteButton.setEnabled(false);
