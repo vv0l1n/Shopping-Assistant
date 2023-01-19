@@ -1,4 +1,4 @@
-# Nazwa projektu
+# Shopping Assistant
 ## Skład zespołu
 - Wiktor Woliński
 - Dawid Stańczak
