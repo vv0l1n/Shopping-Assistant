@@ -39,9 +39,9 @@ Przy każdej osobie wymienić szacowany procentowo łączny udział w realizacji
 - Tworzenie szablonów XML
 
 ## Planowany harmonogram
-Szacowany łączny czas trwania wraz z liczbą godzin poświęconą w tym czasie na prace nad projektem. Np. projekt może trwać 2 miesiące, ale w tym czasie poświęcimy 10 godzin na pracę nad nim. Może też trwać 2 dni, ale czas to 20 godzin.
+Szacowany łączny czas trwania wraz z liczbą godzin poświęconą w tym czasie na prace nad projektem.
 
-- Czas trwania: **2 miesiące**
+- Czas trwania: **3 miesiące**
 - Łączna liczba godzin: **150**
 
 ### Etapy realizacji projektu
